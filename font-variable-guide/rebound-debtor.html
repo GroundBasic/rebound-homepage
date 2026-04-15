@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>리바운드 | 미납금 해결 안내</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
+</head>
+<body style="margin:0; padding:0; background-color:#E8EEF2; font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#E8EEF2; padding:36px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.10);">
+
+
+          <!-- ───────── HEADER ───────── -->
+          <tr>
+            <td style="background-color:#ffffff; padding:24px 36px 20px 36px; border-bottom:1px solid #E8EEF2;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <!-- 아이콘 -->
+                        <td valign="middle" style="padding-right:8px;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 47 48" fill="none">
+                            <path opacity="0.35" d="M27.6961 42.5987V42.8781C27.6219 40.2145 25.4344 38.0911 22.7649 38.0911C20.0954 38.0911 17.8523 40.289 17.8338 43.0085V43.0457V42.785C17.6855 35.8187 11.9572 30.1563 5.04243 30.1377H4.98682C7.67485 30.1005 9.86235 27.9026 9.86235 25.1831C9.86235 22.4637 7.69339 20.2658 5.00535 20.2285C10.9561 20.2285 16.4249 22.5941 20.5033 26.4311C24.8412 30.4916 27.5848 36.2285 27.7146 42.5801L27.6961 42.5987Z" fill="#FF5900"/>
+                            <path opacity="0.45" d="M44.4726 9.09001C42.73 10.4125 41.0986 11.884 39.56 13.4858C38.8555 14.2309 38.1696 14.9945 37.5208 15.7582C31.2549 23.3205 27.7882 32.6709 27.6956 42.5801V43.0271C27.6956 40.3077 25.471 38.0912 22.7644 38.0912C20.0578 38.0912 17.8333 40.3077 17.8333 43.0271V42.785C17.8703 37.0853 18.7972 31.5906 20.5027 26.4497C22.6532 19.9678 26.0271 14.026 30.3465 8.92237C32.534 6.35194 34.9625 4.00503 37.5949 1.90025C37.8915 1.65811 38.2067 1.41597 38.5218 1.17383C38.2438 1.41597 37.9842 1.69536 37.7432 2.01201C37.1315 2.83157 36.7793 3.85602 36.7793 4.95497C36.7793 7.69303 39.0038 9.90956 41.7104 9.90956C42.73 9.90956 43.694 9.59292 44.4726 9.07138V9.09001Z" fill="#FF5900"/>
+                            <path opacity="0.5" d="M9.8623 25.2007C9.8623 27.9201 7.6748 30.1367 4.98677 30.1553H4.93115C2.20604 30.1553 0 27.9388 0 25.2007C0 22.4626 2.22458 20.2461 4.93115 20.2461H5.0053C7.69334 20.2833 9.8623 22.4999 9.8623 25.2007Z" fill="#FF5900"/>
+                            <path opacity="0.8" d="M27.6956 43.0269C27.6956 45.7836 25.471 48.0001 22.7644 48.0001C20.0578 48.0001 17.8333 45.7836 17.8333 43.0455V43.0082C17.8333 40.2888 20.0578 38.0723 22.7644 38.0723C25.471 38.0723 27.6956 40.2888 27.6956 43.0082V43.0269Z" fill="#FF5900"/>
+                            <path d="M46.6416 4.97322C46.6416 6.50058 45.9557 7.8603 44.899 8.75436C44.8434 8.79161 44.8063 8.82887 44.7693 8.86612C44.7693 8.86612 44.5839 9.01513 44.4912 9.08964C43.694 9.61117 42.7486 9.92782 41.729 9.92782C39.0039 9.92782 36.7979 7.71129 36.7979 4.97322C36.7979 3.87427 37.1501 2.84982 37.7618 2.03027C37.9843 1.73225 38.2438 1.45285 38.5404 1.19208C38.7073 1.0617 38.8556 0.949941 39.0224 0.819557C39.801 0.298021 40.7465 0 41.7475 0C44.4912 0 46.6787 2.21653 46.6787 4.9546L46.6416 4.97322Z" fill="#FF5900"/>
+                          </svg>
+                        </td>
+                        <!-- 워드마크 (검정) -->
+                        <td valign="middle">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="78" height="24" viewBox="0 0 138 42" fill="none">
+                            <g clip-path="url(#hdr_clip)">
+                              <path d="M5.0053 24.4566H18.9258V8.40039H0.0693359V13.1203H13.8928V19.7367H0.0693359V35.7507H24.0975V41.8332H29.0334V8.40039H24.0975V31.0729H5.0053V24.4566Z" fill="#17191A"/>
+                              <path d="M39.6264 8.40039H34.6904V35.6664H53.5469V8.40039H48.6109V17.756H39.6264V8.40039ZM48.5971 22.4338V30.9043H39.6125V22.4338H48.5971Z" fill="#17191A"/>
+                              <path d="M63.8346 8.40039H58.8987V41.8332H63.8346V18.5567H69.5193V13.8929H63.8346V8.40039Z" fill="#17191A"/>
+                              <path d="M83.634 34.2614H88.7779V27.1534H101.27V22.293H70.4761V27.1534H83.634V34.2614Z" fill="#17191A"/>
+                              <path d="M75.412 30.1738H70.4761V41.8332H101.27V37.1694H75.412V30.1738Z" fill="#17191A"/>
+                              <path d="M112.778 13.2187H135.905V8.40039H107.787V28.8675H135.905V24.1475H112.778V13.2187Z" fill="#17191A"/>
+                              <path d="M137.306 36.9727H107.08V41.8331H137.306V36.9727Z" fill="#17191A"/>
+                              <path d="M85.894 19.3574C92.272 19.3574 97.097 15.1994 97.097 9.69279C97.097 4.1862 92.272 0.0703125 85.894 0.0703125C79.5161 0.0703125 74.6633 4.2143 74.6633 9.70684C74.6633 15.1994 79.4884 19.3715 85.894 19.3715V19.3574ZM85.894 4.42501C89.3326 4.42501 91.9392 6.70069 91.9392 9.70684C91.9392 12.713 89.3464 15.0308 85.894 15.0308C82.4416 15.0308 79.8211 12.7411 79.8211 9.70684C79.8211 6.67259 82.4278 4.42501 85.894 4.42501Z" fill="#17191A"/>
+                            </g>
+                            <defs><clipPath id="hdr_clip"><rect width="137.375" height="41.9034" fill="white"/></clipPath></defs>
+                          </svg>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="right">
+                    <span style="font-size:11px; color:#A4ADB2; font-family:'Pretendard',sans-serif; letter-spacing:0.3px;">by 법무법인 수륜아시아</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 안심 배너 ───────── -->
+          <tr>
+            <td style="background-color:#FFF0EA; padding:14px 36px;">
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:13px; color:#E14E00; font-family:'Pretendard',sans-serif; line-height:1.6;">
+                    📌 &nbsp;본 메일은 <strong>리바운드(법무법인 수륜아시아)</strong>에서 발송한 공식 안내 메일입니다.<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소송·법적 조치가 아닌, <strong>자율 상환을 돕기 위한</strong> 연락입니다.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 인사 & 상황 설명 ───────── -->
+          <tr>
+            <td style="padding:36px 36px 28px 36px;">
+              <h1 style="margin:0 0 18px 0; font-size:22px; font-weight:800; color:#17191A; line-height:1.45; letter-spacing:-0.5px; font-family:'Pretendard',sans-serif;">
+                사도청과님, 안녕하세요.<br/>
+                미납금 해결을 도와드리러 연락드렸습니다.
+              </h1>
+              <p style="margin:0; font-size:14px; color:#464A4D; line-height:1.85; font-family:'Pretendard',sans-serif;">
+                갑작스러운 연락에 당황하셨을 수 있습니다. 먼저 차분히 읽어봐 주세요.<br/><br/>
+                저희 <strong>리바운드</strong>는 <strong>법무법인 수륜아시아</strong>로부터 채권 관리를 위임받아,
+                사도청과님의 미납금에 관하여 채권추심을 수임하게 되어 아래와 같이 안내드립니다.<br/>
+                고소·압류 같은 강제 조치 전에, 먼저 <strong>부담 없이 해결하실 수 있도록</strong> 도와드리고자 연락드렸어요.
+              </p>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 미납금 정보 박스 ───────── -->
+          <tr>
+            <td style="padding:0 36px 32px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #E8EEF2; border-radius:12px; overflow:hidden;">
+                <!-- 박스 헤더 -->
+                <tr>
+                  <td style="background-color:#F1F5F7; padding:14px 20px; border-bottom:1px solid #E8EEF2;">
+                    <span style="font-size:13px; font-weight:700; color:#464A4D; font-family:'Pretendard',sans-serif;">📄 미납금 안내 내용</span>
+                  </td>
+                </tr>
+                <!-- 행 0: 채무자명 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #F1F5F7;">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">채무자명</td>
+                        <td style="padding:14px 0; font-size:13px; font-weight:600; color:#17191A; font-family:'Pretendard',sans-serif;">사도청과</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 행 1 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #F1F5F7;">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">채권자명</td>
+                        <td style="padding:14px 0; font-size:13px; font-weight:600; color:#17191A; font-family:'Pretendard',sans-serif;">그라운드베이직 주식회사</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 행 2 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #F1F5F7;">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">채권 내용</td>
+                        <td style="padding:14px 0; font-size:13px; font-weight:600; color:#17191A; font-family:'Pretendard',sans-serif;">리바운드 서비스 이용 미납금</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 행 3 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #F1F5F7;">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">채무 금액</td>
+                        <td style="padding:14px 0; font-size:16px; font-weight:800; color:#FF5900; font-family:'Pretendard',sans-serif;">7,500,000원</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 행 4 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #F1F5F7;">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">불이행일자</td>
+                        <td style="padding:14px 0; font-size:13px; font-weight:600; color:#17191A; font-family:'Pretendard',sans-serif;">2025년 9월 1일</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 행 5 -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding:14px 0; font-size:13px; color:#8C9499; font-family:'Pretendard',sans-serif; width:110px;">안내 기한</td>
+                        <td style="padding:14px 0; font-size:13px; font-weight:600; color:#17191A; font-family:'Pretendard',sans-serif;">2026년 4월 30일까지</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- 안내 문구 -->
+                <tr>
+                  <td style="padding:0 20px 14px 20px;">
+                    <p style="margin:0; font-size:12px; color:#8C9499; line-height:1.7; font-family:'Pretendard',sans-serif;">
+                      해당 채무는 2025년 9월 1일부로 미지급 상태로 확인되어 상환이 필요합니다.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 핵심 메시지: 나눠 갚을 수 있어요 ───────── -->
+          <tr>
+            <td style="background-color:#F1F5F7; padding:36px 36px 32px 36px;">
+              <p style="margin:0 0 8px 0; font-size:11px; font-weight:700; color:#FF5900; letter-spacing:1.5px; font-family:'Pretendard',sans-serif;">REBOUND SOLUTION</p>
+              <h2 style="margin:0 0 14px 0; font-size:20px; font-weight:800; color:#17191A; line-height:1.45; font-family:'Pretendard',sans-serif;">
+                한 번에 다 갚지 않아도 됩니다.<br/>
+                <span style="color:#FF5900;">나눠서</span> 갚을 수 있도록 도와드립니다.
+              </h2>
+              <p style="margin:0 0 28px 0; font-size:14px; color:#5E6366; line-height:1.8; font-family:'Pretendard',sans-serif;">
+                리바운드를 통해 상환 의사를 밝히시면, 기업과 협의된 범위 안에서<br/>
+                <strong style="color:#17191A;">분할 납부 계획</strong>을 함께 세울 수 있습니다.
+              </p>
+
+              <!-- 3가지 안심 포인트 -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <!-- 포인트 1 -->
+                  <td width="32%" valign="top" style="background-color:#ffffff; border-radius:10px; padding:18px 14px; text-align:center; border:1px solid #E8EEF2;">
+                    <p style="margin:0 0 8px 0; font-size:22px;">🗓️</p>
+                    <p style="margin:0 0 5px 0; font-size:12px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">분할 납부 가능</p>
+                    <p style="margin:0; font-size:11px; color:#8C9499; line-height:1.5; font-family:'Pretendard',sans-serif;">한 번에 내기 어려우면<br/>나눠 갚을 수 있어요</p>
+                  </td>
+                  <td width="2%"></td>
+                  <!-- 포인트 2 -->
+                  <td width="32%" valign="top" style="background-color:#ffffff; border-radius:10px; padding:18px 14px; text-align:center; border:1px solid #E8EEF2;">
+                    <p style="margin:0 0 8px 0; font-size:22px;">🤝</p>
+                    <p style="margin:0 0 5px 0; font-size:12px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">강제 조치 없음</p>
+                    <p style="margin:0; font-size:11px; color:#8C9499; line-height:1.5; font-family:'Pretendard',sans-serif;">자율 상환을 먼저<br/>도와드립니다</p>
+                  </td>
+                  <td width="2%"></td>
+                  <!-- 포인트 3 -->
+                  <td width="32%" valign="top" style="background-color:#ffffff; border-radius:10px; padding:18px 14px; text-align:center; border:1px solid #E8EEF2;">
+                    <p style="margin:0 0 8px 0; font-size:22px;">🔒</p>
+                    <p style="margin:0 0 5px 0; font-size:12px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">안전한 처리</p>
+                    <p style="margin:0; font-size:11px; color:#8C9499; line-height:1.5; font-family:'Pretendard',sans-serif;">법무법인이 직접<br/>운영합니다</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 해결 절차 ───────── -->
+          <tr>
+            <td style="padding:36px 36px 28px 36px; background-color:#ffffff;">
+              <h2 style="margin:0 0 22px 0; font-size:17px; font-weight:800; color:#17191A; font-family:'Pretendard',sans-serif;">해결하는 방법, 간단합니다</h2>
+
+              <!-- STEP 1 -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td width="32" valign="middle">
+                    <div style="width:26px; height:26px; background-color:#FF5900; border-radius:50%; text-align:center; line-height:26px; font-size:12px; font-weight:800; color:#ffffff; font-family:'Pretendard',sans-serif;">1</div>
+                  </td>
+                  <td valign="middle" style="padding-left:12px;">
+                    <p style="margin:0 0 2px 0; font-size:14px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">아래 버튼을 눌러 상황을 확인하세요</p>
+                    <p style="margin:0; font-size:12px; color:#757B80; font-family:'Pretendard',sans-serif;">미납 내역과 분할 납부 가능 조건을 확인할 수 있습니다.</p>
+                  </td>
+                </tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" style="margin-left:13px; margin-bottom:8px;">
+                <tr><td style="width:1px; background-color:#E8EEF2; height:8px;"></td></tr>
+              </table>
+
+              <!-- STEP 2 -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td width="32" valign="middle">
+                    <div style="width:26px; height:26px; background-color:#FF5900; border-radius:50%; text-align:center; line-height:26px; font-size:12px; font-weight:800; color:#ffffff; font-family:'Pretendard',sans-serif;">2</div>
+                  </td>
+                  <td valign="middle" style="padding-left:12px;">
+                    <p style="margin:0 0 2px 0; font-size:14px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">상환 계획을 선택하세요</p>
+                    <p style="margin:0; font-size:12px; color:#757B80; font-family:'Pretendard',sans-serif;">일시납 또는 분할 납부 중 선택하실 수 있으며, 분할 납부 선택 시 <strong style="color:#464A4D;">CMS 자동이체</strong>로 매달 자동 출금되어 따로 신경 쓰지 않아도 됩니다.</p>
+                  </td>
+                </tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" style="margin-left:13px; margin-bottom:8px;">
+                <tr><td style="width:1px; background-color:#E8EEF2; height:8px;"></td></tr>
+              </table>
+
+              <!-- STEP 3 -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="32" valign="middle">
+                    <div style="width:26px; height:26px; background-color:#FF5900; border-radius:50%; text-align:center; line-height:26px; font-size:12px; font-weight:800; color:#ffffff; font-family:'Pretendard',sans-serif;">✓</div>
+                  </td>
+                  <td valign="middle" style="padding-left:12px;">
+                    <p style="margin:0 0 2px 0; font-size:14px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">납부 완료 — 깔끔하게 해결!</p>
+                    <p style="margin:0; font-size:12px; color:#757B80; font-family:'Pretendard',sans-serif;">납부 완료 후 채권이 정리되고 더 이상 연락드리지 않습니다.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 설득 섹션: 어차피 갚을 거라면 (흰 배경, 깔끔) ───────── -->
+          <tr>
+            <td style="padding:0 36px 20px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; border:1.5px solid #E8EEF2;">
+                <tr>
+                  <td style="padding:24px 24px 20px 24px;">
+                    <p style="margin:0 0 8px 0; font-size:17px; font-weight:800; color:#17191A; line-height:1.45; font-family:'Pretendard',sans-serif;">
+                      어차피 갚아야 할 돈이라면,<br/>
+                      <span style="color:#FF5900;">지금이 가장 좋은 기회입니다.</span>
+                    </p>
+                    <p style="margin:0 0 16px 0; font-size:13px; color:#5E6366; line-height:1.8; font-family:'Pretendard',sans-serif;">
+                      이 채무는 그냥 사라지지 않습니다. 하지만 지금 리바운드를 통해 해결하면,
+                      기업과의 관계를 깔끔하게 유지하면서 부담 없이 마무리할 수 있습니다.
+                    </p>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td valign="top" width="48%" style="background-color:#F1F5F7; border-radius:10px; padding:14px 16px;">
+                          <p style="margin:0 0 5px 0; font-size:13px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">🏢 기업과의 관계, 지키세요</p>
+                          <p style="margin:0; font-size:12px; color:#5E6366; line-height:1.65; font-family:'Pretendard',sans-serif;">리바운드가 중간에서 조율하기 때문에 직접 얼굴을 붉힐 필요 없이 신뢰 관계를 유지할 수 있습니다.</p>
+                        </td>
+                        <td width="4%"></td>
+                        <td valign="top" width="48%" style="background-color:#F1F5F7; border-radius:10px; padding:14px 16px;">
+                          <p style="margin:0 0 5px 0; font-size:13px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">📋 신용 관리에도 유리해요</p>
+                          <p style="margin:0; font-size:12px; color:#5E6366; line-height:1.65; font-family:'Pretendard',sans-serif;">자율 상환으로 해결하면 법적 절차로 이어지지 않아 신용 기록 불이익을 예방할 수 있습니다.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────── CTA ───────── -->
+          <tr>
+            <td style="padding:0 36px 36px 36px; text-align:center;">
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="background-color:#FF5900; border-radius:12px; padding:17px; text-align:center;">
+                    <a href="https://www.reboundkr.info" style="font-size:16px; font-weight:800; color:#ffffff; text-decoration:none; font-family:'Pretendard',sans-serif;">지금 미납금 확인 및 납부하기 →</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:14px 0 0 0; font-size:12px; color:#A4ADB2; font-family:'Pretendard',sans-serif;">
+                버튼이 작동하지 않으면 아래 링크를 복사해 주세요<br/>
+                <span style="color:#757B80;">https://www.reboundkr.info</span>
+              </p>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 자주 묻는 질문 ───────── -->
+          <tr>
+            <td style="background-color:#F1F5F7; padding:32px 36px 28px 36px;">
+              <h2 style="margin:0 0 18px 0; font-size:15px; font-weight:800; color:#17191A; font-family:'Pretendard',sans-serif;">자주 묻는 질문</h2>
+
+              <!-- Q1 -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;">
+                <tr>
+                  <td style="background-color:#ffffff; border-radius:10px; padding:16px 18px;">
+                    <p style="margin:0 0 6px 0; font-size:13px; font-weight:700; color:#FF5900; font-family:'Pretendard',sans-serif;">Q. 리바운드가 정말 믿을 수 있는 곳인가요?</p>
+                    <p style="margin:0; font-size:13px; color:#5E6366; line-height:1.65; font-family:'Pretendard',sans-serif;">리바운드는 <strong>법무법인 수륜아시아</strong>가 직접 운영하는 합법적인 채권 관리 서비스입니다. 불법 추심이나 개인정보 무단 활용은 절대 없습니다.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Q2 -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;">
+                <tr>
+                  <td style="background-color:#ffffff; border-radius:10px; padding:16px 18px;">
+                    <p style="margin:0 0 6px 0; font-size:13px; font-weight:700; color:#FF5900; font-family:'Pretendard',sans-serif;">Q. 지금 당장 전부 갚을 여유가 없어요.</p>
+                    <p style="margin:0; font-size:13px; color:#5E6366; line-height:1.65; font-family:'Pretendard',sans-serif;">괜찮습니다. 서비스 내에서 <strong>분할 납부 계획</strong>을 신청하시면 부담 없는 금액으로 나눠 갚으실 수 있습니다. 먼저 확인해 보세요.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Q3 -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#ffffff; border-radius:10px; padding:16px 18px;">
+                    <p style="margin:0 0 6px 0; font-size:13px; font-weight:700; color:#FF5900; font-family:'Pretendard',sans-serif;">Q. 해결하지 않으면 어떻게 되나요?</p>
+                    <p style="margin:0; font-size:13px; color:#5E6366; line-height:1.65; font-family:'Pretendard',sans-serif;">기한 내 해결되지 않을 경우 의뢰 기업의 요청에 따라 법적 절차가 진행될 수 있습니다. 그 전에 리바운드를 통해 <strong>원만하게 해결하실 것을 권고드립니다.</strong></p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── 문의 연락처 ───────── -->
+          <tr>
+            <td style="padding:28px 36px 32px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid #E8EEF2; border-radius:12px; padding:20px;">
+                <tr>
+                  <td style="padding:20px;">
+                    <p style="margin:0 0 14px 0; font-size:14px; font-weight:700; color:#17191A; font-family:'Pretendard',sans-serif;">📞 궁금한 점은 리바운드에 문의하세요</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+                      <tr>
+                        <td style="font-size:13px; color:#5E6366; line-height:2.1; font-family:'Pretendard',sans-serif;">
+                          카카오톡 채널 &nbsp;<strong style="color:#17191A;">@리바운드</strong><br/>
+                          이메일 &nbsp;<strong style="color:#17191A;">help@reboundkr.info</strong><br/>
+                          운영시간 &nbsp;<strong style="color:#17191A;">평일 09:00 – 18:00</strong>
+                        </td>
+                      </tr>
+                    </table>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="background-color:#FF5900; border-radius:10px; padding:14px; text-align:center;">
+                          <a href="https://www.reboundkr.info" style="font-size:14px; font-weight:700; color:#ffffff; text-decoration:none; font-family:'Pretendard',sans-serif;">🌐 홈페이지 바로가기</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+
+          <!-- ───────── FOOTER ───────── -->
+          <tr>
+            <td style="background-color:#2F3133; padding:22px 36px; text-align:center;">
+              <!-- 푸터 로고: 아이콘 + 흰색 워드마크 -->
+              <table cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 10px auto;">
+                <tr>
+                  <td valign="middle" style="padding-right:7px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 47 48" fill="none">
+                      <path opacity="0.35" d="M27.6961 42.5987V42.8781C27.6219 40.2145 25.4344 38.0911 22.7649 38.0911C20.0954 38.0911 17.8523 40.289 17.8338 43.0085V43.0457V42.785C17.6855 35.8187 11.9572 30.1563 5.04243 30.1377H4.98682C7.67485 30.1005 9.86235 27.9026 9.86235 25.1831C9.86235 22.4637 7.69339 20.2658 5.00535 20.2285C10.9561 20.2285 16.4249 22.5941 20.5033 26.4311C24.8412 30.4916 27.5848 36.2285 27.7146 42.5801L27.6961 42.5987Z" fill="#FF5900"/>
+                      <path opacity="0.45" d="M44.4726 9.09001C42.73 10.4125 41.0986 11.884 39.56 13.4858C38.8555 14.2309 38.1696 14.9945 37.5208 15.7582C31.2549 23.3205 27.7882 32.6709 27.6956 42.5801V43.0271C27.6956 40.3077 25.471 38.0912 22.7644 38.0912C20.0578 38.0912 17.8333 40.3077 17.8333 43.0271V42.785C17.8703 37.0853 18.7972 31.5906 20.5027 26.4497C22.6532 19.9678 26.0271 14.026 30.3465 8.92237C32.534 6.35194 34.9625 4.00503 37.5949 1.90025C37.8915 1.65811 38.2067 1.41597 38.5218 1.17383C38.2438 1.41597 37.9842 1.69536 37.7432 2.01201C37.1315 2.83157 36.7793 3.85602 36.7793 4.95497C36.7793 7.69303 39.0038 9.90956 41.7104 9.90956C42.73 9.90956 43.694 9.59292 44.4726 9.07138V9.09001Z" fill="#FF5900"/>
+                      <path opacity="0.5" d="M9.8623 25.2007C9.8623 27.9201 7.6748 30.1367 4.98677 30.1553H4.93115C2.20604 30.1553 0 27.9388 0 25.2007C0 22.4626 2.22458 20.2461 4.93115 20.2461H5.0053C7.69334 20.2833 9.8623 22.4999 9.8623 25.2007Z" fill="#FF5900"/>
+                      <path opacity="0.8" d="M27.6956 43.0269C27.6956 45.7836 25.471 48.0001 22.7644 48.0001C20.0578 48.0001 17.8333 45.7836 17.8333 43.0455V43.0082C17.8333 40.2888 20.0578 38.0723 22.7644 38.0723C25.471 38.0723 27.6956 40.2888 27.6956 43.0082V43.0269Z" fill="#FF5900"/>
+                      <path d="M46.6416 4.97322C46.6416 6.50058 45.9557 7.8603 44.899 8.75436C44.8434 8.79161 44.8063 8.82887 44.7693 8.86612C44.7693 8.86612 44.5839 9.01513 44.4912 9.08964C43.694 9.61117 42.7486 9.92782 41.729 9.92782C39.0039 9.92782 36.7979 7.71129 36.7979 4.97322C36.7979 3.87427 37.1501 2.84982 37.7618 2.03027C37.9843 1.73225 38.2438 1.45285 38.5404 1.19208C38.7073 1.0617 38.8556 0.949941 39.0224 0.819557C39.801 0.298021 40.7465 0 41.7475 0C44.4912 0 46.6787 2.21653 46.6787 4.9546L46.6416 4.97322Z" fill="#FF5900"/>
+                    </svg>
+                  </td>
+                  <td valign="middle">
+                    <!-- 워드마크 흰색 버전 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="66" height="20" viewBox="0 0 138 42" fill="none">
+                      <g clip-path="url(#ftr_clip)">
+                        <path d="M5.0053 24.4566H18.9258V8.40039H0.0693359V13.1203H13.8928V19.7367H0.0693359V35.7507H24.0975V41.8332H29.0334V8.40039H24.0975V31.0729H5.0053V24.4566Z" fill="white"/>
+                        <path d="M39.6264 8.40039H34.6904V35.6664H53.5469V8.40039H48.6109V17.756H39.6264V8.40039ZM48.5971 22.4338V30.9043H39.6125V22.4338H48.5971Z" fill="white"/>
+                        <path d="M63.8346 8.40039H58.8987V41.8332H63.8346V18.5567H69.5193V13.8929H63.8346V8.40039Z" fill="white"/>
+                        <path d="M83.634 34.2614H88.7779V27.1534H101.27V22.293H70.4761V27.1534H83.634V34.2614Z" fill="white"/>
+                        <path d="M75.412 30.1738H70.4761V41.8332H101.27V37.1694H75.412V30.1738Z" fill="white"/>
+                        <path d="M112.778 13.2187H135.905V8.40039H107.787V28.8675H135.905V24.1475H112.778V13.2187Z" fill="white"/>
+                        <path d="M137.306 36.9727H107.08V41.8331H137.306V36.9727Z" fill="white"/>
+                        <path d="M85.894 19.3574C92.272 19.3574 97.097 15.1994 97.097 9.69279C97.097 4.1862 92.272 0.0703125 85.894 0.0703125C79.5161 0.0703125 74.6633 4.2143 74.6633 9.70684C74.6633 15.1994 79.4884 19.3715 85.894 19.3715V19.3574ZM85.894 4.42501C89.3326 4.42501 91.9392 6.70069 91.9392 9.70684C91.9392 12.713 89.3464 15.0308 85.894 15.0308C82.4416 15.0308 79.8211 12.7411 79.8211 9.70684C79.8211 6.67259 82.4278 4.42501 85.894 4.42501Z" fill="white"/>
+                      </g>
+                      <defs><clipPath id="ftr_clip"><rect width="137.375" height="41.9034" fill="white"/></clipPath></defs>
+                    </svg>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 6px 0; font-size:11px; color:#8C9499; line-height:1.8; font-family:'Pretendard',sans-serif;">
+                법무법인 수륜아시아 &nbsp;|&nbsp; www.reboundkr.info
+              </p>
+              <p style="margin:0 0 10px 0; font-size:11px; color:#757B80; font-family:'Pretendard',sans-serif;">
+                본인이 아닌 경우 또는 문의사항이 있으시면 <a href="#" style="color:#757B80; text-decoration:underline;">여기로 연락</a>주세요.
+              </p>
+              <p style="margin:0; font-size:11px; color:#757B80; line-height:1.7; font-family:'Pretendard',sans-serif; border-top:1px solid #464A4D; padding-top:12px;">
+                ※ 본 안내는 「신용정보의 이용 및 보호에 관한 법률」에 따라 채권추심 수임 사실을 통지하는 메시지입니다.
+              </p>
+            </td>
+          </tr>
+
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>리바운드 — 셀프 진단</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6D24;
+      --orange-light: #FFD6C2;
+      --white: #ffffff;
+      --off: #F6F6F8;
+      --text: #302622;
+      --text2: #595959;
+      --text3: #888888;
+      --text4: #686868;
+      --border: #EEEEEE;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #E0E0E0;
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* ── APP SHELL ── */
+    .app {
+      width: 100%; max-width: 380px;
+      min-height: 720px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    /* ══════════════════════════════
+       INTRO SCREEN
+    ══════════════════════════════ */
+    .screen-intro {
+      width: 100%; min-height: 720px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFE5D8 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 28px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Floating blobs */
+    .intro-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(60px); opacity: 0.25;
+      pointer-events: none;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .intro-blob-1 {
+      width: 200px; height: 200px;
+      background: #FF6D24;
+      top: -40px; right: -60px;
+      animation-delay: 0s;
+    }
+    .intro-blob-2 {
+      width: 160px; height: 160px;
+      background: #FFB088;
+      bottom: 60px; left: -50px;
+      animation-delay: -3s;
+    }
+    @keyframes blobFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(10px, -15px) scale(1.05); }
+      66% { transform: translate(-8px, 10px) scale(0.95); }
+    }
+
+    .intro-badge {
+      background: rgba(255,155,105,0.25);
+      color: var(--orange);
+      font-size: 12px; font-weight: 600;
+      padding: 5px 12px; border-radius: 50px;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.6s ease both;
+    }
+    .intro-title {
+      font-size: 28px; font-weight: 700;
+      color: var(--text); text-align: center;
+      line-height: 1.3; letter-spacing: -0.8px;
+      margin-bottom: 16px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .intro-desc {
+      font-size: 14px; color: #7E7E7E;
+      text-align: center; line-height: 1.55;
+      letter-spacing: -0.3px;
+      margin-bottom: 40px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .btn-start {
+      width: 85%; max-width: 320px;
+      padding: 15px 0;
+      background: var(--orange);
+      color: #fff;
+      font-size: 16px; font-weight: 600;
+      border: none; border-radius: 40px;
+      cursor: pointer; font-family: inherit;
+      position: relative; z-index: 1;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(255,109,36,0.3);
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,109,36,0.4);
+    }
+    .btn-start:active { transform: scale(0.97); }
+    .intro-disclaimer {
+      position: absolute; bottom: 22px; left: 0; right: 0;
+      text-align: center;
+      font-size: 10px; color: var(--text3);
+      letter-spacing: -0.2px; padding: 0 20px;
+      z-index: 1;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
+       QUIZ SCREEN
+    ══════════════════════════════ */
+    .screen-quiz {
+      display: none;
+      width: 100%; min-height: 720px;
+      background: var(--white);
+      flex-direction: column;
+    }
+
+    .quiz-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 14px;
+    }
+    .btn-back {
+      background: none; border: none; cursor: pointer;
+      padding: 4px; display: flex; align-items: center;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .btn-back:hover { background: var(--off); }
+    .btn-back svg { width: 20px; height: 20px; }
+    .quiz-step-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--orange); letter-spacing: 0.5px;
+    }
+
+    /* Segment progress */
+    .seg-progress {
+      display: flex; gap: 4px;
+      padding: 0 20px 20px;
+    }
+    .seg-bar {
+      flex: 1; height: 5px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .seg-fill {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--orange);
+      border-radius: 20px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .seg-bar.filled .seg-fill { transform: scaleX(1); }
+
+    /* Question */
+    .quiz-body {
+      flex: 1; padding: 8px 24px 24px;
+      display: flex; flex-direction: column;
+    }
+    .q-icon {
+      font-size: 32px; margin-bottom: 12px;
+      animation: bounceIn 0.4s ease both;
+    }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      60% { transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .q-title {
+      font-size: 22px; font-weight: 700;
+      color: var(--text); line-height: 1.35;
+      letter-spacing: -0.6px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.4s 0.05s ease both;
+    }
+
+    /* Options */
+    .options {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .opt-btn {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+      padding: 16px 14px;
+      background: var(--off);
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px; font-weight: 500;
+      color: #1D1B20;
+      text-align: left;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeUp 0.35s ease both;
+    }
+    .opt-btn:nth-child(1) { animation-delay: 0.08s; }
+    .opt-btn:nth-child(2) { animation-delay: 0.13s; }
+    .opt-btn:nth-child(3) { animation-delay: 0.18s; }
+    .opt-btn:nth-child(4) { animation-delay: 0.23s; }
+    .opt-btn:nth-child(5) { animation-delay: 0.28s; }
+    .opt-btn:nth-child(6) { animation-delay: 0.33s; }
+
+    .opt-btn:hover {
+      background: #EFEFF3;
+      transform: translateX(4px);
+    }
+    .opt-btn.selected {
+      background: var(--orange-light);
+      border-color: var(--orange);
+      color: var(--orange);
+      font-weight: 700;
+      transform: translateX(4px);
+    }
+    .opt-btn.selected .opt-check {
+      background: var(--orange);
+      transform: scale(1.1);
+    }
+    .opt-btn.selected .opt-check svg { opacity: 1; }
+
+    /* Ripple effect on click */
+    .opt-btn { position: relative; overflow: hidden; }
+    .opt-ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,109,36,0.15);
+      transform: scale(0);
+      animation: ripple 0.5s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    .opt-check {
+      width: 22px; height: 22px; flex-shrink: 0;
+      border-radius: 50%;
+      background: #D9D9D9;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .opt-check svg {
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    /* ══════════════════════════════
+       RESULT SCREEN
+    ══════════════════════════════ */
+    .screen-result {
+      display: none;
+      width: 100%;
+      background: var(--white);
+      flex-direction: column;
+    }
+
+    .result-hero {
+      background: linear-gradient(180deg, #FFF1EB 0%, #FFFFFF 100%);
+      text-align: center;
+      padding: 48px 24px 32px;
+      position: relative; overflow: hidden;
+    }
+    .result-hero::before {
+      content: ''; position: absolute;
+      width: 180px; height: 180px;
+      background: rgba(255,109,36,0.08);
+      border-radius: 50%; filter: blur(40px);
+      top: -40px; right: -40px;
+    }
+    .result-confetti { font-size: 40px; margin-bottom: 12px; animation: bounceIn 0.5s ease both; }
+    .result-hero-title {
+      font-size: 26px; font-weight: 700;
+      color: var(--text); line-height: 1.35;
+      margin-bottom: 12px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+    .result-hero-desc {
+      font-size: 14px; color: var(--text2);
+      line-height: 1.55; letter-spacing: -0.3px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .result-body { padding: 24px 20px 0; }
+
+    .result-section-title {
+      font-size: 21px; font-weight: 600;
+      color: var(--text); text-align: center;
+      letter-spacing: -0.5px; line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    /* Benefit card */
+    .benefit-card {
+      background: var(--off);
+      border-radius: 16px;
+      padding: 20px 18px;
+      margin-bottom: 24px;
+    }
+    .benefit-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .benefit-item:last-child { margin-bottom: 0; }
+    .benefit-num {
+      width: 24px; height: 24px; flex-shrink: 0;
+      background: var(--orange);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 700;
+    }
+    .benefit-text .sub {
+      font-size: 12px; color: var(--text4); line-height: 1.4;
+    }
+    .benefit-text .main {
+      font-size: 16px; font-weight: 600; color: var(--text);
+      letter-spacing: -0.3px; line-height: 1.4;
+    }
+
+    /* Reason card */
+    .reason-card {
+      background: #F5F5F5;
+      border-radius: 16px;
+      padding: 20px 16px;
+      margin-bottom: 24px;
+    }
+    .reason-item {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .reason-item:last-child { margin-bottom: 0; }
+    .reason-emoji { font-size: 24px; flex-shrink: 0; }
+    .reason-text .sub {
+      font-size: 12px; color: var(--text4); line-height: 1.4;
+    }
+    .reason-text .main {
+      font-size: 16px; font-weight: 600; color: var(--text);
+      letter-spacing: -0.3px; line-height: 1.4;
+    }
+
+    /* Guide */
+    .guide-badge {
+      display: inline-block;
+      background: rgba(255,155,105,0.25);
+      color: var(--orange);
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 50px;
+      margin: 4px auto 14px;
+    }
+    .guide-cards {
+      display: flex; gap: 12px;
+      overflow-x: auto; padding-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .guide-card {
+      flex: 0 0 200px; height: 210px;
+      border-radius: 16px; padding: 20px 16px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none; color: var(--text);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .guide-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .guide-card-1 { background: linear-gradient(180deg, #E0F2FF, #C5CED9); }
+    .guide-card-2 { background: linear-gradient(180deg, #FFFEE0, #D9D1C5); }
+    .guide-card-title {
+      font-size: 15px; font-weight: 600;
+      letter-spacing: -0.3px; line-height: 1.45;
+    }
+    .guide-card-footer {
+      background: rgba(255,255,255,0.7);
+      border-radius: 0 0 16px 16px;
+      margin: 0 -16px -20px; padding: 10px 14px;
+      display: flex; align-items: center; justify-content: flex-end; gap: 4px;
+      font-size: 12px; font-weight: 500; color: var(--text4);
+    }
+    .guide-card-footer svg { width: 16px; height: 16px; }
+
+    /* CTA */
+    .result-cta {
+      position: sticky; bottom: 0;
+      background: var(--white);
+      padding: 16px 20px 24px;
+    }
+    .result-cta::before {
+      content: ''; position: absolute;
+      top: -32px; left: 0; right: 0; height: 32px;
+      background: linear-gradient(180deg, transparent, var(--white));
+      pointer-events: none;
+    }
+    .btn-cta {
+      display: block; width: 100%;
+      padding: 16px 0;
+      background: var(--orange);
+      color: #fff; font-size: 15px; font-weight: 600;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      text-align: center; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(255,109,36,0.25);
+    }
+    .btn-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(255,109,36,0.35);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 420px) {
+      body { padding: 0; background: var(--white); }
+      .app { max-width: 100%; border-radius: 0; min-height: 100vh; box-shadow: none; }
+      .screen-intro { min-height: 100vh; }
+      .screen-quiz { min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── INTRO ── -->
+  <div class="screen-intro" id="screenIntro">
+    <div class="intro-blob intro-blob-1"></div>
+    <div class="intro-blob intro-blob-2"></div>
+    <div class="intro-badge">리바운드 셀프진단</div>
+    <h1 class="intro-title">못 받은 돈<br>어떻게 받을 수 있을까?</h1>
+    <p class="intro-desc">
+      법적 조치를 고민하기 전에, 1분 셀프 진단으로<br>
+      지금 상황에서 할 수 있는 대응을 바로 확인해보세요.
+    </p>
+    <button class="btn-start" onclick="startQuiz()">시작하기</button>
+    <p class="intro-disclaimer">*본 셀프 진단은 법률 자문이 아닌 선택지를 가볍게 정리해 보는 안내용 도구에요</p>
+  </div>
+
+  <!-- ── QUIZ ── -->
+  <div class="screen-quiz" id="screenQuiz" style="display:none;">
+    <div class="quiz-topbar">
+      <button class="btn-back" id="btnBack" onclick="prevStep()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#302622" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="quiz-step-label" id="stepLabel">1 / 6</span>
+    </div>
+    <div class="seg-progress" id="segProgress"></div>
+    <div class="quiz-body">
+      <div class="q-icon" id="qIcon"></div>
+      <h2 class="q-title" id="qTitle"></h2>
+      <div class="options" id="optionsArea"></div>
+    </div>
+  </div>
+
+  <!-- ── RESULT ── -->
+  <div class="screen-result" id="screenResult" style="display:none;"></div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    icon: '💰',
+    title: '현재 받지 못한 금액은\n얼마인가요?',
+    options: ['10만~300만 원', '300만 원~1,000만 원', '1,000만 원~3,000만 원', '3,000만 원 이상']
+  },
+  {
+    icon: '📋',
+    title: '아래와 관련된 이유로\n발생한 돈인가요?',
+    options: ['예', '아니오']
+  },
+  {
+    icon: '👤',
+    title: '돈을 돌려주지 않는 상대는\n누구인가요?',
+    options: ['친구 · 연인 · 가족', '직장 동료 · 지인', '가게 · 온라인 쇼핑몰 · 개인 자영업자', '법인']
+  },
+  {
+    icon: '📞',
+    title: '상대방의 연락처를\n알고 계신가요?',
+    options: ['알고 있고 연락이 닿아요', '연락처는 알고 있는데 응답이 없어요', '연락처를 몰라요']
+  },
+  {
+    icon: '💬',
+    title: '돈을 받기 위해 연락하면\n어떤 반응인가요?',
+    options: [
+      '기다려주면 갚을 수 있다며 계속 미루기만 해요',
+      '조금씩 나눠서 갚겠다고 하는데 못믿겠어요',
+      '받을 돈이 있는데 상대방은 없다고 해요',
+      '연락을 피해요'
+    ]
+  },
+  {
+    icon: '⏰',
+    title: '상대가 돈을 갚기로 한 날로부터\n얼마나 지났나요?',
+    options: ['1년 미만', '1~3년', '3~5년', '5~10년', '10년 이상', '기억이 안나요']
+  }
+];
+
+let step = 0;
+const answers = new Array(questions.length).fill(-1);
+
+function startQuiz() {
+  const intro = document.getElementById('screenIntro');
+  intro.style.opacity = '0';
+  intro.style.transform = 'scale(0.96)';
+  intro.style.transition = 'opacity 0.3s, transform 0.3s';
+  setTimeout(() => {
+    intro.style.display = 'none';
+    const quiz = document.getElementById('screenQuiz');
+    quiz.style.display = 'flex';
+    quiz.style.opacity = '0';
+    requestAnimationFrame(() => {
+      quiz.style.transition = 'opacity 0.3s';
+      quiz.style.opacity = '1';
+    });
+    renderStep(0);
+  }, 280);
+}
+
+function renderStep(idx) {
+  step = idx;
+  const q = questions[idx];
+
+  // Step label
+  document.getElementById('stepLabel').textContent = (idx + 1) + ' / ' + questions.length;
+
+  // Progress with animated fill
+  const segHTML = questions.map((_, i) =>
+    `<div class="seg-bar ${i <= idx ? 'filled' : ''}"><div class="seg-fill"></div></div>`
+  ).join('');
+  document.getElementById('segProgress').innerHTML = segHTML;
+  // Trigger animation
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.seg-bar.filled .seg-fill').forEach(f => f.style.transform = 'scaleX(1)');
+  });
+
+  // Icon
+  document.getElementById('qIcon').textContent = q.icon;
+  document.getElementById('qIcon').style.animation = 'none';
+  requestAnimationFrame(() => {
+    document.getElementById('qIcon').style.animation = 'bounceIn 0.4s ease both';
+  });
+
+  // Title
+  const titleEl = document.getElementById('qTitle');
+  titleEl.innerHTML = q.title.replace(/\n/g, '<br>');
+  titleEl.style.animation = 'none';
+  requestAnimationFrame(() => {
+    titleEl.style.animation = 'fadeUp 0.4s 0.05s ease both';
+  });
+
+  // Options
+  const optsHTML = q.options.map((opt, i) => `
+    <button class="opt-btn ${answers[idx] === i ? 'selected' : ''}" onclick="selectOpt(${idx}, ${i}, this, event)">
+      <div class="opt-check">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      ${opt}
+    </button>
+  `).join('');
+  document.getElementById('optionsArea').innerHTML = optsHTML;
+
+  // Back button
+  document.getElementById('btnBack').style.visibility = idx === 0 ? 'hidden' : 'visible';
+}
+
+function selectOpt(qIdx, optIdx, el, event) {
+  answers[qIdx] = optIdx;
+
+  // Ripple effect
+  const rect = el.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'opt-ripple';
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (event.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (event.clientY - rect.top - size/2) + 'px';
+  el.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+
+  // Update selection
+  el.closest('.options').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Auto-advance with transition
+  setTimeout(() => {
+    if (step < questions.length - 1) {
+      renderStep(step + 1);
+    } else {
+      showResult();
+    }
+  }, 400);
+}
+
+function prevStep() {
+  if (step > 0) renderStep(step - 1);
+}
+
+function showResult() {
+  const quiz = document.getElementById('screenQuiz');
+  quiz.style.opacity = '0';
+  quiz.style.transition = 'opacity 0.3s';
+  setTimeout(() => {
+    quiz.style.display = 'none';
+    const resultEl = document.getElementById('screenResult');
+    resultEl.style.display = 'flex';
+    resultEl.style.opacity = '0';
+    requestAnimationFrame(() => {
+      resultEl.style.transition = 'opacity 0.4s';
+      resultEl.style.opacity = '1';
+    });
+
+    let reasons = [];
+    if (answers[3] === 0) reasons.push({ emoji: '📱', sub: '채무자(돈 갚을 분)와', main: '연락이 닿아요' });
+    if (answers[4] === 0 || answers[4] === 1) reasons.push({ emoji: '✊', sub: '채무자(돈 갚을 분)가', main: '갚으려는 의지가 있어요' });
+    if (answers[0] <= 1) reasons.push({ emoji: '💵', sub: '현실적으로', main: '나눠 갚을 수 있는 금액이에요' });
+    if (reasons.length === 0) {
+      reasons = [
+        { emoji: '🔍', sub: '상황에 맞는', main: '최적의 회수 방법을 찾아드려요' },
+        { emoji: '⚖️', sub: '전문가가', main: '법적 조치 전 대안을 제시해요' },
+        { emoji: '🎯', sub: '리바운드가', main: '체계적으로 회수를 도와드려요' }
+      ];
+    }
+    const reasonsHTML = reasons.map(r => `
+      <div class="reason-item">
+        <div class="reason-emoji">${r.emoji}</div>
+        <div class="reason-text">
+          <div class="sub">${r.sub}</div>
+          <div class="main">${r.main}</div>
+        </div>
+      </div>
+    `).join('');
+
+    resultEl.innerHTML = `
+      <div class="result-hero">
+        <div class="result-confetti">🎉</div>
+        <h1 class="result-hero-title">리바운드를<br>시작해보세요!</h1>
+        <p class="result-hero-desc">
+          지금 상황에서는 소송·지급명령 같은 법적 절차보다<br>
+          리바운드를 먼저 시도해 보시는 게 좋아요!
+        </p>
+      </div>
+      <div class="result-body">
+        <h3 class="result-section-title">리바운드를 사용하면<br>어떤 점이 좋나요?</h3>
+        <div class="benefit-card">
+          <div class="benefit-item"><div class="benefit-num">1</div><div class="benefit-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div>
+          <div class="benefit-item"><div class="benefit-num">2</div><div class="benefit-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div>
+          <div class="benefit-item"><div class="benefit-num">3</div><div class="benefit-text"><div class="sub">복잡한 법적 절차보다</div><div class="main">시간과 비용 부담 감소</div></div></div>
+          <div class="benefit-item"><div class="benefit-num">4</div><div class="benefit-text"><div class="sub">현실적인 방식으로 조정해</div><div class="main">실제로 돈을 받을 가능성 증가</div></div></div>
+        </div>
+        <h3 class="result-section-title">이런 이유로 추천해요!</h3>
+        <div class="reason-card">${reasonsHTML}</div>
+        <div style="text-align:center;">
+          <div class="guide-badge">함께 보면 좋은 가이드</div>
+        </div>
+        <div class="guide-cards">
+          <a href="rebound-personal.html" target="_blank" class="guide-card guide-card-1">
+            <div class="guide-card-title">리바운드는 어떤 방식으로<br>진행되나요?</div>
+            <div class="guide-card-footer">리바운드 서비스 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </a>
+          <a href="rebound-personal.html#cost" target="_blank" class="guide-card guide-card-2">
+            <div class="guide-card-title">리바운드 서비스 비용은<br>어떻게 되나요?</div>
+            <div class="guide-card-footer">리바운드 비용 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </a>
+        </div>
+      </div>
+      <div class="result-cta">
+        <a href="rebound-personal.html#cta" target="_blank" class="btn-cta">리바운드 시작하기</a>
+      </div>
+    `;
+    window.scrollTo({ top: 0 });
+  }, 280);
+}
+</script>
+</body>
+</html>

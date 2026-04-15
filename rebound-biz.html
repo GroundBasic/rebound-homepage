@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebound Biz – 기업 미수채권 회수 서비스</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime: #B5F23D;
+      --lime-soft: #C8F76A;
+      --navy: #0B1C2C;
+      --navy2: #152536;
+      --navy3: #1E3348;
+      --white: #fff;
+      --off: #F6F8F6;
+      --border: #E8ECE8;
+      --text: #111827;
+      --text2: #4B5563;
+      --text3: #9CA3AF;
+      --text-on-dark: rgba(255,255,255,0.88);
+      --text-on-dark2: rgba(255,255,255,0.48);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    /* ──────────────────────────────
+       GNB
+    ────────────────────────────── */
+    .gnb {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 64px;
+      background: rgba(11,28,44,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.3s;
+    }
+    .gnb-inner {
+      max-width: 1256px;
+      margin: 0 auto;
+      padding: 0 48px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .gnb-left { display: flex; align-items: center; gap: 28px; }
+    .gnb-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .gnb-logo svg { display: block; }
+    .toggle-pill {
+      display: flex;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 3px;
+    }
+    .toggle-pill a {
+      padding: 5px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.2s;
+    }
+    .toggle-pill a.on {
+      background: var(--lime);
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .gnb-nav { display: flex; gap: 4px; align-items: center; }
+    .gnb-nav a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      padding: 7px 13px;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .gnb-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .gnb-nav-active { background: rgba(255,255,255,0.12) !important; color: #fff !important; font-weight: 600; }
+    .gnb-actions { display: flex; align-items: center; gap: 4px; }
+    .gnb-login { font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 7px 13px; border-radius: 8px; font-weight: 600; transition: background 0.15s, color 0.15s; }
+    .gnb-login:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    a.gnb-start {
+      background: var(--lime);
+      color: var(--navy) !important;
+      font-size: 14px; font-weight: 600;
+      padding: 7px 13px; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    a.gnb-start:hover { opacity: 0.85; }
+
+    /* ──────────────────────────────
+       HERO
+    ────────────────────────────── */
+    .hero {
+      background: var(--navy);
+      padding: 160px 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -40%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(181,242,61,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 48px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(181,242,61,0.1);
+      border: 1px solid rgba(181,242,61,0.25);
+      color: var(--lime);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      letter-spacing: 0.3px;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--lime);
+    }
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.17;
+      letter-spacing: -2px;
+      margin-bottom: 22px;
+    }
+    .hero h1 .nowrap { white-space: nowrap; }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--lime);
+    }
+    .hero-desc {
+      font-size: 17px;
+      color: var(--text-on-dark2);
+      line-height: 1.75;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 72px;
+    }
+    .btn-lime {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--lime); color: var(--navy);
+      font-size: 15px; font-weight: 700;
+      padding: 14px 26px; border-radius: 9px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-lime:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline-white {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.75);
+      font-size: 15px; font-weight: 500;
+      padding: 14px 26px; border-radius: 9px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline-white:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* hero dashboard mockup */
+    .hero-mockup {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+      padding: 28px 28px 0;
+      position: relative;
+    }
+    .mockup-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-dot.r { background: #FF6059; }
+    .mockup-dot.y { background: #FFBD2E; }
+    .mockup-dot.g { background: #28C840; }
+    .mockup-url {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border-radius: 5px;
+      height: 24px;
+      margin-left: 8px;
+    }
+    .mockup-body {
+      background: #0F2236;
+      border-radius: 10px 10px 0 0;
+      padding: 24px;
+      min-height: 320px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 16px;
+    }
+    .mock-sidebar {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 16px 14px;
+    }
+    .mock-sidebar-title {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .mock-nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+    }
+    .mock-nav-item.active {
+      background: rgba(181,242,61,0.12);
+      color: var(--lime);
+      font-weight: 600;
+    }
+    .mock-nav-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .mock-main { display: flex; flex-direction: column; gap: 14px; }
+    .mock-header-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .mock-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .mock-badge {
+      font-size: 11px; font-weight: 600;
+      background: rgba(181,242,61,0.15);
+      color: var(--lime);
+      padding: 3px 10px; border-radius: 10px;
+    }
+    .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .mock-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .mock-card-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .mock-card-value { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .mock-card-value.lime { color: var(--lime); }
+    .mock-card-sub { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 4px; }
+    .mock-table-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 8px 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mock-table-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 9px 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      align-items: center;
+    }
+    .mock-status {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 8px;
+    }
+    .mock-status.ing { background: rgba(181,242,61,0.12); color: var(--lime); }
+    .mock-status.wait { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.45); }
+    .mock-status.done { background: rgba(100,200,255,0.1); color: #7DD3FC; }
+
+    /* ──────────────────────────────
+       SECTION UTIL
+    ────────────────────────────── */
+    .section { padding: 100px 48px; }
+    .section-inner { max-width: 1160px; margin: 0 auto; }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #4CAF24;
+      margin-bottom: 14px;
+    }
+    .eyebrow.center { text-align: center; }
+    .h2 {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1.2px;
+      color: var(--text);
+    }
+    .h2.white { color: #fff; }
+    .h2.center { text-align: center; }
+    .body-text {
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1.75;
+    }
+
+    /* ──────────────────────────────
+       PAIN — split layout
+    ────────────────────────────── */
+    .pain { background: var(--white); }
+    .pain-split {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 80px;
+      align-items: start;
+      padding-top: 8px;
+    }
+    .pain-left { position: sticky; top: 100px; }
+    .pain-left .h2 { margin-bottom: 20px; }
+    .pain-left p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 32px; }
+    .pain-right { display: flex; flex-direction: column; gap: 14px; padding-top: 4px; }
+    .pain-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .pain-row:hover {
+      border-color: #B5F23D50;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transform: translateX(4px);
+    }
+    .pain-icon {
+      width: 44px; height: 44px;
+      background: var(--off);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .pain-text h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .pain-text p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+    /* ──────────────────────────────
+       HOW IT WORKS — 2×2 grid
+    ────────────────────────────── */
+    .how { background: var(--off); }
+    .how-head { text-align: center; margin-bottom: 52px; }
+    .how-head .h2 { margin-bottom: 14px; }
+    .how-subtitle { font-size: 16px; color: var(--text2); line-height: 1.75; }
+    .how-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .how-gc {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    .how-gc-meta {
+      padding: 24px 24px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .how-gc-num {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--lime);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      color: var(--navy);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .how-gc-meta h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+    .how-gc-meta p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .how-gc-body {
+      border-top: 1px solid var(--border);
+      background: var(--off);
+      padding: 20px 20px 0;
+      max-height: 280px;
+      overflow: hidden;
+      position: relative;
+    }
+    .how-gc-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--white));
+      pointer-events: none;
+    }
+    .how-gc { padding-bottom: 24px; }
+    .how-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    .how-card-header {
+      background: var(--navy);
+      padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .how-card-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .how-card-body { padding: 18px 18px 20px; flex: 1; }
+    .debt-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .debt-row:last-child { border-bottom: none; }
+    .debt-company { font-size: 14px; font-weight: 600; color: var(--text); }
+    .debt-amount { font-size: 14px; font-weight: 700; color: var(--text); }
+    .debt-right { display: flex; align-items: center; gap: 12px; }
+    .progress-pill {
+      width: 80px;
+      height: 6px;
+      background: #E8ECE8;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: var(--lime); border-radius: 3px; }
+    .tag {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 9px; border-radius: 8px;
+    }
+    .tag.green { background: #DCFCE7; color: #16A34A; }
+    .tag.blue { background: #DBEAFE; color: #2563EB; }
+    .tag.gray { background: #F3F4F6; color: #6B7280; }
+    .tag.lime-bg { background: rgba(181,242,61,0.15); color: #3a7a00; }
+
+    /* ──────────────────────────────
+       FEATURES — 2-col big cards
+    ────────────────────────────── */
+    .features { background: var(--white); }
+    .features-head { text-align: center; margin-bottom: 40px; }
+    .features-head .h2 { margin-bottom: 12px; }
+    .features-head p { font-size: 16px; color: var(--text2); margin-bottom: 0; }
+
+    /* unified 2-col cards */
+    .feat-unified {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .feat-panel {
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+    }
+    .feat-panel-light { background: var(--off); }
+    .feat-panel-mid { background: var(--navy); border-color: transparent; }
+    .feat-panel-dark { background: var(--navy3); border-color: transparent; }
+    .feat-panel-body { padding: 32px 28px 0; display: flex; flex-direction: column; flex: 1; }
+    .feat-zone-badge {
+      display: inline-flex;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+      padding: 4px 11px; border-radius: 20px;
+      margin-bottom: 16px; align-self: flex-start;
+    }
+    .feat-panel-light .feat-zone-badge { background: rgba(0,0,0,0.06); color: var(--text2); }
+    .feat-panel-mid .feat-zone-badge { background: rgba(181,242,61,0.12); color: var(--lime); }
+    .feat-panel-dark .feat-zone-badge { background: rgba(181,242,61,0.12); color: var(--lime); }
+    .feat-panel-body h3 {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+      line-height: 1.3; margin-bottom: 10px;
+    }
+    .feat-panel-light .feat-panel-body h3 { color: var(--text); }
+    .feat-panel-mid .feat-panel-body h3,
+    .feat-panel-dark .feat-panel-body h3 { color: #fff; }
+    .feat-panel-body > p { font-size: 13px; line-height: 1.65; margin-bottom: 20px; }
+    .feat-panel-light .feat-panel-body > p { color: var(--text2); }
+    .feat-panel-mid .feat-panel-body > p,
+    .feat-panel-dark .feat-panel-body > p { color: rgba(255,255,255,0.5); }
+    .feat-panel-footer {
+      padding: 20px 28px;
+      border-top: 1px solid;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto;
+    }
+    .feat-panel-light .feat-panel-footer { border-color: var(--border); }
+    .feat-panel-mid .feat-panel-footer,
+    .feat-panel-dark .feat-panel-footer { border-color: rgba(255,255,255,0.08); }
+    /* 중간 카드 step list */
+    .feat-steps-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: auto; padding-bottom: 20px; }
+    .feat-step-row {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 16px; border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+    }
+    .feat-step-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(181,242,61,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .feat-step-txt strong {
+      display: block; font-size: 13px; font-weight: 700;
+      color: #fff; margin-bottom: 2px;
+    }
+    .feat-step-txt span { font-size: 12px; color: rgba(255,255,255,0.42); line-height: 1.4; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .feat-card {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .feat-card:hover {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+    .feat-card-top {
+      padding: 32px 32px 0;
+      background: var(--off);
+    }
+    .feat-card-top.dark { background: var(--navy); }
+    .feat-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 11px; border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .feat-tag.lime-tag { background: rgba(181,242,61,0.15); color: #3a7a00; }
+    .feat-tag.dark-tag { background: rgba(181,242,61,0.12); color: var(--lime); }
+    .feat-card-top h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .feat-card-top.dark h3 { color: #fff; }
+    .feat-card-top p { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 24px; }
+    .feat-card-top.dark p { color: rgba(255,255,255,0.5); }
+    .feat-mockup {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .feat-mockup.dark-m {
+      background: #0F2236;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .feat-mock-bar {
+      background: #F1F2F1;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .feat-mock-bar.dark-bar { background: rgba(255,255,255,0.04); }
+    .feat-mock-dot { width: 8px; height: 8px; border-radius: 50%; background: #D1D5DB; }
+    .feat-mock-dot.r { background: #FF6059; }
+    .feat-mock-dot.y { background: #FFBD2E; }
+    .feat-mock-dot.g { background: #28C840; }
+    .feat-mock-content { padding: 16px; }
+    .mini-list-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: rgba(0,0,0,0.02);
+    }
+    .mini-list-item.dark-item { background: rgba(255,255,255,0.04); }
+    .mini-check {
+      width: 18px; height: 18px;
+      border-radius: 4px;
+      background: var(--lime);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      color: var(--navy);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .mini-check.gray { background: #E5E7EB; color: #9CA3AF; }
+    .mini-text { font-size: 12px; font-weight: 500; color: var(--text); }
+    .mini-text.white { color: rgba(255,255,255,0.75); }
+    .mini-amount { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--text); }
+    .mini-amount.lime { color: var(--lime-soft); }
+
+    .feat-card-bottom {
+      padding: 24px 32px;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .feat-card-bottom.dark-bottom { background: var(--navy2); }
+    .feat-stat-big { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+    .feat-stat-big.lime { color: var(--lime-soft); }
+    .feat-stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .feat-stat-label.white { color: rgba(255,255,255,0.4); }
+    .feat-link { font-size: 13px; font-weight: 600; color: #4CAF24; text-decoration: none; }
+    .feat-link.lime-link { color: var(--lime); }
+
+    /* ──────────────────────────────
+       STATS
+    ────────────────────────────── */
+    .stats { background: var(--off); padding: 80px 48px; }
+    .stats-inner {
+      max-width: 1160px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: box-shadow 0.2s;
+    }
+    .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    .stat-icon {
+      width: 40px; height: 40px;
+      background: var(--navy);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    .stat-num { font-size: 36px; font-weight: 800; color: var(--text); letter-spacing: -1px; line-height: 1; margin-bottom: 8px; }
+    .stat-num span { color: var(--lime-soft); font-size: 28px; }
+    .stat-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* ──────────────────────────────
+       PROCESS — left stepper
+    ────────────────────────────── */
+    .process { background: var(--white); }
+    .process-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .process-left .h2 { margin-bottom: 14px; }
+    .process-left > p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 40px; }
+    .proc-steps { display: flex; flex-direction: column; gap: 0; margin: 0 -16px; }
+    .proc-step {
+      display: flex; gap: 16px;
+      padding: 16px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      align-items: flex-start;
+      transition: background 0.2s;
+      border-bottom: 1px solid transparent;
+    }
+    .proc-step + .proc-step { border-top: 1px solid var(--border); border-radius: 0; }
+    .proc-step:first-child { border-radius: 12px 12px 0 0; }
+    .proc-step:last-child { border-radius: 0 0 12px 12px; border-bottom: none; }
+    .proc-step:hover:not(.active) { background: rgba(0,0,0,0.02); }
+    .proc-step.active { background: var(--navy); border-color: transparent !important; border-radius: 12px !important; }
+    .proc-step.active + .proc-step { border-top-color: transparent; }
+    .proc-num {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--off);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--text3);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .proc-step.active .proc-num { background: var(--lime); border-color: var(--lime); color: var(--navy); }
+    .proc-body h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; transition: color 0.2s; }
+    .proc-step.active .proc-body h4 { color: #fff; }
+    .proc-body p { font-size: 13px; color: var(--text2); line-height: 1.6; transition: color 0.2s; }
+    .proc-step.active .proc-body p { color: rgba(255,255,255,0.5); }
+    .process-right { position: relative; height: 440px; }
+    .proc-panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .proc-panel.active { display: flex; flex-direction: column; }
+    .proc-panel .proc-card { flex: 1; overflow-y: auto; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .proc-card {
+      background: var(--navy);
+      border-radius: 20px;
+      padding: 28px;
+      color: #fff;
+    }
+    .proc-card-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .proc-card-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.5); }
+    .proc-items { display: flex; flex-direction: column; gap: 10px; }
+    .proc-item {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .proc-item-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .proc-item-dot.lime { background: var(--lime); }
+    .proc-item-dot.blue { background: #60A5FA; }
+    .proc-item-dot.gray { background: rgba(255,255,255,0.2); }
+    .proc-item-label { font-size: 13px; color: rgba(255,255,255,0.65); flex: 1; }
+    .proc-item-val { font-size: 13px; font-weight: 700; color: #fff; }
+    .proc-total {
+      background: rgba(181,242,61,0.1);
+      border: 1px solid rgba(181,242,61,0.2);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .proc-total-label { font-size: 13px; color: var(--lime); font-weight: 600; }
+    .proc-total-val { font-size: 20px; font-weight: 800; color: var(--lime); letter-spacing: -0.5px; }
+
+    /* ──────────────────────────────
+       CTA
+    ────────────────────────────── */
+    .cta-section {
+      background: var(--navy);
+      padding: 100px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(181,242,61,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .cta-inner .eyebrow { margin-bottom: 16px; color: var(--lime); }
+    .cta-inner .h2 { margin-bottom: 18px; }
+    .cta-inner .h2.white em { font-style: normal; color: var(--lime); }
+    .cta-inner p { font-size: 16px; color: var(--text-on-dark2); line-height: 1.75; margin-bottom: 36px; }
+    .cta-btns { display: flex; justify-content: center; gap: 12px; }
+
+    /* ──────────────────────────────
+       FOOTER
+    ────────────────────────────── */
+    footer {
+      background: #F5F5F5;
+    }
+    .footer-inner {
+      max-width: 1256px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    .footer-top {
+      display: flex;
+      gap: 80px;
+      padding: 64px 0 48px;
+    }
+    .footer-brand { flex: 0 0 380px; }
+    .footer-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .footer-brand-title { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px; }
+    .footer-brand p { font-size: 13px; color: #9CA3AF; line-height: 1.8; }
+    .footer-links { display: flex; gap: 80px; flex: 1; justify-content: flex-start; padding-left: 40px; }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; min-width: 120px; }
+    .footer-col h5 { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+    .footer-col a {
+      display: block; font-size: 14px;
+      color: #9CA3AF;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: #374151; }
+    .footer-bottom {
+      padding: 32px 0 48px;
+    }
+    .footer-copy { font-size: 13px; color: #9CA3AF; }
+
+    /* ──────────────────────────────
+       HOW — per-step mockup styles
+    ────────────────────────────── */
+    /* mock 01: 알림 */
+    .notif-header { font-size:11px; color:var(--text3); font-weight:600; letter-spacing:0.3px; margin-bottom:10px; }
+    .notif-bubble {
+      background: var(--off); border-radius: 12px 12px 12px 4px;
+      padding: 12px 14px; margin-bottom: 8px;
+    }
+    .notif-sender { font-size:11px; font-weight:700; color:#4CAF24; margin-bottom:4px; }
+    .notif-text { font-size:13px; color:var(--text); line-height:1.55; }
+    .notif-time { font-size:11px; color:var(--text3); margin-top:5px; }
+    .notif-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      background: rgba(181,242,61,0.06);
+      border: 1px solid rgba(181,242,61,0.15);
+      border-radius: 10px; padding: 14px; text-align:center; margin-top:12px;
+    }
+    .notif-stat-num { font-size:19px; font-weight:800; color:var(--text); letter-spacing:-0.5px; }
+    .notif-stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+
+    /* mock 02: CMS */
+    .cms-bank-row {
+      display:flex; align-items:center; gap:12px;
+      padding:14px; background:var(--off); border-radius:10px; margin-bottom:10px;
+    }
+    .cms-bank-icon {
+      width:38px; height:38px; border-radius:9px;
+      background:var(--navy); display:flex; align-items:center; justify-content:center;
+      font-size:17px; flex-shrink:0;
+    }
+    .cms-bank-name { font-size:13px; font-weight:700; color:var(--text); }
+    .cms-bank-acct { font-size:12px; color:var(--text3); margin-top:2px; }
+    .cms-schedule { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+    .cms-sched-item { background:var(--off); border-radius:8px; padding:12px; }
+    .cms-sched-label { font-size:11px; color:var(--text3); margin-bottom:4px; }
+    .cms-sched-val { font-size:15px; font-weight:700; color:var(--text); }
+    .cms-confirmed {
+      background:#DCFCE7; border-radius:10px; padding:12px 16px;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .cms-confirmed span:first-child { font-size:13px; color:#16A34A; font-weight:700; }
+    .cms-confirmed span:last-child { font-size:12px; color:#16A34A; }
+
+    /* mock 03: 분할 */
+    .install-summary {
+      display:flex; justify-content:space-between;
+      padding:12px 0; border-bottom:1px solid var(--border); margin-bottom:12px;
+    }
+    .install-summary-item { text-align:center; }
+    .install-summary-val { font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.5px; }
+    .install-summary-label { font-size:11px; color:var(--text3); margin-top:2px; }
+    .install-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:11px 0; border-bottom:1px solid var(--border);
+      font-size:13px;
+    }
+    .install-row:last-child { border-bottom:none; }
+    .install-round { font-weight:700; color:var(--text3); width:40px; }
+    .install-date { color:var(--text2); }
+    .install-amount { font-weight:700; color:var(--text); }
+
+    /* ──────────────────────────────
+       ANIMATION
+    ────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ══════════════════════════════
+       TABLET  ≤ 1024px
+    ══════════════════════════════ */
+    @media (max-width: 1024px) {
+      .gnb-inner { padding: 0 24px; }
+      .gnb-nav a:not(.gnb-cta) { display: none; }
+      .hero-inner { padding: 0 24px; }
+      .hero h1 { font-size: 44px; letter-spacing: -1.5px; }
+      .section { padding: 80px 24px; }
+      .stats { padding: 60px 24px; }
+      .pain-split { grid-template-columns: 1fr; gap: 40px; }
+      .pain-left { position: static; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+      .feat-unified { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .process-split { gap: 48px; }
+      .footer-inner { padding: 40px 24px 28px; }
+    }
+
+    /* ══════════════════════════════
+       MOBILE  ≤ 768px
+    ══════════════════════════════ */
+    @media (max-width: 768px) {
+      /* GNB */
+      .gnb-inner { padding: 0 20px; }
+      .toggle-pill { display: none; }
+      .gnb-nav { gap: 0; }
+      .gnb-nav a:not(.gnb-cta) { display: none; }
+      a.gnb-cta { font-size: 12px; padding: 7px 14px; }
+
+      /* HERO */
+      .hero { padding: 96px 0 0; }
+      .hero-inner { padding: 0 20px; }
+      .hero h1 { font-size: 32px; letter-spacing: -1px; }
+      .hero-desc { font-size: 15px; }
+      .hero-actions { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 48px; }
+      .btn-lime, .btn-outline-white { width: 100%; max-width: 320px; justify-content: center; font-size: 14px; padding: 13px 20px; }
+      /* hero mockup: hide sidebar, single col */
+      .hero-mockup { padding: 16px 16px 0; border-radius: 10px 10px 0 0; }
+      .mockup-body { grid-template-columns: 1fr; min-height: auto; padding: 16px; }
+      .mock-sidebar { display: none; }
+      .mock-cards { grid-template-columns: repeat(2, 1fr); }
+      .mock-table-header, .mock-table-row { grid-template-columns: 2fr 1fr 1fr; }
+      .mock-table-header > *:last-child, .mock-table-row > *:last-child { display: none; }
+
+      /* SECTIONS */
+      .section { padding: 64px 20px; }
+      .stats { padding: 48px 20px; }
+      .section-inner { padding: 0; }
+      .h2 { font-size: 28px; letter-spacing: -0.8px; }
+
+      /* STATS */
+      .stats-inner { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .stat-card { padding: 20px 18px; }
+      .stat-num { font-size: 28px; }
+
+      /* PAIN */
+      .pain-split { grid-template-columns: 1fr; gap: 32px; }
+      .pain-left { position: static; }
+      .pain-left p { margin-bottom: 0; }
+      .pain-row { padding: 16px 18px; gap: 14px; }
+      .pain-row:hover { transform: none; }
+      .pain-text h3 { font-size: 15px; margin-bottom: 4px; }
+      .pain-text p { font-size: 13px; }
+
+      /* HERO — mockup 가로형 compact */
+      .hero { padding-bottom: 0; }
+      .hero-actions { flex-direction: row; gap: 8px; margin-bottom: 40px; }
+      .btn-lime, .btn-outline-white { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
+      /* mockup: 테이블 숨기고 stat 카드만 가로로 */
+      .hero-mockup { padding: 12px 12px 0; }
+      .mockup-topbar { margin-bottom: 12px; }
+      .mockup-body { padding: 12px; gap: 0; }
+      .mock-header-row { margin-bottom: 8px; }
+      .mock-title { font-size: 12px; }
+      .mock-cards { gap: 6px; grid-template-columns: repeat(3, 1fr); }
+      .mock-card { padding: 10px; }
+      .mock-card-value { font-size: 14px; }
+      .mock-card-sub { font-size: 10px; }
+      .mock-table-header, .mock-table-row { display: none; }
+
+      /* HOW — 모형 카드 숨김, 번호+제목+설명만 */
+      .how-grid { grid-template-columns: 1fr; gap: 12px; }
+      .how-subtitle { font-size: 14px; }
+      .how-gc-body { display: none; }
+      .how-gc { border-radius: 14px; padding-bottom: 0; }
+      .how-gc-meta { padding: 20px 18px; }
+
+      /* FEATURES */
+      .feat-unified { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feat-panel-body { padding: 24px 20px 0; }
+      .feat-panel-footer { padding: 16px 20px; }
+      .feat-card-top { padding: 24px 20px 0; }
+      .feat-card-bottom { padding: 18px 20px; }
+      .feat-card-top h3 { font-size: 18px; }
+      /* features — 브라우저 창 mockup 숨김 */
+      .feat-mockup { display: none; }
+      /* feat-steps-list 간격 축소 */
+      .feat-steps-list { gap: 6px; padding-bottom: 12px; }
+      .feat-step-row { padding: 10px 12px; }
+      .feat-step-txt span { display: none; } /* 부연설명 숨김, 제목만 */
+
+      /* PROCESS */
+      .process-split {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .process-left > p { margin-bottom: 24px; font-size: 15px; }
+      .proc-steps { margin: 0; }
+      .proc-step { padding: 14px 12px; }
+      .process-right { height: auto; }
+      .proc-panel { position: static; display: none; }
+      .proc-panel.active { display: block; }
+
+      /* CTA */
+      .cta-section { padding: 72px 20px; }
+      .cta-inner .h2 { font-size: 26px; }
+      .cta-btns { flex-direction: row; gap: 8px; }
+      .cta-btns .btn-lime, .cta-btns .btn-outline-white { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
+
+      /* FOOTER */
+      .footer-inner { padding: 36px 20px 24px; }
+      .footer-top { flex-direction: column; gap: 28px; padding-bottom: 24px; }
+      .footer-brand { max-width: 100%; }
+      .footer-links { flex-wrap: wrap; gap: 28px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+
+    /* ══════════════════════════════
+       SMALL MOBILE  ≤ 400px
+    ══════════════════════════════ */
+    @media (max-width: 400px) {
+      .hero h1 { font-size: 28px; }
+      .stats-inner { grid-template-columns: 1fr; }
+      .how-gc-meta h4 { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GNB -->
+<header class="gnb">
+<div class="gnb-inner">
+  <div class="gnb-left">
+    <a href="#" class="gnb-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 43 45" fill="none">
+        <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#6B7280"/>
+        <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#6B7280"/>
+        <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#6B7280"/>
+        <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#6B7280"/>
+        <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#6B7280"/>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="88" height="27" viewBox="0 0 126 39" fill="none">
+        <g clip-path="url(#clip0_gnb)">
+          <path d="M4.58608 22.4601H17.3408V7.71458H0.0634766V12.0492H12.7293V18.1254H0.0634766V32.8322H22.0794V38.4182H26.602V7.71458H22.0794V28.5363H4.58608V22.4601Z" fill="white"/>
+          <path d="M36.3087 7.71458H31.7861V32.7548H49.0635V7.71458H44.5409V16.3064H36.3087V7.71458ZM44.5282 20.6024V28.3815H36.296V20.6024H44.5282Z" fill="white"/>
+          <path d="M58.4894 7.71458H53.9668V38.4182H58.4894V17.0418H63.698V12.7587H58.4894V7.71458Z" fill="white"/>
+          <path d="M76.6303 31.4648H81.3434V24.937H92.7897V20.4734H64.5742V24.937H76.6303V31.4648Z" fill="white"/>
+          <path d="M69.0968 27.7107H64.5742V38.4182H92.7897V34.1352H69.0968V27.7107Z" fill="white"/>
+          <path d="M103.334 12.1395H124.524V7.71458H98.7607V26.5109H124.524V22.1763H103.334V12.1395Z" fill="white"/>
+          <path d="M125.808 33.9546H98.1133V38.4182H125.808V33.9546Z" fill="white"/>
+          <path d="M78.7013 17.7771C84.5451 17.7771 88.9661 13.9585 88.9661 8.90146C88.9661 3.84439 84.5451 0.0644836 78.7013 0.0644836C72.8575 0.0644836 68.4111 3.87019 68.4111 8.91436C68.4111 13.9585 72.8321 17.79 78.7013 17.79V17.7771ZM78.7013 4.0637C81.8519 4.0637 84.2402 6.15361 84.2402 8.91436C84.2402 11.6751 81.8646 13.8037 78.7013 13.8037C75.538 13.8037 73.137 11.7009 73.137 8.91436C73.137 6.12781 75.5253 4.0637 78.7013 4.0637Z" fill="white"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_gnb"><rect width="125.871" height="38.4828" fill="white"/></clipPath>
+        </defs>
+      </svg>
+    </a>
+    <div class="toggle-pill">
+      <a href="rebound-personal.html">개인</a>
+      <a href="#" class="on">기업 Biz</a>
+    </div>
+  </div>
+  <nav class="gnb-nav">
+    <a href="rebound-biz.html">홈</a>
+    <a href="team.html">팀 리바운드</a>
+    <a href="support.html">고객센터</a>
+    <a href="https://blog.naver.com/reboundkr">블로그</a>
+    <a href="self-check.html" target="_blank" style="color:rgba(255,255,255,0.55);font-weight:600;">셀프 진단</a>
+  </nav>
+  <div class="gnb-actions">
+    <a href="#" class="gnb-login">로그인</a>
+    <a href="#cta" class="gnb-start">리바운드 시작하기</a>
+  </div>
+</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-tag reveal">기업 · 개인사업자 미수채권 전문</div>
+    <h1 class="reveal">못 받은 돈,<br><span class="nowrap">이제 그냥 <em>쌓아두지 마세요</em></span></h1>
+    <p class="hero-desc reveal">채무자가 개인이든 기업이든 상관없어요. 리바운드가 관리부터 설득, 회수까지 대신 이어드려요.</p>
+    <div class="hero-actions reveal">
+      <a href="#cta" class="btn-lime">무료 상담 신청하기 →</a>
+      <a href="#how" class="btn-outline-white">서비스 살펴보기</a>
+    </div>
+
+    <!-- Dashboard Mockup -->
+    <div class="hero-mockup reveal">
+      <div class="mockup-topbar">
+        <div class="mockup-dot r"></div>
+        <div class="mockup-dot y"></div>
+        <div class="mockup-dot g"></div>
+        <div class="mockup-url"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mock-sidebar">
+          <div class="mock-sidebar-title">채권 관리</div>
+          <div class="mock-nav-item active"><span class="mock-nav-dot"></span>전체 채권</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span>진행 중</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span>협의 완료</div>
+          <div class="mock-nav-item"><span class="mock-nav-dot"></span>회수 완료</div>
+          <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
+            <div class="mock-sidebar-title">보고서</div>
+            <div class="mock-nav-item"><span class="mock-nav-dot"></span>월별 현황</div>
+            <div class="mock-nav-item"><span class="mock-nav-dot"></span>채무자 분석</div>
+          </div>
+        </div>
+        <div class="mock-main">
+          <div class="mock-header-row">
+            <span class="mock-title">전체 채권 현황</span>
+            <span class="mock-badge">실시간 업데이트</span>
+          </div>
+          <div class="mock-cards">
+            <div class="mock-card">
+              <div class="mock-card-label">총 채권 금액</div>
+              <div class="mock-card-value">₩ 84,200만</div>
+              <div class="mock-card-sub">23건 관리 중</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-label">회수 진행 중</div>
+              <div class="mock-card-value lime">₩ 31,500만</div>
+              <div class="mock-card-sub">착수율 92%</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-label">회수 완료</div>
+              <div class="mock-card-value">₩ 18,300만</div>
+              <div class="mock-card-sub">이번 달 기준</div>
+            </div>
+          </div>
+          <div>
+            <div class="mock-table-header">
+              <span>채무자</span><span>채권금액</span><span>진행 단계</span><span>상태</span>
+            </div>
+            <div class="mock-table-row">
+              <span>㈜ 테크웍스</span><span>3,200만원</span><span>상환 협의 중</span>
+              <span class="mock-status ing">● 진행 중</span>
+            </div>
+            <div class="mock-table-row">
+              <span>박○○ (개인)</span><span>850만원</span><span>분할 이행 중</span>
+              <span class="mock-status done">● 이행 중</span>
+            </div>
+            <div class="mock-table-row">
+              <span>㈜ 미래건설</span><span>12,000만원</span><span>알림 발송 완료</span>
+              <span class="mock-status wait">○ 응답 대기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="section pain" id="pain">
+  <div class="section-inner">
+    <div class="pain-split">
+      <div class="pain-left reveal">
+        <p class="eyebrow">이런 상황, 맞으시죠?</p>
+        <h2 class="h2">받아야 할 돈인데<br>선뜻 나서기가<br>어렵죠</h2>
+        <p>기업이든 개인사업자든 다 비슷해요. 돈 얘기 꺼내기가 왜 이렇게 어려운지, 저희는 잘 알아요.</p>
+        <a href="#how" class="btn-lime" style="display:inline-flex; font-size:14px; padding:12px 22px;">어떻게 받아내나요? →</a>
+      </div>
+      <div class="pain-right">
+        <div class="pain-row reveal">
+          <div class="pain-icon">🤝</div>
+          <div class="pain-text">
+            <h3>거래처라서, 고객이라서 — 연락하기가 너무 조심스러워요</h3>
+            <p>리바운드가 대신 나서면 귀사 이름은 뒤에 있어도 돼요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal">
+          <div class="pain-icon">🏢</div>
+          <div class="pain-text">
+            <h3>상대가 기업인데 누구한테, 어떻게 얘기를 꺼내야 하죠?</h3>
+            <p>B2B 채권은 접근이 달라야 해요. 채권추심 전문 변호사 노하우로 길을 찾아드려요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal">
+          <div class="pain-icon">📋</div>
+          <div class="pain-text">
+            <h3>건수가 너무 많아서 그냥 상각처리할까 고민 중이에요</h3>
+            <p>대량 채권도 시스템으로 관리하며 끝까지 추적해요. 상각 전에 한 번만 확인해보세요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal">
+          <div class="pain-icon">⏰</div>
+          <div class="pain-text">
+            <h3>미수 관리하느라 정작 본업에 집중을 못 하고 있어요</h3>
+            <p>맡기면 끝이에요. 귀사는 하던 일만 하면 돼요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how" id="how">
+  <div class="section-inner">
+    <div class="how-head reveal">
+      <p class="eyebrow center">리바운드가 돈을 받아내는 방법</p>
+      <h2 class="h2">못 갚는 데는 이유가 있어요.<br>그 이유마다 해결책이 있고요.</h2>
+      <p class="how-subtitle">채무자 대부분은 악의가 없어요. 잊었거나, 귀찮거나, 당장 돈이 없거나.<br>채권추심 전문 변호사의 노하우와 AI로 그 이유에 맞게 접근합니다.</p>
+    </div>
+    <div class="how-grid reveal">
+
+      <!-- 01 -->
+      <div class="how-gc">
+        <div class="how-gc-meta">
+          <div class="how-gc-num">01</div>
+          <div>
+            <h4>잊은 거라면 — 알림으로 상기</h4>
+            <p>적절한 타이밍에 채무자에게 자동 알림을 보내요. 압박 없이, 부드럽게.</p>
+          </div>
+        </div>
+        <div class="how-gc-body">
+        <div class="how-card">
+          <div class="how-card-header">
+            <span class="how-card-title">📱 자동 알림 발송</span>
+            <span class="tag lime-bg">발송 완료</span>
+          </div>
+          <div class="how-card-body">
+            <p class="notif-header">채무자에게 발송된 메시지</p>
+            <div class="notif-bubble">
+              <div class="notif-sender">📨 리바운드</div>
+              <div class="notif-text">㈜ 테크웍스 담당자님, 미납 채권 3,200만원 건 관련 안내드립니다. 편한 시간에 상환 방법을 확인해 주세요.</div>
+              <div class="notif-time">오늘 오전 10:14</div>
+            </div>
+            <div class="notif-bubble">
+              <div class="notif-sender">📨 리바운드</div>
+              <div class="notif-text">이전 안내 건 재공지드립니다. 불편한 점이 있으시다면 편하게 회신 주세요.</div>
+              <div class="notif-time">어제 오후 3:22</div>
+            </div>
+            <div class="notif-stats">
+              <div><div class="notif-stat-num">3회</div><div class="notif-stat-label">발송</div></div>
+              <div><div class="notif-stat-num" style="color:#16A34A">1회</div><div class="notif-stat-label">응답</div></div>
+              <div><div class="notif-stat-num">2일 전</div><div class="notif-stat-label">마지막 발송</div></div>
+            </div>
+            <div style="margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+              <div style="padding:10px 14px;background:var(--off);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.3px;">다음 발송 예정</div>
+              <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--text);">3차 알림 (입금 독촉)</div>
+                  <div style="font-size:12px;color:var(--text3);margin-top:2px;">자동 발송 · 무응답 72시간 경과 시</div>
+                </div>
+                <span style="font-size:12px;color:var(--text2);background:var(--off);padding:4px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;">내일 오전 10:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div><!-- /how-gc-body -->
+      </div><!-- /how-gc 01 -->
+
+      <!-- 02 -->
+      <div class="how-gc">
+        <div class="how-gc-meta">
+          <div class="how-gc-num">02</div>
+          <div>
+            <h4>귀찮은 거라면 — CMS 연동으로 간편하게</h4>
+            <p>채무자가 직접 은행에 갈 필요 없어요. 자동이체 연동으로 갚는 과정을 최대한 쉽게 만들어요.</p>
+          </div>
+        </div>
+        <div class="how-gc-body">
+        <div class="how-card" id="how-mock-2">
+          <div class="how-card-header">
+            <span class="how-card-title">🔗 CMS 자동이체 연동</span>
+            <span class="tag lime-bg">연동 완료</span>
+          </div>
+          <div class="how-card-body">
+            <div class="cms-bank-row">
+              <div class="cms-bank-icon">🏦</div>
+              <div>
+                <div class="cms-bank-name">국민은행</div>
+                <div class="cms-bank-acct">123-456-789012 · 예금주 김○○</div>
+              </div>
+            </div>
+            <div class="cms-schedule">
+              <div class="cms-sched-item">
+                <div class="cms-sched-label">자동이체일</div>
+                <div class="cms-sched-val">매월 25일</div>
+              </div>
+              <div class="cms-sched-item">
+                <div class="cms-sched-label">이체 금액</div>
+                <div class="cms-sched-val">350만원/회</div>
+              </div>
+            </div>
+            <div class="cms-confirmed">
+              <span>✓ 자동이체 신청 완료</span>
+              <span>다음 이체일 11.25</span>
+            </div>
+            <div style="margin-top:14px;">
+              <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.3px;margin-bottom:8px;">이체 예정 내역</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
+                  <span style="font-size:12px;color:var(--text3);width:36px;">1회차</span>
+                  <span style="font-size:13px;color:var(--text2);">11월 25일</span>
+                  <span style="font-size:13px;font-weight:700;color:var(--text);">350만원</span>
+                  <span style="font-size:11px;padding:2px 8px;background:#FEF9C3;color:#854D0E;border-radius:6px;">예정</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
+                  <span style="font-size:12px;color:var(--text3);width:36px;">2회차</span>
+                  <span style="font-size:13px;color:var(--text2);">12월 25일</span>
+                  <span style="font-size:13px;font-weight:700;color:var(--text);">350만원</span>
+                  <span style="font-size:11px;padding:2px 8px;background:var(--off);color:var(--text3);border-radius:6px;border:1px solid var(--border);">대기</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
+                  <span style="font-size:12px;color:var(--text3);width:36px;">3회차</span>
+                  <span style="font-size:13px;color:var(--text2);">01월 25일</span>
+                  <span style="font-size:13px;font-weight:700;color:var(--text);">300만원</span>
+                  <span style="font-size:11px;padding:2px 8px;background:var(--off);color:var(--text3);border-radius:6px;border:1px solid var(--border);">대기</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /how-gc-body -->
+      </div><!-- /how-gc 02 -->
+
+      <!-- 03 -->
+      <div class="how-gc">
+        <div class="how-gc-meta">
+          <div class="how-gc-num">03</div>
+          <div>
+            <h4>돈이 없다면 — 나눠 갚을 방법 제시</h4>
+            <p>귀사가 설정한 조건 범위 안에서 현실적인 분할 방법을 채무자에게 제안하고 설득해요.</p>
+          </div>
+        </div>
+        <div class="how-gc-body">
+        <div class="how-card" id="how-mock-3">
+          <div class="how-card-header">
+            <span class="how-card-title">📋 분할 상환 계획서</span>
+            <span class="tag lime-bg">채무자 동의 완료</span>
+          </div>
+          <div class="how-card-body">
+            <div class="install-summary">
+              <div class="install-summary-item">
+                <div class="install-summary-val">3,200만</div>
+                <div class="install-summary-label">총 채권 금액</div>
+              </div>
+              <div class="install-summary-item">
+                <div class="install-summary-val">3회</div>
+                <div class="install-summary-label">분할 횟수</div>
+              </div>
+              <div class="install-summary-item">
+                <div class="install-summary-val">3개월</div>
+                <div class="install-summary-label">상환 기간</div>
+              </div>
+            </div>
+            <div class="install-row">
+              <span class="install-round">1회차</span>
+              <span class="install-date">11월 25일</span>
+              <span class="install-amount">1,100만원</span>
+              <span class="tag gray">예정</span>
+            </div>
+            <div class="install-row">
+              <span class="install-round">2회차</span>
+              <span class="install-date">12월 25일</span>
+              <span class="install-amount">1,100만원</span>
+              <span class="tag gray">예정</span>
+            </div>
+            <div class="install-row">
+              <span class="install-round">3회차</span>
+              <span class="install-date">01월 25일</span>
+              <span class="install-amount">1,000만원</span>
+              <span class="tag gray">예정</span>
+            </div>
+            <div style="margin-top:16px;padding:14px 16px;background:rgba(181,242,61,0.06);border:1px solid rgba(181,242,61,0.18);border-radius:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span style="font-size:12px;font-weight:600;color:var(--text2);">총 상환 진행률</span>
+                <span style="font-size:12px;font-weight:700;color:#4CAF24;">0% · 0/3회 완료</span>
+              </div>
+              <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+                <div style="width:0%;height:100%;background:var(--lime);border-radius:3px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:10px;">
+                <span style="font-size:12px;color:var(--text3);">잔여 채권</span>
+                <span style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-0.3px;">₩ 3,200만원</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /how-gc-body -->
+      </div><!-- /how-gc 03 -->
+
+      <!-- 04 -->
+      <div class="how-gc">
+        <div class="how-gc-meta">
+          <div class="how-gc-num">04</div>
+          <div>
+            <h4>진행 현황은 관리자 페이지에서</h4>
+            <p>기업 전용 대시보드에서 전체 채권 진행 상태를 한눈에 확인할 수 있어요.</p>
+          </div>
+        </div>
+        <div class="how-gc-body">
+        <div class="how-card" id="how-mock-4">
+          <div class="how-card-header">
+            <span class="how-card-title">📋 진행 중인 채권 목록</span>
+            <span class="tag lime-bg">23건 관리 중</span>
+          </div>
+          <div class="how-card-body">
+            <div class="debt-row">
+              <div>
+                <div class="debt-company">㈜ 테크웍스</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:2px">상환 협의 중 · 3회차</div>
+              </div>
+              <div class="debt-right">
+                <div><div class="progress-pill"><div class="progress-fill" style="width:75%"></div></div></div>
+                <span class="tag lime-bg">진행 중</span>
+                <div class="debt-amount">3,200만</div>
+              </div>
+            </div>
+            <div class="debt-row">
+              <div>
+                <div class="debt-company">박○○ (개인)</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:2px">분할 이행 중 · 1회차 완료</div>
+              </div>
+              <div class="debt-right">
+                <div><div class="progress-pill"><div class="progress-fill" style="width:40%"></div></div></div>
+                <span class="tag green">이행 중</span>
+                <div class="debt-amount">850만</div>
+              </div>
+            </div>
+            <div class="debt-row">
+              <div>
+                <div class="debt-company">㈜ 미래건설</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:2px">알림 발송 완료 · 응답 대기</div>
+              </div>
+              <div class="debt-right">
+                <div><div class="progress-pill"><div class="progress-fill" style="width:20%"></div></div></div>
+                <span class="tag gray">대기 중</span>
+                <div class="debt-amount">1.2억</div>
+              </div>
+            </div>
+            <div class="debt-row">
+              <div>
+                <div class="debt-company">김○○ (개인사업자)</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:2px">최종 정산 완료</div>
+              </div>
+              <div class="debt-right">
+                <div><div class="progress-pill"><div class="progress-fill" style="width:100%"></div></div></div>
+                <span class="tag blue">완료</span>
+                <div class="debt-amount">520만</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding:14px;background:var(--off);border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13px;color:var(--text2);">이번 달 회수 완료</div>
+              <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-0.5px;">₩ 4,570<span style="font-size:14px;font-weight:600;color:var(--text3);">만원</span></div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /how-gc-body -->
+      </div><!-- /how-gc 04 -->
+
+    </div><!-- /how-grid -->
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features" id="features">
+  <div class="section-inner">
+    <div class="features-head reveal">
+      <p class="eyebrow center">리바운드의 해결 방식</p>
+      <h2 class="h2 center">귀사는 조건만 정하면 돼요<br>나머지는 리바운드가 다 해요</h2>
+      <p>조건을 설정하면, 리바운드가 알아서 관리하고 설득해요. 결과는 대시보드에서 확인만 하면 돼요.</p>
+    </div>
+
+    <div class="feat-unified reveal">
+
+      <!-- 카드 1: 귀사가 설정 -->
+      <div class="feat-panel feat-panel-light">
+        <div class="feat-panel-body">
+          <span class="feat-zone-badge">귀사가 설정해요</span>
+          <h3>귀사가 설정한 범위 안에서<br>채무자는 자유롭게 상환해요</h3>
+          <p>최소 회수 금액, 상환 기간, 분할 횟수 — 수용 가능한 범위만 정해두면 돼요. 리바운드는 그 선을 절대 넘지 않아요.</p>
+          <div class="feat-mockup" style="margin-bottom:20px;">
+            <div class="feat-mock-bar">
+              <div class="feat-mock-dot r"></div>
+              <div class="feat-mock-dot y"></div>
+              <div class="feat-mock-dot g"></div>
+            </div>
+            <div class="feat-mock-content">
+              <div class="mini-list-item">
+                <div class="mini-check">✓</div>
+                <span class="mini-text">최소 회수 금액 설정</span>
+                <span class="mini-amount">500만원 이상</span>
+              </div>
+              <div class="mini-list-item">
+                <div class="mini-check">✓</div>
+                <span class="mini-text">허용 상환 기간</span>
+                <span class="mini-amount">최대 12개월</span>
+              </div>
+              <div class="mini-list-item">
+                <div class="mini-check gray">→</div>
+                <span class="mini-text">협의 진행 중</span>
+                <span class="mini-amount" style="color:var(--text3)">검토 중</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feat-panel-footer">
+          <div>
+            <div class="feat-stat-big">100%</div>
+            <div class="feat-stat-label">채권자 조건 내 협의 진행</div>
+          </div>
+          <a href="#cta" class="feat-link">상담 신청 →</a>
+        </div>
+      </div>
+
+      <!-- 카드 2: 귀사가 확인 -->
+      <div class="feat-panel feat-panel-dark">
+        <div class="feat-panel-body">
+          <span class="feat-zone-badge">귀사가 확인해요</span>
+          <h3>맡겨두고 까먹어도<br>대시보드가 다 보여줘요</h3>
+          <p>몇 건이 협의 중인지, 누가 입금했는지 — 일일이 물어볼 필요 없어요.</p>
+          <div class="feat-mockup dark-m" style="margin-bottom:20px;">
+            <div class="feat-mock-bar dark-bar">
+              <div class="feat-mock-dot r"></div>
+              <div class="feat-mock-dot y"></div>
+              <div class="feat-mock-dot g"></div>
+            </div>
+            <div class="feat-mock-content">
+              <div class="mini-list-item dark-item">
+                <div class="mini-check">✓</div>
+                <span class="mini-text white">㈜ 테크웍스 — 협의 완료, 입금 대기</span>
+                <span class="mini-amount lime">D-2</span>
+              </div>
+              <div class="mini-list-item dark-item">
+                <div class="mini-check">✓</div>
+                <span class="mini-text white">박○○ — 1회차 입금 확인</span>
+                <span class="mini-amount lime">완료</span>
+              </div>
+              <div class="mini-list-item dark-item">
+                <div class="mini-check gray">→</div>
+                <span class="mini-text white">㈜ 미래건설 — 전략 수립 중</span>
+                <span class="mini-amount" style="color:rgba(255,255,255,0.4)">진행 중</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feat-panel-footer">
+          <div>
+            <div class="feat-stat-big lime">실시간</div>
+            <div class="feat-stat-label white">채권 현황 모니터링</div>
+          </div>
+          <a href="#cta" class="feat-link lime-link">상담 신청 →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat-card reveal">
+      <div class="stat-icon">📊</div>
+      <div class="stat-num">92<span>%</span></div>
+      <div class="stat-desc">착수 후 최초 회수<br>성공률</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-icon">📁</div>
+      <div class="stat-num">1,200<span>+</span></div>
+      <div class="stat-desc">누적 처리<br>채권 건수</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-icon">💰</div>
+      <div class="stat-num">48<span>억+</span></div>
+      <div class="stat-desc">누적 회수<br>완료 금액</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-num">4.9<span>★</span></div>
+      <div class="stat-desc">기업 고객<br>만족도</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section process" id="process">
+  <div class="section-inner">
+    <div class="process-split">
+      <div class="process-left reveal">
+        <p class="eyebrow">이렇게 진행돼요</p>
+        <h2 class="h2">등록하면<br>나머지는<br>저희가 해요</h2>
+        <p>복잡하게 생각할 거 없어요. 채권 정보만 넣어두면 리바운드가 알아서 움직여요.</p>
+        <div class="proc-steps">
+          <div class="proc-step active">
+            <div class="proc-num">01</div>
+            <div class="proc-body">
+              <h4>채권 등록 & 조건 설정</h4>
+              <p>채무자 정보와 수용 가능한 상환 범위를 입력해요. 5분이면 돼요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">02</div>
+            <div class="proc-body">
+              <h4>전략 수립</h4>
+              <p>변호사 노하우와 AI가 채무자 접근 전략을 짜요. 귀사가 할 일은 없어요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">03</div>
+            <div class="proc-body">
+              <h4>협의 & 팔로업</h4>
+              <p>알림, CMS 연동, 분할 제안 — 채무자 상황에 맞게 집요하게 설득해요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">04</div>
+            <div class="proc-body">
+              <h4>회수 완료 → 그때 수수료</h4>
+              <p>받아야 수수료를 내요. 못 받으면 귀사는 한 푼도 내지 않아도 돼요.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="process-right reveal">
+
+        <!-- 패널 01: 채권 등록 & 조건 설정 -->
+        <div class="proc-panel active" id="proc-panel-1">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">채권 회수 예상 시뮬레이션</span>
+              <span class="tag lime-bg" style="font-size:11px">AI 분석</span>
+            </div>
+            <div class="proc-items">
+              <div class="proc-item">
+                <div class="proc-item-dot lime"></div>
+                <span class="proc-item-label">채권 원금</span>
+                <span class="proc-item-val">₩ 32,000,000</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot blue"></div>
+                <span class="proc-item-label">채무자 상환 가능 추정액</span>
+                <span class="proc-item-val">₩ 20,800,000</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot gray"></div>
+                <span class="proc-item-label">예상 회수 기간</span>
+                <span class="proc-item-val">약 6개월</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot gray"></div>
+                <span class="proc-item-label">월 분할 상환 (예상)</span>
+                <span class="proc-item-val">약 350만원/월</span>
+              </div>
+            </div>
+            <div class="proc-total">
+              <span class="proc-total-label">회수 가능 예상 금액</span>
+              <span class="proc-total-val">₩ 20,800,000</span>
+            </div>
+            <div style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6;">
+              * 위 수치는 채무자 분석 기반 예상값으로, 실제 결과는 상이할 수 있습니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 02: 전략 수립 -->
+        <div class="proc-panel" id="proc-panel-2">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">AI 채무자 접근 전략 분석</span>
+              <span class="tag lime-bg" style="font-size:11px">분석 완료</span>
+            </div>
+            <div class="proc-items">
+              <div class="proc-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+                <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                  <div class="proc-item-dot lime"></div>
+                  <span class="proc-item-label">채무자 유형</span>
+                  <span class="proc-item-val">일시적 유동성 부족</span>
+                </div>
+              </div>
+              <div class="proc-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
+                <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                  <div class="proc-item-dot blue"></div>
+                  <span class="proc-item-label">접근 채널 순서</span>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:16px;">
+                  <span style="font-size:11px;padding:3px 10px;background:rgba(181,242,61,0.12);color:var(--lime);border-radius:6px;font-weight:600;">1차 문자</span>
+                  <span style="font-size:11px;color:rgba(255,255,255,0.3);">→</span>
+                  <span style="font-size:11px;padding:3px 10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border-radius:6px;">2차 이메일</span>
+                  <span style="font-size:11px;color:rgba(255,255,255,0.3);">→</span>
+                  <span style="font-size:11px;padding:3px 10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border-radius:6px;">3차 전화</span>
+                </div>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot lime"></div>
+                <span class="proc-item-label">권장 전략</span>
+                <span class="proc-item-val">3개월 분할 상환</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot gray"></div>
+                <span class="proc-item-label">예상 회수율</span>
+                <span class="proc-item-val" style="color:var(--lime);">87%</span>
+              </div>
+            </div>
+            <div class="proc-total">
+              <span class="proc-total-label">AI 분석 신뢰도</span>
+              <span class="proc-total-val">92%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 03: 협의 & 팔로업 -->
+        <div class="proc-panel" id="proc-panel-3">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">협의 & 팔로업 진행 현황</span>
+              <span class="tag lime-bg" style="font-size:11px">진행 중</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#0B1C2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;color:#fff;">1차 알림 발송 완료</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 15일 · 오전 10:00 자동 발송</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#0B1C2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;color:#fff;">2차 알림 발송 완료</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 22일 · 무응답 72시간 후 자동 발송</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(181,242,61,0.2);border:1.5px solid var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                  <div style="width:6px;height:6px;border-radius:50%;background:var(--lime);"></div>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;color:#fff;">CMS 자동이체 신청서 발송</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 29일 · 진행 중</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+                  <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);"></div>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.4);">분할 상환 동의서 발송 예정</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;">11월 5일 예정</div>
+                </div>
+              </div>
+            </div>
+            <div class="proc-total" style="margin-top:16px;">
+              <span class="proc-total-label">전체 진행률</span>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:100px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
+                  <div style="width:65%;height:100%;background:var(--lime);border-radius:3px;"></div>
+                </div>
+                <span class="proc-total-val" style="font-size:16px;">65%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 04: 회수 완료 -->
+        <div class="proc-panel" id="proc-panel-4">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">회수 완료 정산 내역</span>
+              <span style="font-size:11px;padding:3px 10px;border-radius:8px;background:rgba(34,197,94,0.15);color:#4ade80;font-weight:700;">회수 완료 ✓</span>
+            </div>
+            <div class="proc-items">
+              <div class="proc-item">
+                <div class="proc-item-dot lime"></div>
+                <span class="proc-item-label">총 회수 금액</span>
+                <span class="proc-item-val">₩ 20,800,000</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot gray"></div>
+                <span class="proc-item-label">수수료율 (성공 보수)</span>
+                <span class="proc-item-val">10%</span>
+              </div>
+              <div class="proc-item">
+                <div class="proc-item-dot gray"></div>
+                <span class="proc-item-label">리바운드 수수료</span>
+                <span class="proc-item-val">₩ 2,080,000</span>
+              </div>
+            </div>
+            <div class="proc-total">
+              <span class="proc-total-label">귀사 최종 수령액</span>
+              <span class="proc-total-val">₩ 18,720,000</span>
+            </div>
+            <div style="margin-top:12px;padding:12px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;">
+              회수되지 않으면 수수료는 0원이에요. 성공한 만큼만 지불하는 구조예요.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <p class="eyebrow center">성공의 가치만 나눕니다</p>
+    <h2 class="h2 white center">일단 맡겨보세요<br><em>회수되지 않으면 비용이 발생하지 않아요!</em></h2>
+    <p>첫 상담은 무료예요. 채권 금액이랑 채무자 정보만 있으면 바로 시작할 수 있어요.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-lime">무료 상담 신청하기 →</a>
+      <a href="#process" class="btn-outline-white">프로세스 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="footer-inner">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo" style="display:flex;align-items:center;gap:8px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 43 45" fill="none">
+        <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#6B7280"/>
+        <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#6B7280"/>
+        <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#6B7280"/>
+        <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#6B7280"/>
+        <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#6B7280"/>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="72" height="22" viewBox="0 0 126 39" fill="none">
+        <g clip-path="url(#clip0_footer)">
+          <path d="M4.58608 22.4601H17.3408V7.71458H0.0634766V12.0492H12.7293V18.1254H0.0634766V32.8322H22.0794V38.4182H26.602V7.71458H22.0794V28.5363H4.58608V22.4601Z" fill="#6B7280"/>
+          <path d="M36.3087 7.71458H31.7861V32.7548H49.0635V7.71458H44.5409V16.3064H36.3087V7.71458ZM44.5282 20.6024V28.3815H36.296V20.6024H44.5282Z" fill="#6B7280"/>
+          <path d="M58.4894 7.71458H53.9668V38.4182H58.4894V17.0418H63.698V12.7587H58.4894V7.71458Z" fill="#6B7280"/>
+          <path d="M76.6303 31.4648H81.3434V24.937H92.7897V20.4734H64.5742V24.937H76.6303V31.4648Z" fill="#6B7280"/>
+          <path d="M69.0968 27.7107H64.5742V38.4182H92.7897V34.1352H69.0968V27.7107Z" fill="#6B7280"/>
+          <path d="M103.334 12.1395H124.524V7.71458H98.7607V26.5109H124.524V22.1763H103.334V12.1395Z" fill="#6B7280"/>
+          <path d="M125.808 33.9546H98.1133V38.4182H125.808V33.9546Z" fill="#6B7280"/>
+          <path d="M78.7013 17.7771C84.5451 17.7771 88.9661 13.9585 88.9661 8.90146C88.9661 3.84439 84.5451 0.0644836 78.7013 0.0644836C72.8575 0.0644836 68.4111 3.87019 68.4111 8.91436C68.4111 13.9585 72.8321 17.79 78.7013 17.79V17.7771ZM78.7013 4.0637C81.8519 4.0637 84.2402 6.15361 84.2402 8.91436C84.2402 11.6751 81.8646 13.8037 78.7013 13.8037C75.538 13.8037 73.137 11.7009 73.137 8.91436C73.137 6.12781 75.5253 4.0637 78.7013 4.0637Z" fill="#6B7280"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_footer"><rect width="125.871" height="38.4828" fill="white"/></clipPath>
+        </defs>
+      </svg>
+    </div>
+      <div class="footer-brand-title">법무법인 수륜아시아</div>
+      <p>
+        광고책임변호사 : 이준철<br>
+        대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
+        E-mail : master@srlaw.co.kr<br>
+        주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
+      </p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h5>서비스</h5>
+        <a href="#">서비스 소개</a>
+        <a href="#">자주 묻는 질문</a>
+        <a href="team.html">리바운드 팀</a>
+      </div>
+      <div class="footer-col">
+        <h5>컨텐츠</h5>
+        <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
+        <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
+        <a href="blog.html">블로그</a>
+      </div>
+      <div class="footer-col">
+        <h5>이용약관</h5>
+        <a href="#">개인정보 처리 방침</a>
+        <a href="#">서비스 이용약관</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
+  </div>
+</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Process 섹션 — 항목 클릭 시 우측 패널 전환
+  document.querySelectorAll('.proc-step').forEach((step, i) => {
+    step.addEventListener('click', () => {
+      document.querySelectorAll('.proc-step').forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      document.querySelectorAll('.proc-panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('proc-panel-' + (i + 1));
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Consult modal
+  const MODAL_HTML = `
+<div id="consult-overlay" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); overflow-y:auto; padding:32px 16px; display:none; align-items:center; justify-content:center;">
+  <div id="consult-modal" style="background:#fff; border-radius:20px; max-width:620px; width:100%; margin:auto; box-shadow:0 32px 80px rgba(0,0,0,0.32), 0 8px 24px rgba(0,0,0,0.12); overflow:hidden; position:relative;">
+    <!-- Close button -->
+    <button id="consult-close" style="position:absolute;top:20px;right:20px;z-index:10;background:#F3F4F6;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6B7280;line-height:1;display:flex;align-items:center;justify-content:center;transition:background 0.2s;">&times;</button>
+
+    <!-- Body (scrollable) -->
+    <div style="max-height:90vh;overflow-y:auto;padding:40px 40px 32px;">
+      <!-- Title -->
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);border-radius:20px;padding:6px 16px;margin-bottom:14px;">
+          <span style="width:7px;height:7px;background:var(--lime);border-radius:50%;display:inline-block;"></span>
+          <span style="font-size:12px;font-weight:700;color:var(--lime);letter-spacing:0.5px;">무료 상담 신청</span>
+        </div>
+        <h2 style="font-size:28px;font-weight:900;color:#1F2937;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;font-family:'Pretendard',sans-serif;">리바운드 서비스 신청</h2>
+        <p style="font-size:14px;color:#6B7280;">법인 간 미수금 회수, 리바운드와 함께 해결해보세요</p>
+      </div>
+
+      <form id="consult-form">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- 회사명 -->
+          <div>
+            <label class="form-label">회사명 (법인명/상호) <span style="color:#EF4444;">*</span></label>
+            <input type="text" id="f-company" class="form-input" placeholder="회사명을 입력해주세요" />
+            <p class="field-error" id="err-company"></p>
+          </div>
+
+          <!-- 담당자명 + 연락처 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <label class="form-label">담당자명 <span style="color:#EF4444;">*</span></label>
+              <input type="text" id="f-contact-name" class="form-input" placeholder="담당자 이름을 입력해주세요" />
+              <p class="field-error" id="err-contact-name"></p>
+            </div>
+            <div>
+              <label class="form-label">담당자 연락처 <span style="color:#EF4444;">*</span></label>
+              <input type="tel" id="f-phone" class="form-input" placeholder="010-0000-0000" maxlength="13" />
+              <p class="field-error" id="err-phone"></p>
+            </div>
+          </div>
+
+          <!-- 이메일 -->
+          <div>
+            <label class="form-label">담당자 이메일 <span style="color:#EF4444;">*</span></label>
+            <input type="email" id="f-email" class="form-input" placeholder="이메일을 입력해주세요" />
+            <p class="field-error" id="err-email"></p>
+          </div>
+
+          <!-- 채권 금액 + 채권 종류 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <label class="form-label">총 채권 금액 (대략적) <span style="color:#EF4444;">*</span></label>
+              <div style="position:relative;">
+                <input type="text" id="f-amount" class="form-input" placeholder="숫자로 입력해주세요" style="padding-right:120px;" />
+                <span id="amount-korean" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:#6B7280;pointer-events:none;white-space:nowrap;"></span>
+              </div>
+              <p class="field-error" id="err-amount"></p>
+            </div>
+            <div>
+              <label class="form-label">채권 종류 <span style="color:#EF4444;">*</span></label>
+              <select id="f-claim-type" class="form-input">
+                <option value="">채권 종류를 선택해주세요</option>
+                <option value="물품대금">물품대금</option>
+                <option value="공사대금">공사대금</option>
+                <option value="용역대금">용역대금</option>
+                <option value="대여금">대여금</option>
+                <option value="임대료">임대료</option>
+                <option value="기타">기타</option>
+              </select>
+              <p class="field-error" id="err-claim-type"></p>
+            </div>
+          </div>
+
+          <!-- 채무 법인 수 -->
+          <div>
+            <label class="form-label">채무 법인 수 (대략적)</label>
+            <input type="text" id="f-debtor-count" class="form-input" placeholder="예) 약 5개사" />
+          </div>
+
+          <!-- 추가 문의사항 -->
+          <div>
+            <label class="form-label">추가 문의사항</label>
+            <textarea id="f-notes" class="form-input" rows="4" placeholder="추가로 문의하실 내용이 있으시면 자유롭게 작성해주세요." style="resize:vertical;"></textarea>
+          </div>
+
+          <!-- 필수 확인 사항 -->
+          <div style="background:#F3F4F6;border-radius:12px;padding:20px 20px 16px;">
+            <p style="font-size:14px;font-weight:700;color:#111827;margin-bottom:14px;">필수 확인 사항</p>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" id="chk-service" style="margin-top:3px;accent-color:#B5F23D;width:16px;height:16px;flex-shrink:0;cursor:pointer;" />
+                <div>
+                  <p style="font-size:13px;font-weight:700;color:#111827;margin-bottom:4px;">아래 내용을 확인했습니다.</p>
+                  <p style="font-size:12px;color:#6B7280;line-height:1.7;">신청 후 내용을 검토하여 서비스 기준에 적합한 경우에만 서비스가 제공됩니다.<br>서비스 대상자로 선정되시면 담당자가 추후 연락드릴 예정입니다.</p>
+                </div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" id="chk-privacy" style="margin-top:3px;accent-color:#B5F23D;width:16px;height:16px;flex-shrink:0;cursor:pointer;" />
+                <div>
+                  <p style="font-size:13px;font-weight:700;color:#111827;margin-bottom:4px;">개인정보 수집/이용에 동의합니다.</p>
+                  <p style="font-size:12px;color:#6B7280;line-height:1.7;">· 항목: 담당자명, 연락처, 이메일, 회사명, 사업자번호, 대표자명<br>· 목적: 서비스 신청 접수 및 자격 검토<br>· 보유: 검토 완료 후 30일 파기 (계약 체결 시 계약기간 동안 보유)</p>
+                </div>
+              </label>
+            </div>
+            <p class="field-error" id="err-checks"></p>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" id="modal-submit" style="width:100%;background:#9CA3AF;color:var(--navy);border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:800;cursor:not-allowed;transition:background 0.2s,color 0.2s;letter-spacing:-0.2px;" disabled>서비스 신청하기</button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Success modal -->
+<div id="consult-success" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;max-width:400px;width:100%;padding:40px 32px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.3);">
+    <div style="width:64px;height:64px;background:#F0FFF4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:10px;">신청이 완료되었습니다!</h3>
+    <p style="font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:28px;">담당자가 1영업일 이내에<br>연락드리겠습니다.</p>
+    <button id="success-close" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;width:100%;">확인</button>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="consult-loading" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;text-align:center;">
+    <div style="width:40px;height:40px;border:3px solid #E5E7EB;border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px;"></div>
+    <p style="font-size:14px;color:var(--text2);font-weight:500;">제출 중...</p>
+  </div>
+</div>
+`;
+
+  // Inject modal HTML
+  document.body.insertAdjacentHTML('beforeend', MODAL_HTML);
+
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .form-label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+    .form-input { width:100%; padding:13px 16px; border:1.5px solid #E5E7EB; border-radius:10px; font-size:14px; color:#111827; font-family:inherit; outline:none; transition:border-color 0.2s,box-shadow 0.2s; background:#fff; }
+    .form-input:focus { border-color:#B5F23D; box-shadow:0 0 0 3px rgba(181,242,61,0.15); }
+    .form-input.input-error { border-color:#EF4444; }
+    .form-input.input-error:focus { border-color:#EF4444; box-shadow:0 0 0 3px rgba(239,68,68,0.1); }
+    .field-error { font-size:12px; color:#EF4444; margin-top:5px; min-height:0; line-height:1.4; display:none; }
+    .field-error.show { display:block; }
+    select.form-input { cursor:pointer; }
+    #consult-close:hover { background:#E5E7EB; }
+    #modal-submit:not([disabled]) { background:var(--navy) !important; color:var(--lime) !important; cursor:pointer !important; }
+    #modal-submit:not([disabled]):hover { background:var(--navy2) !important; }
+    #consult-overlay::-webkit-scrollbar { width:0; }
+  `;
+  document.head.appendChild(style);
+
+  const overlay = document.getElementById('consult-overlay');
+  const loading = document.getElementById('consult-loading');
+  const successModal = document.getElementById('consult-success');
+
+  function openModal() {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.getElementById('consult-form').reset();
+    document.getElementById('amount-korean').textContent = '';
+    // 모든 에러 초기화
+    document.querySelectorAll('.field-error').forEach(el => { el.textContent = ''; el.classList.remove('show'); });
+    document.querySelectorAll('.form-input.input-error').forEach(el => el.classList.remove('input-error'));
+    Object.keys(touched || {}).forEach(k => delete touched[k]);
+    updateSubmitBtn();
+  }
+
+  function closeModal() {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('consult-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.getElementById('success-close').addEventListener('click', () => {
+    successModal.style.display = 'none';
+    closeModal();
+  });
+
+  // Wire all "무료 상담" buttons
+  document.querySelectorAll('a').forEach(btn => {
+    if (btn.textContent.trim().includes('무료 상담')) {
+      btn.addEventListener('click', e => { e.preventDefault(); openModal(); });
+    }
+  });
+
+  // 한국 전화번호 유효 접두사
+  const MOBILE_PREFIX = ['010','011','016','017','018','019'];
+  const AREA_PREFIX = ['02','031','032','033','041','042','043','044','051','052','053','054','055','061','062','063','064'];
+
+  function getPhoneType(digits) {
+    if (MOBILE_PREFIX.some(p => digits.startsWith(p))) return 'mobile';
+    if (digits.startsWith('02')) return 'seoul';
+    if (AREA_PREFIX.some(p => digits.startsWith(p))) return 'area';
+    return 'invalid';
+  }
+
+  // Phone formatting — 한국 번호만 허용
+  document.getElementById('f-phone').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g,'');
+    const type = getPhoneType(v);
+
+    if (type === 'seoul') {
+      v = v.slice(0,10);
+      if (v.length <= 2) this.value = v;
+      else if (v.length <= 5) this.value = v.slice(0,2)+'-'+v.slice(2);
+      else if (v.length <= 9) this.value = v.slice(0,2)+'-'+v.slice(2,v.length-4)+'-'+v.slice(v.length-4);
+      else this.value = v.slice(0,2)+'-'+v.slice(2,6)+'-'+v.slice(6,10);
+    } else {
+      v = v.slice(0,11);
+      if (v.length <= 3) this.value = v;
+      else if (v.length <= 7) this.value = v.slice(0,3)+'-'+v.slice(3);
+      else this.value = v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
+    }
+    if (touched['f-phone']) validators['f-phone']();
+    updateSubmitBtn();
+  });
+
+  // 전화번호 유효성 체크
+  function isPhoneComplete() {
+    const digits = document.getElementById('f-phone').value.replace(/\D/g,'');
+    const type = getPhoneType(digits);
+    if (type === 'mobile') return digits.length === 11;
+    if (type === 'seoul') return digits.length >= 9 && digits.length <= 10;
+    if (type === 'area') return digits.length >= 10 && digits.length <= 11;
+    return false;
+  }
+
+  // 금액: 천단위 콤마 + 한글 변환
+  function numberToKorean(num) {
+    if (!num || num === 0) return '';
+    const units = ['', '만', '억', '조'];
+    const parts = [];
+    let idx = 0;
+    while (num > 0) {
+      const chunk = num % 10000;
+      if (chunk > 0) {
+        parts.unshift(chunk.toLocaleString() + units[idx]);
+      }
+      num = Math.floor(num / 10000);
+      idx++;
+    }
+    return parts.join(' ') + '원';
+  }
+
+  document.getElementById('f-amount').addEventListener('input', function() {
+    const raw = this.value.replace(/[^\d]/g,'');
+    const num = parseInt(raw, 10);
+    if (raw === '' || isNaN(num)) {
+      this.value = '';
+      document.getElementById('amount-korean').textContent = '';
+    } else {
+      this.value = num.toLocaleString();
+      document.getElementById('amount-korean').textContent = numberToKorean(num);
+    }
+    updateSubmitBtn();
+  });
+
+
+  // ── 에러 표시/숨김 헬퍼 ──
+  function showError(inputId, errId, msg) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (input) input.classList.add('input-error');
+    if (err) { err.textContent = msg; err.classList.add('show'); }
+  }
+  function clearError(inputId, errId) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (input) input.classList.remove('input-error');
+    if (err) { err.textContent = ''; err.classList.remove('show'); }
+  }
+
+  // ── 개별 필드 유효성 검사 ──
+  const validators = {
+    'f-company': () => {
+      const v = document.getElementById('f-company').value.trim();
+      if (!v) { showError('f-company','err-company','회사명을 입력해주세요.'); return false; }
+      clearError('f-company','err-company'); return true;
+    },
+    'f-contact-name': () => {
+      const v = document.getElementById('f-contact-name').value.trim();
+      if (!v) { showError('f-contact-name','err-contact-name','담당자명을 입력해주세요.'); return false; }
+      clearError('f-contact-name','err-contact-name'); return true;
+    },
+    'f-phone': () => {
+      const digits = document.getElementById('f-phone').value.replace(/\D/g,'');
+      if (!digits) { showError('f-phone','err-phone','연락처를 입력해주세요.'); return false; }
+      const type = getPhoneType(digits);
+      if (type === 'invalid') { showError('f-phone','err-phone','올바른 전화번호를 입력해주세요. (예: 010, 02, 031 등)'); return false; }
+      if (!isPhoneComplete()) { showError('f-phone','err-phone','전화번호를 끝까지 입력해주세요.'); return false; }
+      clearError('f-phone','err-phone'); return true;
+    },
+    'f-email': () => {
+      const v = document.getElementById('f-email').value.trim();
+      if (!v) { showError('f-email','err-email','이메일을 입력해주세요.'); return false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { showError('f-email','err-email','올바른 이메일 형식으로 입력해주세요.'); return false; }
+      clearError('f-email','err-email'); return true;
+    },
+    'f-amount': () => {
+      const raw = document.getElementById('f-amount').value.replace(/[^\d]/g,'');
+      if (!raw) { showError('f-amount','err-amount','채권 금액을 입력해주세요.'); return false; }
+      clearError('f-amount','err-amount'); return true;
+    },
+    'f-claim-type': () => {
+      const v = document.getElementById('f-claim-type').value;
+      if (!v) { showError('f-claim-type','err-claim-type','채권 종류를 선택해주세요.'); return false; }
+      clearError('f-claim-type','err-claim-type'); return true;
+    },
+  };
+
+  // ── blur 시 유효성 검사 (한 번이라도 입력한 후 떠날 때) ──
+  const touched = {};
+  Object.keys(validators).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => { touched[id] = true; validators[id](); updateSubmitBtn(); });
+    el.addEventListener('input', () => { if (touched[id]) validators[id](); updateSubmitBtn(); });
+    if (el.tagName === 'SELECT') {
+      el.addEventListener('change', () => { touched[id] = true; validators[id](); updateSubmitBtn(); });
+    }
+  });
+
+  // ── 체크박스 에러 ──
+  function validateChecks() {
+    const s = document.getElementById('chk-service');
+    const p = document.getElementById('chk-privacy');
+    if (s && p && s.checked && p.checked) {
+      const err = document.getElementById('err-checks');
+      if (err) { err.textContent = ''; err.classList.remove('show'); }
+      return true;
+    }
+    return false;
+  }
+
+  // ── 필수 입력 + 체크박스 모두 충족해야 버튼 활성화 ──
+  function updateSubmitBtn() {
+    const btn = document.getElementById('modal-submit');
+    if (!btn) return;
+    const allValid = Object.values(validators).every(fn => {
+      // 조용히 체크만 (에러 표시는 blur/input에서)
+      const inputId = Object.keys(validators).find(k => validators[k] === fn);
+      const el = document.getElementById(inputId);
+      if (!el) return false;
+      if (inputId === 'f-phone') return isPhoneComplete();
+      if (inputId === 'f-email') {
+        const v = el.value.trim();
+        return v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      }
+      return el.value.trim() !== '';
+    });
+    const chkService = document.getElementById('chk-service');
+    const chkPrivacy = document.getElementById('chk-privacy');
+    const allChecked = chkService && chkPrivacy && chkService.checked && chkPrivacy.checked;
+    btn.disabled = !(allValid && allChecked);
+  }
+
+  // 체크박스 변경 시
+  ['chk-service','chk-privacy'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { validateChecks(); updateSubmitBtn(); });
+  });
+
+  // Submit
+  document.getElementById('consult-form').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    // 모든 필드 touched 처리 후 전체 유효성 검사
+    Object.keys(validators).forEach(id => { touched[id] = true; });
+    let allPass = true;
+    let firstFail = null;
+    Object.keys(validators).forEach(id => {
+      if (!validators[id]()) { allPass = false; if (!firstFail) firstFail = id; }
+    });
+    const chkS = document.getElementById('chk-service');
+    const chkP = document.getElementById('chk-privacy');
+    if (!chkS.checked || !chkP.checked) {
+      allPass = false;
+      showError('chk-service','err-checks','필수 확인 사항을 모두 체크해주세요.');
+      if (!firstFail) firstFail = 'chk-service';
+    }
+    if (!allPass) {
+      if (firstFail) document.getElementById(firstFail).focus();
+      return;
+    }
+
+    loading.style.display = 'flex';
+    const payload = {
+      companyName: document.getElementById('f-company').value,
+      contactPersonName: document.getElementById('f-contact-name').value,
+      contactPhone: document.getElementById('f-phone').value,
+      contactEmail: document.getElementById('f-email').value,
+      totalClaimAmount: document.getElementById('f-amount').value.replace(/,/g,''),
+      claimType: document.getElementById('f-claim-type').value,
+      debtorCount: document.getElementById('f-debtor-count').value,
+      additionalNotes: document.getElementById('f-notes').value,
+    };
+    try {
+      await fetch('/api/submit-consult', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+    } catch(err) { /* API 없어도 성공 처리 */ }
+    loading.style.display = 'none';
+    overlay.style.display = 'none';
+    successModal.style.display = 'flex';
+  });
+
+</script>
+</body>
+</html>

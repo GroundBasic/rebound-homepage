@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Figma Variables 설정 가이드 — 디자인 시스템</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#FF5900;--orange-40:#FF905C;--orange-60:#CC4700;
+  --orange-light:#FFF2EB;--orange-dark:#662400;
+  --green:#C7F64F;--green-dark:#3a5a00;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;
+  --g300:#D1D5DB;--g400:#9CA3AF;--g600:#4B5563;
+  --g800:#1F2937;--g900:#111827;
+  --radius:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Pretendard','Apple SD Gothic Neo',sans-serif;
+     background:#ECECEC;color:var(--g800);font-size:14px;line-height:1.6}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);
+    backdrop-filter:blur(16px);border-bottom:1px solid var(--g200);
+    padding:0 40px;height:52px;display:flex;align-items:center;gap:32px}
+.nav-brand{font-size:13px;font-weight:700;color:var(--g900);
+           display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
+.nav-brand .pill{background:var(--orange);color:#fff;font-size:10px;
+                 font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em}
+.nav-tab{font-size:13px;font-weight:500;color:var(--g400);text-decoration:none;
+         padding:4px 0;border-bottom:2px solid transparent;transition:.15s}
+.nav-tab:hover{color:var(--g800)}
+.nav-tab.on{color:var(--orange);border-color:var(--orange)}
+
+/* Page */
+.page{max-width:1040px;margin:0 auto;padding:0 32px 80px}
+
+/* Hero */
+.hero{padding:56px 0 48px}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+              color:var(--orange);margin-bottom:12px}
+.hero h1{font-size:38px;font-weight:800;line-height:1.15;color:var(--g900);margin-bottom:14px}
+.hero h1 b{color:var(--orange);font-weight:800}
+.hero-desc{font-size:15px;color:var(--g600);max-width:580px;line-height:1.8}
+.status-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;
+      border:1px solid var(--g200);border-radius:20px;padding:6px 12px;
+      font-size:12px;font-weight:500;color:var(--g600)}
+.dot{width:7px;height:7px;border-radius:50%}
+
+/* Section */
+.sec{padding:56px 0;border-top:1px solid var(--g200)}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--orange);margin-bottom:6px}
+.sec-title{font-size:24px;font-weight:800;color:var(--g900);margin-bottom:6px}
+.sec-sub{font-size:14px;color:var(--g600);margin-bottom:36px;max-width:600px;line-height:1.7}
+
+/* Cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:#fff;border-radius:var(--radius);padding:22px;border:1px solid var(--g200)}
+.card-eyebrow{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+              margin-bottom:8px;padding:2px 8px;border-radius:20px;display:inline-block}
+.ey-new{background:#D1FAE5;color:#065F46}
+.ey-old{background:#FEE2E2;color:#991B1B}
+.ey-tip{background:#EFF6FF;color:#1E40AF}
+.ey-warn{background:#FFFBEB;color:#92400E}
+.card h3{font-size:15px;font-weight:700;color:var(--g900);margin-bottom:6px}
+.card p{font-size:13px;color:var(--g600);line-height:1.7}
+ul.list{font-size:13px;color:var(--g600);padding-left:18px;line-height:2.1;margin-top:8px}
+
+/* Callout */
+.callout{border-radius:10px;padding:14px 18px;display:flex;gap:10px;
+         font-size:13px;line-height:1.7;margin:14px 0}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.c-info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
+.c-warn{background:#FFFBEB;border:1px solid #FDE68A;color:#92400E}
+.c-tip{background:#F0FDF4;border:1px solid #A7F3D0;color:#065F46}
+
+/* Code */
+pre.code{background:#16181D;border-radius:12px;padding:20px 22px;
+         font-family:'SF Mono','Fira Code',monospace;font-size:12px;
+         line-height:1.9;overflow-x:auto;color:#cdd6f4;margin:12px 0}
+.cm{color:#6272a4}.ck{color:#89dceb}.cv{color:#F38BA8}.ch{color:#A6E3A1}.cr{color:#CBA6F7}
+code.tag{font-family:'SF Mono','Fira Code',monospace;font-size:11.5px;
+         background:var(--g100);padding:2px 7px;border-radius:5px;color:var(--g800)}
+
+/* ── Variable Tree ── */
+.vtree{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);
+       overflow:hidden;margin:20px 0}
+.vtree-header{background:var(--g50);padding:12px 18px;display:flex;align-items:center;
+              gap:8px;border-bottom:1px solid var(--g200)}
+.vtree-header .coll-name{font-size:13px;font-weight:700;color:var(--g900)}
+.vtree-header .coll-badge{font-size:10px;background:var(--g200);color:var(--g600);
+                          padding:2px 8px;border-radius:20px;font-weight:600}
+.vtree-body{padding:10px 0}
+.vg{cursor:default}
+.vg-label{display:flex;align-items:center;gap:6px;padding:6px 18px;
+          font-size:12px;font-weight:700;color:var(--g600);
+          text-transform:uppercase;letter-spacing:.05em;user-select:none}
+.vg-label .icon{font-size:11px}
+.vi{display:flex;align-items:center;gap:0;padding:5px 18px 5px 36px;
+    font-size:12px;font-family:'SF Mono','Fira Code',monospace;
+    border-bottom:1px solid var(--g100);transition:.1s}
+.vi:last-child{border-bottom:none}
+.vi:hover{background:var(--g50)}
+.vi .vname{color:#1D4ED8;flex:1;min-width:0}
+.vi .vswatch{width:16px;height:16px;border-radius:4px;flex-shrink:0;
+             border:1px solid rgba(0,0,0,.1);margin-right:8px}
+.vi .vhex{color:var(--g400);font-size:11px;margin-left:8px}
+.vi .vref{color:var(--cr,#CBA6F7);font-size:11px;margin-left:8px}
+.vi .brand-mark{font-size:9px;background:var(--orange);color:#fff;
+                padding:1px 5px;border-radius:3px;margin-left:6px;font-weight:700}
+.vi .usage-tag{font-size:9px;background:var(--g100);color:var(--g600);
+               padding:1px 6px;border-radius:3px;margin-left:4px;
+               font-family:-apple-system,sans-serif;font-weight:500}
+
+/* ── Figma UI 모형 ── */
+.figma-ui{background:#2C2C2C;border-radius:var(--radius);overflow:hidden;
+          box-shadow:0 8px 32px rgba(0,0,0,.25);margin:20px 0}
+.figma-ui-bar{background:#1E1E1E;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.figma-ui-bar span{font-size:11px;color:#999}
+.figma-ui-bar .dot3{display:flex;gap:5px}
+.figma-ui-bar .dot3 i{width:10px;height:10px;border-radius:50%;display:block}
+.figma-panel{display:flex;height:420px}
+.figma-left{width:220px;background:#1E1E1E;border-right:1px solid #333;overflow-y:auto;flex-shrink:0}
+.figma-left-tab{display:flex;border-bottom:1px solid #333}
+.fl-tab{flex:1;padding:8px;font-size:10px;color:#666;text-align:center;cursor:pointer}
+.fl-tab.on{color:#fff;border-bottom:2px solid #fff}
+.fl-section{padding:4px 0}
+.fl-head{padding:6px 12px;font-size:10px;color:#666;font-weight:600;
+         text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;
+         justify-content:space-between}
+.fl-head span{color:#555;cursor:pointer;font-size:14px;line-height:1}
+.fl-item{padding:5px 12px 5px 20px;font-size:11px;color:#aaa;
+         font-family:'SF Mono',monospace;cursor:pointer;transition:.1s}
+.fl-item:hover{background:#2A2A2A;color:#fff}
+.fl-item.on{background:#2D3D56;color:#4D9EF8}
+.fl-item .sw{width:12px;height:12px;border-radius:3px;display:inline-block;
+             margin-right:6px;vertical-align:middle;border:1px solid rgba(255,255,255,.15)}
+.figma-right{flex:1;background:#1E1E1E;padding:16px;overflow-y:auto}
+.fr-title{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.fr-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #2A2A2A}
+.fr-row:last-child{border:none}
+.fr-name{font-size:11px;font-family:'SF Mono',monospace;color:#ccc;flex:1}
+.fr-val{font-size:11px;font-family:'SF Mono',monospace;color:#A6E3A1}
+.fr-val.ref{color:#CBA6F7}
+.fr-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;
+           border:1px solid rgba(255,255,255,.1)}
+.fr-add{background:#313131;border:1px dashed #444;border-radius:6px;
+        padding:8px;text-align:center;font-size:11px;color:#666;
+        cursor:pointer;margin-top:8px}
+
+/* ── How-to steps ── */
+.howto{counter-reset:step;display:flex;flex-direction:column;gap:0}
+.ht-step{display:flex;gap:0;position:relative}
+.ht-step::before{content:'';position:absolute;left:18px;top:40px;bottom:0;
+                 width:1px;background:var(--g200)}
+.ht-step:last-child::before{display:none}
+.ht-num{width:36px;height:36px;border-radius:50%;background:var(--orange);color:#fff;
+        font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;
+        flex-shrink:0;z-index:1;margin-top:2px}
+.ht-body{padding:0 0 36px 18px;flex:1}
+.ht-body h3{font-size:15px;font-weight:700;color:var(--g900);margin-bottom:4px;margin-top:4px}
+.ht-body p{font-size:13px;color:var(--g600);line-height:1.7;margin-bottom:10px}
+.ht-body ol{font-size:13px;color:var(--g600);padding-left:18px;line-height:2.2}
+.ht-body .kbd{display:inline-flex;align-items:center;background:var(--g100);border:1px solid var(--g300);
+              border-bottom-width:2px;border-radius:5px;padding:1px 7px;font-size:11px;
+              font-family:'SF Mono',monospace;color:var(--g800)}
+
+/* ── Token detail table ── */
+.tok-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0}
+.tok-table th{padding:9px 12px;background:var(--g50);border-bottom:2px solid var(--g200);
+              text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;
+              letter-spacing:.05em;color:var(--g400)}
+.tok-table td{padding:9px 12px;border-bottom:1px solid var(--g100);vertical-align:middle}
+.tok-table tr:last-child td{border:none}
+.tok-table tr:hover td{background:var(--g50)}
+.tok-group-row td{background:var(--g50);font-size:11px;font-weight:700;color:var(--g600);
+                  text-transform:uppercase;letter-spacing:.05em;padding:7px 12px}
+.sw{width:18px;height:18px;border-radius:4px;display:inline-block;
+    border:1px solid rgba(0,0,0,.1);vertical-align:middle;margin-right:6px;flex-shrink:0}
+.reason{font-size:11px;color:var(--g400);margin-top:2px}
+
+/* ── Group map ── */
+.gmap{background:#fff;border-radius:var(--radius);border:1px solid var(--g200);
+      padding:24px;margin:20px 0;display:flex;gap:40px;flex-wrap:wrap}
+.gmap-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+             color:var(--g400);margin-bottom:10px}
+.gmap-group{margin-bottom:16px}
+.gmap-group .gname{font-size:13px;font-weight:700;color:var(--g800);
+                   display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.gmap-group .gname .gicon{font-size:14px}
+.gmap-item{font-size:12px;font-family:'SF Mono','Fira Code',monospace;
+           color:var(--g600);padding:2px 0 2px 16px;display:block;line-height:1.8}
+.gmap-item.highlight{color:var(--orange);font-weight:600}
+
+/* Responsive */
+@media(max-width:768px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .figma-panel{flex-direction:column;height:auto}
+  .figma-left{width:100%;height:160px}
+  .gmap{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-brand" href="#">
+    <span class="pill">DS</span>Figma Variables 설정 가이드
+  </a>
+  <a class="nav-tab on" href="#structure">그룹 구조</a>
+  <a class="nav-tab" href="#primitive">Primitives</a>
+  <a class="nav-tab" href="#semantic">Semantic</a>
+  <a class="nav-tab" href="#howto">설정 방법</a>
+  <a class="nav-tab" href="#usage">적용 예시</a>
+  <a class="nav-tab" href="#typography">Typography</a>
+</nav>
+
+<div class="page">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">260310_디자인시스템_v01</div>
+  <h1>컬러 Variables<br>완전 정복 가이드</h1>
+  <p class="hero-desc">어떤 이름으로, 어떻게 나누고, 어디에 연결해야 하는지 — UX/UI 작업에 바로 쓸 수 있도록 그룹 구조부터 실제 설정 방법까지 단계별로 정리했습니다.</p>
+  <div class="status-bar">
+    <div class="chip"><div class="dot" style="background:#10B981"></div>컬러 스케일 확정</div>
+    <div class="chip"><div class="dot" style="background:#EF4444"></div>Variables 미등록</div>
+    <div class="chip"><div class="dot" style="background:#F59E0B"></div>컴포넌트 미연결</div>
+    <div class="chip"><div class="dot" style="background:#EF4444"></div>Library 미배포</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — 왜 이렇게 나누는가
+════════════════════════════════════════════════ -->
+<div class="sec" id="structure">
+  <div class="sec-label">Step 1</div>
+  <div class="sec-title">컬렉션 & 그룹 구조 설계</div>
+  <div class="sec-sub">Figma Variables는 <strong>슬래시(/)</strong>로 폴더 구조를 만들 수 있어요. 나중에 바꾸기 어려우니 처음에 구조를 잘 잡는 게 중요합니다.</div>
+
+  <!-- 컬렉션 2개 -->
+  <div class="grid2" style="margin-bottom:24px">
+    <div class="card">
+      <div class="card-eyebrow ey-new">Collection 1</div>
+      <h3>01 Primitives</h3>
+      <p>모든 컬러의 원시값. <strong>절대 컴포넌트에 직접 연결하지 않습니다.</strong> Semantic이 이 값을 참조합니다.</p>
+      <ul class="list">
+        <li>실제 hex 값이 들어가는 곳</li>
+        <li>Orange · Green · Blue Gray · Gray 4가지 스케일</li>
+        <li>스케일 전체(0~100 또는 50~900)를 빠짐없이 등록</li>
+        <li>이름 예: <code class="tag">orange/50</code>, <code class="tag">gray/900</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow ey-new">Collection 2</div>
+      <h3>02 Semantic</h3>
+      <p><strong>용도 기반 이름.</strong> Primitive 값을 참조(alias)합니다. 컴포넌트는 여기에만 연결합니다.</p>
+      <ul class="list">
+        <li>hex 없음 — Primitive 토큰을 참조</li>
+        <li>Text · Background · Border · Icon · Interactive · Status</li>
+        <li>이름 예: <code class="tag">text/primary</code>, <code class="tag">interactive/primary/hover</code></li>
+        <li>나중에 브랜드 컬러 바꿀 때 Primitive 1개만 수정</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout c-tip">
+    <div class="callout-icon">💡</div>
+    <div><strong>핵심 원칙:</strong> 컴포넌트 Fill에는 <code class="tag">#FF5900</code>을 절대 직접 쓰지 않습니다. 반드시 <code class="tag">interactive/primary/default</code> 같은 Semantic 토큰을 연결하세요. 그래야 브랜드 컬러가 바뀔 때 Primitive 하나만 수정하면 전체가 자동으로 업데이트됩니다.</div>
+  </div>
+
+  <!-- 그룹 맵 -->
+  <h3 style="font-size:16px;font-weight:700;margin:32px 0 14px;color:var(--g900)">📁 전체 그룹 구조 한눈에 보기</h3>
+  <div class="gmap">
+    <!-- Primitives -->
+    <div class="gmap-col" style="flex:1;min-width:200px">
+      <h4>01 Primitives</h4>
+      <div class="gmap-group">
+        <div class="gname"><span class="gicon">🟠</span>orange/</div>
+        <span class="gmap-item">0, 10, 20, 30, 40</span>
+        <span class="gmap-item highlight">50 ← Brand Primary</span>
+        <span class="gmap-item">60, 70, 80, 90, 100</span>
+      </div>
+      <div class="gmap-group">
+        <div class="gname"><span class="gicon">🟢</span>green/</div>
+        <span class="gmap-item">50, 100, 200, 300</span>
+        <span class="gmap-item highlight">400 ← Brand Secondary</span>
+        <span class="gmap-item">500, 600, 700, 800, 900</span>
+      </div>
+      <div class="gmap-group">
+        <div class="gname"><span class="gicon">🔵</span>blue-gray/</div>
+        <span class="gmap-item">50, 100, 200, 300, 400</span>
+        <span class="gmap-item">500, 600, 700, 800, 900</span>
+      </div>
+      <div class="gmap-group">
+        <div class="gname"><span class="gicon">⚫</span>gray/</div>
+        <span class="gmap-item">0, 100, 200, 300, 400, 500</span>
+        <span class="gmap-item">600, 700, 800, 900, 1000, 1100</span>
+      </div>
+      <div class="gmap-group">
+        <div class="gname"><span class="gicon">⬜</span>base/</div>
+        <span class="gmap-item">white (#FFFFFF)</span>
+        <span class="gmap-item">black (#000000)</span>
+      </div>
+    </div>
+    <!-- 화살표 -->
+    <div style="display:flex;align-items:center;font-size:24px;color:var(--g300);align-self:center">→</div>
+    <!-- Semantic -->
+    <div class="gmap-col" style="flex:2;min-width:320px">
+      <h4>02 Semantic</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px">
+        <div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">🖋</span>text/</div>
+            <span class="gmap-item">title</span>
+            <span class="gmap-item">body</span>
+            <span class="gmap-item">sub</span>
+            <span class="gmap-item">caption</span>
+            <span class="gmap-item">placeholder</span>
+            <span class="gmap-item">disabled</span>
+            <span class="gmap-item">inverse</span>
+            <span class="gmap-item">brand</span>
+            <span class="gmap-item">success</span>
+          </div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">🖼</span>bg/</div>
+            <span class="gmap-item">page</span>
+            <span class="gmap-item">surface</span>
+            <span class="gmap-item">surface-raised</span>
+            <span class="gmap-item">input</span>
+            <span class="gmap-item">disabled</span>
+            <span class="gmap-item">brand</span>
+            <span class="gmap-item">brand-subtle</span>
+            <span class="gmap-item">success-subtle</span>
+          </div>
+        </div>
+        <div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">⬜</span>border/</div>
+            <span class="gmap-item">subtle</span>
+            <span class="gmap-item">default</span>
+            <span class="gmap-item">strong</span>
+            <span class="gmap-item">focus</span>
+            <span class="gmap-item">disabled</span>
+            <span class="gmap-item">brand</span>
+          </div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">🔘</span>icon/</div>
+            <span class="gmap-item">default</span>
+            <span class="gmap-item">sub</span>
+            <span class="gmap-item">disabled</span>
+            <span class="gmap-item">inverse</span>
+            <span class="gmap-item">brand</span>
+          </div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">👆</span>interactive/</div>
+            <span class="gmap-item highlight">primary/default</span>
+            <span class="gmap-item highlight">primary/hover</span>
+            <span class="gmap-item highlight">primary/pressed</span>
+            <span class="gmap-item">primary/disabled</span>
+            <span class="gmap-item">secondary/default</span>
+            <span class="gmap-item">secondary/hover</span>
+            <span class="gmap-item">ghost/default</span>
+          </div>
+          <div class="gmap-group">
+            <div class="gname"><span class="gicon">🚦</span>status/</div>
+            <span class="gmap-item">success</span>
+            <span class="gmap-item">warning</span>
+            <span class="gmap-item">error</span>
+            <span class="gmap-item">info</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout c-info">
+    <div class="callout-icon">ℹ️</div>
+    <div><strong>이름 규칙:</strong> <code class="tag">카테고리/서브카테고리/상태</code> 3단계로 작성합니다. Figma에서 슬래시(/)가 폴더 구분자 역할을 하므로, <code class="tag">interactive/primary/default</code>는 <em>interactive &gt; primary &gt; default</em> 로 정리됩니다. 컴포넌트 개발자와 토큰 이름을 맞춰두면 코드 자동 추출도 바로 됩니다.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — Primitives 전체 목록
+════════════════════════════════════════════════ -->
+<div class="sec" id="primitive">
+  <div class="sec-label">Step 2</div>
+  <div class="sec-title">01 Primitives — 등록할 값 전체 목록</div>
+  <div class="sec-sub">color-scale.html에서 정확한 hex를 복사해서 아래 이름으로 등록합니다. 스케일 전체를 빠짐없이 넣어야 Semantic에서 원하는 값을 참조할 수 있어요.</div>
+
+  <!-- Figma-style UI mock -->
+  <div class="figma-ui">
+    <div class="figma-ui-bar">
+      <div class="dot3"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+      <span style="margin-left:8px">Figma — Local Variables</span>
+    </div>
+    <div class="figma-panel">
+      <div class="figma-left">
+        <div class="figma-left-tab">
+          <div class="fl-tab on">Variables</div>
+          <div class="fl-tab">Styles</div>
+        </div>
+        <div class="fl-section">
+          <div class="fl-head">Collections <span>+</span></div>
+          <div class="fl-item on">📁 01 Primitives</div>
+          <div class="fl-item">📁 02 Semantic</div>
+        </div>
+        <div class="fl-section" style="margin-top:8px">
+          <div class="fl-head">Groups</div>
+          <div class="fl-item">▸ 🟠 orange</div>
+          <div class="fl-item on">▾ ⚫ gray</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#FFFFFF"></span>0</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#F2F8FC"></span>100</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#E8EEF2"></span>200</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#BBC5CC"></span>300</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#8C9499"></span>500</div>
+          <div class="fl-item" style="padding-left:32px"><span class="sw" style="background:#2F3133"></span>900</div>
+          <div class="fl-item">▸ 🔵 blue-gray</div>
+          <div class="fl-item">▸ 🟢 green</div>
+          <div class="fl-item">▸ ⬜ base</div>
+        </div>
+      </div>
+      <div class="figma-right">
+        <div class="fr-title">gray 그룹 — Color Variables</div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#FFFFFF;border:1px solid #444"></span><span class="fr-name">gray/0</span><span class="fr-val">#FFFFFF</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#F2F8FC"></span><span class="fr-name">gray/100</span><span class="fr-val">#F2F8FC</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#E8EEF2"></span><span class="fr-name">gray/200</span><span class="fr-val">#E8EEF2</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#BBC5CC"></span><span class="fr-name">gray/300</span><span class="fr-val">#BBC5CC</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#A4ADB2"></span><span class="fr-name">gray/400</span><span class="fr-val">#A4ADB2</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#8C9499"></span><span class="fr-name">gray/500</span><span class="fr-val">#8C9499</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#757B80"></span><span class="fr-name">gray/600</span><span class="fr-val">#757B80</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#464A4D"></span><span class="fr-name">gray/800</span><span class="fr-val">#464A4D</span></div>
+        <div class="fr-row"><span class="fr-swatch" style="background:#2F3133"></span><span class="fr-name">gray/900</span><span class="fr-val">#2F3133</span></div>
+        <div class="fr-add">+ Add Variable</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primitive 값 상세 -->
+  <div style="margin-top:28px">
+
+    <!-- Orange -->
+    <div class="vtree" style="margin-bottom:16px">
+      <div class="vtree-header">
+        <span style="font-size:16px">🟠</span>
+        <span class="coll-name">orange</span>
+        <span class="coll-badge">11 variables · Primary Brand Color</span>
+      </div>
+      <div class="vtree-body">
+        <div class="vg-label"><span class="icon">▾</span>orange/</div>
+        <div class="vi"><span class="vswatch" style="background:#FFFFFF;border:1px solid #E5E7EB"></span><span class="vname">orange/0</span><span class="vhex">#FFFFFF</span><span class="usage-tag">흰 배경 위 텍스트</span></div>
+        <div class="vi"><span class="vswatch" style="background:#FFE5D6"></span><span class="vname">orange/10</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#FFCBAE"></span><span class="vname">orange/20</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#FFAF85"></span><span class="vname">orange/30</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#FF905C"></span><span class="vname">orange/40</span><span class="vhex">color-scale 참고</span><span class="usage-tag">Hover</span></div>
+        <div class="vi"><span class="vswatch" style="background:#FF5900"></span><span class="vname">orange/50</span><span class="vhex">#FF5900</span><span class="brand-mark">Brand</span></div>
+        <div class="vi"><span class="vswatch" style="background:#CC4700"></span><span class="vname">orange/60</span><span class="vhex">color-scale 참고</span><span class="usage-tag">Press</span></div>
+        <div class="vi"><span class="vswatch" style="background:#993500"></span><span class="vname">orange/70</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#662400"></span><span class="vname">orange/80</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#481900"></span><span class="vname">orange/90</span><span class="vhex">color-scale 참고</span></div>
+        <div class="vi"><span class="vswatch" style="background:#000000"></span><span class="vname">orange/100</span><span class="vhex">#000000</span></div>
+      </div>
+    </div>
+
+    <!-- Gray -->
+    <div class="vtree" style="margin-bottom:16px">
+      <div class="vtree-header">
+        <span style="font-size:16px">⚫</span>
+        <span class="coll-name">gray</span>
+        <span class="coll-badge">12 variables · Neutral — 메인 UI에 가장 많이 쓰임</span>
+      </div>
+      <div class="vtree-body">
+        <div class="vg-label"><span class="icon">▾</span>gray/</div>
+        <div class="vi"><span class="vswatch" style="background:#FFFFFF;border:1px solid #E5E7EB"></span><span class="vname">gray/0</span><span class="vhex">#FFFFFF</span><span class="usage-tag">카드·모달 배경</span></div>
+        <div class="vi"><span class="vswatch" style="background:#F2F8FC"></span><span class="vname">gray/100</span><span class="vhex">#F2F8FC</span><span class="usage-tag">페이지 배경</span></div>
+        <div class="vi"><span class="vswatch" style="background:#E8EEF2"></span><span class="vname">gray/200</span><span class="vhex">#E8EEF2</span><span class="usage-tag">구분선·보더</span></div>
+        <div class="vi"><span class="vswatch" style="background:#BBC5CC"></span><span class="vname">gray/300</span><span class="vhex">#BBC5CC</span><span class="usage-tag">disabled</span></div>
+        <div class="vi"><span class="vswatch" style="background:#A4ADB2"></span><span class="vname">gray/400</span><span class="vhex">#A4ADB2</span><span class="usage-tag">placeholder·아이콘 서브</span></div>
+        <div class="vi"><span class="vswatch" style="background:#8C9499"></span><span class="vname">gray/500</span><span class="vhex">#8C9499</span><span class="usage-tag">보조 텍스트</span></div>
+        <div class="vi"><span class="vswatch" style="background:#757B80"></span><span class="vname">gray/600</span><span class="vhex">#757B80</span><span class="usage-tag">캡션·서브 텍스트</span></div>
+        <div class="vi"><span class="vswatch" style="background:#5E6366"></span><span class="vname">gray/700</span><span class="vhex">#5E6366</span></div>
+        <div class="vi"><span class="vswatch" style="background:#464A4D"></span><span class="vname">gray/800</span><span class="vhex">#464A4D</span></div>
+        <div class="vi"><span class="vswatch" style="background:#2F3133"></span><span class="vname">gray/900</span><span class="vhex">#2F3133</span><span class="usage-tag">제목·본문</span></div>
+        <div class="vi"><span class="vswatch" style="background:#17191A"></span><span class="vname">gray/1000</span><span class="vhex">#17191A</span></div>
+        <div class="vi"><span class="vswatch" style="background:#000000"></span><span class="vname">gray/1100</span><span class="vhex">#000000</span></div>
+      </div>
+    </div>
+
+    <!-- Green + Blue Gray -->
+    <div class="grid2">
+      <div class="vtree">
+        <div class="vtree-header">
+          <span style="font-size:16px">🟢</span>
+          <span class="coll-name">green</span>
+          <span class="coll-badge">10 variables · Secondary</span>
+        </div>
+        <div class="vtree-body">
+          <div class="vg-label"><span class="icon">▾</span>green/</div>
+          <div class="vi"><span class="vswatch" style="background:#FAFFF0"></span><span class="vname">green/50</span><span class="vhex">계산값</span></div>
+          <div class="vi"><span class="vswatch" style="background:#F4FFDE"></span><span class="vname">green/100</span></div>
+          <div class="vi"><span class="vswatch" style="background:#E9FFC0"></span><span class="vname">green/200</span></div>
+          <div class="vi"><span class="vswatch" style="background:#DBFFA3"></span><span class="vname">green/300</span></div>
+          <div class="vi"><span class="vswatch" style="background:#C7F64F"></span><span class="vname">green/400</span><span class="brand-mark">Brand</span></div>
+          <div class="vi"><span class="vswatch" style="background:#9BC93C"></span><span class="vname">green/500</span><span class="usage-tag">Hover</span></div>
+          <div class="vi"><span class="vswatch" style="background:#729B2C"></span><span class="vname">green/600</span><span class="usage-tag">Press</span></div>
+          <div class="vi"><span class="vswatch" style="background:#4D6E1E"></span><span class="vname">green/700</span></div>
+          <div class="vi"><span class="vswatch" style="background:#2E4410"></span><span class="vname">green/800</span></div>
+          <div class="vi"><span class="vswatch" style="background:#172306"></span><span class="vname">green/900</span></div>
+        </div>
+      </div>
+      <div class="vtree">
+        <div class="vtree-header">
+          <span style="font-size:16px">🔵</span>
+          <span class="coll-name">blue-gray</span>
+          <span class="coll-badge">10 variables · UI 보조</span>
+        </div>
+        <div class="vtree-body">
+          <div class="vg-label"><span class="icon">▾</span>blue-gray/</div>
+          <div class="vi"><span class="vswatch" style="background:#ECEFF1"></span><span class="vname">blue-gray/50</span><span class="vhex">#ECEFF1</span></div>
+          <div class="vi"><span class="vswatch" style="background:#CFD8DC"></span><span class="vname">blue-gray/100</span><span class="vhex">#CFD8DC</span></div>
+          <div class="vi"><span class="vswatch" style="background:#B0BEC5"></span><span class="vname">blue-gray/200</span><span class="vhex">#B0BEC5</span></div>
+          <div class="vi"><span class="vswatch" style="background:#90A4AE"></span><span class="vname">blue-gray/300</span><span class="vhex">#90A4AE</span></div>
+          <div class="vi"><span class="vswatch" style="background:#78909C"></span><span class="vname">blue-gray/400</span><span class="vhex">#78909C</span></div>
+          <div class="vi"><span class="vswatch" style="background:#607D8B"></span><span class="vname">blue-gray/500</span><span class="vhex">#607D8B</span></div>
+          <div class="vi"><span class="vswatch" style="background:#546E7A"></span><span class="vname">blue-gray/600</span><span class="vhex">#546E7A</span></div>
+          <div class="vi"><span class="vswatch" style="background:#455A64"></span><span class="vname">blue-gray/700</span><span class="vhex">#455A64</span></div>
+          <div class="vi"><span class="vswatch" style="background:#37474F"></span><span class="vname">blue-gray/800</span><span class="vhex">#37474F</span></div>
+          <div class="vi"><span class="vswatch" style="background:#263238"></span><span class="vname">blue-gray/900</span><span class="vhex">#263238</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-info" style="margin-top:16px">
+      <div class="callout-icon">ℹ️</div>
+      <div>orange와 green의 정확한 hex값은 <a href="color-scale.html" target="_blank" style="color:#1D4ED8;font-weight:600">color-scale.html</a>에서 각 스텝 옆 <strong>복사 버튼</strong>으로 가져오세요. 위 값은 참고용 근사값입니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — Semantic 전체
+════════════════════════════════════════════════ -->
+<div class="sec" id="semantic">
+  <div class="sec-label">Step 3</div>
+  <div class="sec-title">02 Semantic — 용도별 토큰 전체 정의</div>
+  <div class="sec-sub">각 토큰이 <strong>왜 이 Primitive를 참조하는지</strong> 이유까지 적었습니다. 나중에 팀원에게 설명할 때도 활용하세요.</div>
+
+  <!-- Text -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">🖋 text/ — 텍스트 색상</h3>
+  <table class="tok-table" style="margin-bottom:28px">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도 & 이유</th></tr>
+    <tr>
+      <td><code class="tag">text/title</code></td>
+      <td><code class="tag">gray/900</code></td>
+      <td><span class="sw" style="background:#2F3133"></span>#2F3133</td>
+      <td>헤딩, 숙소명 등 가장 강한 텍스트. 거의 검정에 가까워 가독성 최고<div class="reason">WCAG AAA 달성 (흰 배경 기준)</div></td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/body</code></td>
+      <td><code class="tag">gray/900</code></td>
+      <td><span class="sw" style="background:#2F3133"></span>#2F3133</td>
+      <td>본문 텍스트. title과 같은 값이지만 나중에 분리할 수 있도록 토큰 분리</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/sub</code></td>
+      <td><code class="tag">gray/600</code></td>
+      <td><span class="sw" style="background:#757B80"></span>#757B80</td>
+      <td>부가 정보, 날짜·위치 텍스트. 위계 구분에 사용</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/caption</code></td>
+      <td><code class="tag">gray/500</code></td>
+      <td><span class="sw" style="background:#8C9499"></span>#8C9499</td>
+      <td>리뷰 수, 별점 수, 작은 라벨</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/placeholder</code></td>
+      <td><code class="tag">gray/400</code></td>
+      <td><span class="sw" style="background:#A4ADB2"></span>#A4ADB2</td>
+      <td>검색창, 입력창 placeholder</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/disabled</code></td>
+      <td><code class="tag">gray/300</code></td>
+      <td><span class="sw" style="background:#BBC5CC"></span>#BBC5CC</td>
+      <td>비활성 버튼·입력창 텍스트. 피그마 파일에서 이미 "Disabled" 로 분류됨</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/inverse</code></td>
+      <td><code class="tag">gray/0</code></td>
+      <td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td>
+      <td>어두운 배경(브랜드 버튼, 토스트) 위의 흰 텍스트</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/brand</code></td>
+      <td><code class="tag">orange/50</code></td>
+      <td><span class="sw" style="background:#FF5900"></span>#FF5900</td>
+      <td>링크, 브랜드 강조 텍스트, "더보기"</td>
+    </tr>
+    <tr>
+      <td><code class="tag">text/success</code></td>
+      <td><code class="tag">green/700</code></td>
+      <td><span class="sw" style="background:#4D6E1E"></span>#4D6E1E</td>
+      <td>예약 완료, 결제 성공 메시지<div class="reason">green/400(#C7F64F)은 흰 배경에서 가독성 부족 → 어두운 green/700 사용</div></td>
+    </tr>
+  </table>
+
+  <!-- BG -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">🖼 bg/ — 배경 색상</h3>
+  <table class="tok-table" style="margin-bottom:28px">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도 & 이유</th></tr>
+    <tr>
+      <td><code class="tag">bg/page</code></td>
+      <td><code class="tag">gray/100</code></td>
+      <td><span class="sw" style="background:#F2F8FC"></span>#F2F8FC</td>
+      <td>앱 전체 페이지 배경. 피그마 파일 "Background"에 해당<div class="reason">순백보다 살짝 톤 있어야 카드가 떠보임</div></td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/surface</code></td>
+      <td><code class="tag">gray/0</code></td>
+      <td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td>
+      <td>숙소 카드, 모달, 바텀시트 배경</td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/surface-raised</code></td>
+      <td><code class="tag">gray/0</code></td>
+      <td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td>
+      <td>드롭다운, 팝오버 등 레이어 위 요소<div class="reason">색은 같지만 shadow로 구분 — 토큰으로 분리해두면 나중에 값 변경 쉬움</div></td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/input</code></td>
+      <td><code class="tag">gray/100</code></td>
+      <td><span class="sw" style="background:#F2F8FC"></span>#F2F8FC</td>
+      <td>텍스트 입력창, 검색창 배경. 피그마 파일 "Background" 활용</td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/disabled</code></td>
+      <td><code class="tag">gray/200</code></td>
+      <td><span class="sw" style="background:#E8EEF2"></span>#E8EEF2</td>
+      <td>비활성 버튼·입력창 배경</td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/brand</code></td>
+      <td><code class="tag">orange/50</code></td>
+      <td><span class="sw" style="background:#FF5900"></span>#FF5900</td>
+      <td>Primary 버튼 배경, CTA 배너</td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/brand-subtle</code></td>
+      <td><code class="tag">orange/10</code></td>
+      <td><span class="sw" style="background:#FFE5D6"></span>계산값</td>
+      <td>알림 배너, 태그 배경, 선택된 리스트 아이템 하이라이트</td>
+    </tr>
+    <tr>
+      <td><code class="tag">bg/success-subtle</code></td>
+      <td><code class="tag">green/50</code></td>
+      <td><span class="sw" style="background:#FAFFF0"></span>계산값</td>
+      <td>예약 완료 배지, 성공 상태 배경</td>
+    </tr>
+  </table>
+
+  <!-- Border -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">⬜ border/ — 선(stroke) 색상</h3>
+  <table class="tok-table" style="margin-bottom:28px">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도 & 이유</th></tr>
+    <tr>
+      <td><code class="tag">border/subtle</code></td>
+      <td><code class="tag">gray/100</code></td>
+      <td><span class="sw" style="background:#F2F8FC"></span>#F2F8FC</td>
+      <td>구분선(divider). 피그마 파일의 "Border" 분류 중 가장 연한 것</td>
+    </tr>
+    <tr>
+      <td><code class="tag">border/default</code></td>
+      <td><code class="tag">gray/200</code></td>
+      <td><span class="sw" style="background:#E8EEF2"></span>#E8EEF2</td>
+      <td>카드, 입력창, 탭 기본 보더. 가장 많이 쓰임</td>
+    </tr>
+    <tr>
+      <td><code class="tag">border/strong</code></td>
+      <td><code class="tag">gray/400</code></td>
+      <td><span class="sw" style="background:#A4ADB2"></span>#A4ADB2</td>
+      <td>활성화된 입력창, 강조 카드</td>
+    </tr>
+    <tr>
+      <td><code class="tag">border/focus</code></td>
+      <td><code class="tag">orange/50</code></td>
+      <td><span class="sw" style="background:#FF5900"></span>#FF5900</td>
+      <td>포커스 링(접근성). 입력창·버튼 포커스 상태</td>
+    </tr>
+    <tr>
+      <td><code class="tag">border/disabled</code></td>
+      <td><code class="tag">gray/200</code></td>
+      <td><span class="sw" style="background:#E8EEF2"></span>#E8EEF2</td>
+      <td>비활성 입력창 보더</td>
+    </tr>
+    <tr>
+      <td><code class="tag">border/brand</code></td>
+      <td><code class="tag">orange/50</code></td>
+      <td><span class="sw" style="background:#FF5900"></span>#FF5900</td>
+      <td>선택된 날짜 셀, 선택된 필터 칩 테두리</td>
+    </tr>
+  </table>
+
+  <!-- Icon -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">🔘 icon/ — 아이콘 색상</h3>
+  <table class="tok-table" style="margin-bottom:28px">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도 & 이유</th></tr>
+    <tr><td><code class="tag">icon/default</code></td><td><code class="tag">gray/700</code></td><td><span class="sw" style="background:#5E6366"></span>#5E6366</td><td>기본 아이콘 (탭바, 액션 아이콘)</td></tr>
+    <tr><td><code class="tag">icon/sub</code></td><td><code class="tag">gray/400</code></td><td><span class="sw" style="background:#A4ADB2"></span>#A4ADB2</td><td>보조 아이콘, 화살표, 체크박스 내부</td></tr>
+    <tr><td><code class="tag">icon/disabled</code></td><td><code class="tag">gray/300</code></td><td><span class="sw" style="background:#BBC5CC"></span>#BBC5CC</td><td>비활성 아이콘</td></tr>
+    <tr><td><code class="tag">icon/inverse</code></td><td><code class="tag">gray/0</code></td><td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td><td>어두운 배경 위 아이콘 (채워진 버튼, 토스트)</td></tr>
+    <tr><td><code class="tag">icon/brand</code></td><td><code class="tag">orange/50</code></td><td><span class="sw" style="background:#FF5900"></span>#FF5900</td><td>즐겨찾기(하트), 브랜드 강조 아이콘</td></tr>
+  </table>
+
+  <!-- Interactive -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">👆 interactive/ — 버튼·탭·인터랙션</h3>
+  <div class="callout c-tip" style="margin-bottom:12px">
+    <div class="callout-icon">💡</div>
+    <div>버튼 인터랙션(hover/pressed)이 이미 color-scale.html에서 <strong>Primary 40→50→60</strong> 으로 확정되어 있습니다. 이 값을 그대로 토큰으로 만들면 됩니다.</div>
+  </div>
+  <table class="tok-table" style="margin-bottom:28px">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도</th></tr>
+    <!-- Primary -->
+    <tr class="tok-group-row"><td colspan="4">Primary 버튼 (채워진 오렌지 버튼)</td></tr>
+    <tr><td><code class="tag">interactive/primary/default</code></td><td><code class="tag">orange/50</code></td><td><span class="sw" style="background:#FF5900"></span>#FF5900</td><td>기본 상태</td></tr>
+    <tr><td><code class="tag">interactive/primary/hover</code></td><td><code class="tag">orange/40</code></td><td><span class="sw" style="background:#FF905C"></span>계산값</td><td>마우스 올렸을 때</td></tr>
+    <tr><td><code class="tag">interactive/primary/pressed</code></td><td><code class="tag">orange/60</code></td><td><span class="sw" style="background:#CC4700"></span>계산값</td><td>클릭·탭 했을 때</td></tr>
+    <tr><td><code class="tag">interactive/primary/disabled</code></td><td><code class="tag">gray/200</code></td><td><span class="sw" style="background:#E8EEF2"></span>#E8EEF2</td><td>비활성 상태</td></tr>
+    <tr><td><code class="tag">interactive/primary/text</code></td><td><code class="tag">gray/0</code></td><td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td><td>버튼 안 텍스트색</td></tr>
+    <!-- Secondary -->
+    <tr class="tok-group-row"><td colspan="4">Secondary 버튼 (테두리형)</td></tr>
+    <tr><td><code class="tag">interactive/secondary/default</code></td><td><code class="tag">gray/0</code></td><td><span class="sw" style="background:#FFFFFF;border:1px solid #E5E7EB"></span>#FFFFFF</td><td>기본 배경</td></tr>
+    <tr><td><code class="tag">interactive/secondary/border</code></td><td><code class="tag">orange/50</code></td><td><span class="sw" style="background:#FF5900"></span>#FF5900</td><td>테두리색</td></tr>
+    <tr><td><code class="tag">interactive/secondary/text</code></td><td><code class="tag">orange/50</code></td><td><span class="sw" style="background:#FF5900"></span>#FF5900</td><td>텍스트색</td></tr>
+    <tr><td><code class="tag">interactive/secondary/hover</code></td><td><code class="tag">orange/10</code></td><td><span class="sw" style="background:#FFE5D6"></span>계산값</td><td>hover 배경</td></tr>
+    <!-- Ghost -->
+    <tr class="tok-group-row"><td colspan="4">Ghost 버튼 (배경·테두리 없음)</td></tr>
+    <tr><td><code class="tag">interactive/ghost/default</code></td><td><code class="tag">gray/700</code></td><td><span class="sw" style="background:#5E6366"></span>#5E6366</td><td>기본 텍스트색</td></tr>
+    <tr><td><code class="tag">interactive/ghost/hover</code></td><td><code class="tag">gray/100</code></td><td><span class="sw" style="background:#F2F8FC"></span>#F2F8FC</td><td>hover 배경</td></tr>
+  </table>
+
+  <!-- Status -->
+  <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;color:var(--g900)">🚦 status/ — 상태 색상</h3>
+  <table class="tok-table">
+    <tr><th>변수 이름</th><th>참조 Primitive</th><th>색상</th><th>용도</th></tr>
+    <tr><td><code class="tag">status/success</code></td><td><code class="tag">green/400</code></td><td><span class="sw" style="background:#C7F64F"></span>#C7F64F</td><td>예약 완료 배지 배경</td></tr>
+    <tr><td><code class="tag">status/success-text</code></td><td><code class="tag">green/700</code></td><td><span class="sw" style="background:#4D6E1E"></span>#4D6E1E</td><td>예약 완료 텍스트 (가독성 확보)</td></tr>
+    <tr><td><code class="tag">status/warning</code></td><td><code class="tag">orange/30</code></td><td><span class="sw" style="background:#FFAF85"></span>계산값</td><td>마감 임박, 잔여 객실 경고</td></tr>
+    <tr><td><code class="tag">status/warning-text</code></td><td><code class="tag">orange/80</code></td><td><span class="sw" style="background:#662400"></span>계산값</td><td>경고 텍스트</td></tr>
+    <tr><td><code class="tag">status/error</code></td><td colspan="2">⚠️ 별도 Red 스케일 필요</td><td>결제 오류, 입력 에러 — 향후 추가 권장</td></tr>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — 실제 설정 방법
+════════════════════════════════════════════════ -->
+<div class="sec" id="howto">
+  <div class="sec-label">Step 4</div>
+  <div class="sec-title">Figma에서 실제로 설정하는 방법</div>
+  <div class="sec-sub">Figma UI를 직접 조작하는 순서입니다. 처음에 구조가 중요하니 순서대로 따라하세요.</div>
+
+  <div class="howto">
+
+    <div class="ht-step">
+      <div class="ht-num">1</div>
+      <div class="ht-body">
+        <h3>Variables 패널 열기</h3>
+        <p>우측 패널 상단 또는 상단 메뉴에서 접근합니다.</p>
+        <ol>
+          <li>우측 패널 상단 → <strong>Local variables</strong> 버튼 클릭</li>
+          <li>또는 메뉴 <strong>Edit → Manage local variables</strong></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">2</div>
+      <div class="ht-body">
+        <h3>01 Primitives 컬렉션 만들기</h3>
+        <p>먼저 원시값 컬렉션을 만들고, 그룹별로 변수를 추가합니다.</p>
+        <ol>
+          <li>Variables 패널 좌측 상단 <strong>+</strong> → <strong>Create collection</strong></li>
+          <li>컬렉션 이름: <code class="tag">01 Primitives</code> 입력 후 Enter</li>
+          <li><strong>+ Add variable</strong> → <strong>Color</strong> 선택</li>
+          <li>이름 입력: <code class="tag">orange/50</code> → Enter → 색상 칩 클릭 → <strong>#FF5900</strong> 입력</li>
+          <li>이름에 <code class="tag">/</code>를 쓰면 자동으로 그룹(폴더)이 생깁니다</li>
+          <li>위 목록의 모든 변수를 순서대로 추가합니다</li>
+        </ol>
+        <div class="callout c-tip">
+          <div class="callout-icon">⚡</div>
+          <div>한 그룹 안에서 변수를 추가할 때 이전 변수를 선택한 상태에서 <span class="kbd">Enter</span>를 누르면 같은 그룹에 빠르게 추가됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">3</div>
+      <div class="ht-body">
+        <h3>02 Semantic 컬렉션 만들고 참조(Alias) 연결하기</h3>
+        <p>Semantic은 hex 값 대신 Primitive 변수를 참조합니다. 이게 핵심입니다.</p>
+        <ol>
+          <li>다시 <strong>+</strong> → <strong>Create collection</strong> → 이름: <code class="tag">02 Semantic</code></li>
+          <li><strong>+ Add variable → Color</strong></li>
+          <li>이름: <code class="tag">text/title</code> 입력</li>
+          <li>값 영역의 색상 칩 클릭 → 색상 피커 오른쪽 상단 <strong>⊞ 라이브러리 아이콘</strong> 클릭</li>
+          <li>검색창에 <code class="tag">gray/900</code> 입력 → 선택 → 참조 연결 완료</li>
+          <li>모든 Semantic 변수를 같은 방식으로 추가합니다</li>
+        </ol>
+        <div class="callout c-info">
+          <div class="callout-icon">ℹ️</div>
+          <div>참조가 연결된 변수는 값 옆에 <strong>보라색 링크 아이콘</strong>이 표시됩니다. 이게 보이면 올바르게 연결된 것입니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">4</div>
+      <div class="ht-body">
+        <h3>컴포넌트에 Semantic 변수 연결하기</h3>
+        <p>이제 실제 레이어의 색상을 hex에서 토큰으로 교체합니다.</p>
+        <ol>
+          <li>버튼 레이어 선택 → 우측 패널 <strong>Fill</strong> 섹션의 색상 칩 클릭</li>
+          <li>색상 피커 우상단 <strong>⊞ 아이콘</strong> 클릭</li>
+          <li><code class="tag">interactive/primary/default</code> 검색 후 선택</li>
+          <li>Stroke, 텍스트도 동일하게 교체</li>
+          <li>Prototype 없이도 Hover·Press 상태는 <strong>Interactive Components</strong>로 구현</li>
+        </ol>
+        <div class="callout c-warn">
+          <div class="callout-icon">⚠️</div>
+          <div><strong>한 번에 다 바꾸지 않아도 됩니다.</strong> 새로 만드는 컴포넌트부터 Variables를 쓰고, 기존 것은 리팩토링하면서 점진적으로 교체하는 게 현실적입니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">5</div>
+      <div class="ht-body">
+        <h3>Library로 발행하고 팀과 공유하기</h3>
+        <p>Variables를 다른 파일에서도 쓸 수 있도록 배포합니다.</p>
+        <ol>
+          <li>좌측 Assets 탭 → <strong>Publish styles and variables</strong> 클릭</li>
+          <li>변경 내용 확인 후 <strong>Publish</strong></li>
+          <li>팀원 파일 → Assets → Libraries → 이 파일을 <strong>Enable</strong></li>
+          <li>이후 팀원도 Variables 패널에서 동일한 토큰 사용 가능</li>
+        </ol>
+        <div class="callout c-warn">
+          <div class="callout-icon">⚠️</div>
+          <div>Library 공유는 <strong>Figma Professional 이상 플랜</strong>에서 가능합니다. Starter 플랜은 같은 파일 내에서만 사용 가능합니다.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — 숙박앱 적용 예시
+════════════════════════════════════════════════ -->
+<div class="sec" id="usage">
+  <div class="sec-label">Step 5</div>
+  <div class="sec-title">숙박앱 컴포넌트 적용 예시</div>
+  <div class="sec-sub">실제 UI 컴포넌트에서 어떤 토큰을 어디에 쓰는지 확인합니다.</div>
+
+  <div class="grid3">
+    <!-- 버튼 -->
+    <div class="card">
+      <div class="card-eyebrow ey-tip">Button</div>
+      <h3>예약하기 버튼</h3>
+      <div style="background:#FF5900;color:#fff;padding:12px;border-radius:10px;
+                  text-align:center;font-weight:700;font-size:14px;margin:12px 0">
+        예약하기
+      </div>
+      <pre class="code" style="font-size:11px;padding:12px"><span class="cm">/* Fill */</span>
+<span class="ck">interactive</span>/<span class="ch">primary</span>/default
+
+<span class="cm">/* Text */</span>
+<span class="ck">text</span>/inverse
+
+<span class="cm">/* Hover */</span>
+<span class="ck">interactive</span>/<span class="ch">primary</span>/hover
+
+<span class="cm">/* Pressed */</span>
+<span class="ck">interactive</span>/<span class="ch">primary</span>/pressed</pre>
+    </div>
+
+    <!-- 카드 -->
+    <div class="card">
+      <div class="card-eyebrow ey-tip">숙소 Card</div>
+      <h3>숙소 리스트 카드</h3>
+      <div style="background:#F2F8FC;border-radius:10px;overflow:hidden;margin:12px 0;border:1px solid #E8EEF2">
+        <div style="background:#E8EEF2;height:80px;display:flex;align-items:center;
+                    justify-content:center;font-size:11px;color:#9CA3AF">이미지 영역</div>
+        <div style="padding:10px 12px">
+          <div style="font-size:13px;font-weight:700;color:#2F3133;margin-bottom:2px">제주 오션뷰 독채</div>
+          <div style="font-size:11px;color:#757B80">제주 · 4박5일</div>
+          <div style="font-size:12px;font-weight:700;color:#FF5900;margin-top:6px">₩ 180,000 / 박</div>
+        </div>
+      </div>
+      <pre class="code" style="font-size:11px;padding:12px"><span class="cm">/* 카드 배경 */</span>
+<span class="ck">bg</span>/surface
+
+<span class="cm">/* 카드 테두리 */</span>
+<span class="ck">border</span>/default
+
+<span class="cm">/* 숙소명 */</span>
+<span class="ck">text</span>/title
+
+<span class="cm">/* 위치·기간 */</span>
+<span class="ck">text</span>/sub
+
+<span class="cm">/* 가격 */</span>
+<span class="ck">text</span>/brand</pre>
+    </div>
+
+    <!-- 검색창 -->
+    <div class="card">
+      <div class="card-eyebrow ey-tip">Input</div>
+      <h3>검색창 / 입력폼</h3>
+      <div style="margin:12px 0">
+        <div style="background:#F2F8FC;border:1px solid #E8EEF2;border-radius:8px;
+                    padding:10px 14px;font-size:13px;color:#A4ADB2;margin-bottom:8px">
+          🔍  어디로 여행가세요?
+        </div>
+        <div style="background:#F2F8FC;border:2px solid #FF5900;border-radius:8px;
+                    padding:10px 14px;font-size:13px;color:#2F3133">
+          제주도
+        </div>
+        <div style="font-size:11px;color:#BBC5CC;margin-top:4px;padding-left:4px">포커스 상태</div>
+      </div>
+      <pre class="code" style="font-size:11px;padding:12px"><span class="cm">/* 입력창 배경 */</span>
+<span class="ck">bg</span>/input
+
+<span class="cm">/* 기본 테두리 */</span>
+<span class="ck">border</span>/default
+
+<span class="cm">/* 포커스 테두리 */</span>
+<span class="ck">border</span>/focus
+
+<span class="cm">/* placeholder */</span>
+<span class="ck">text</span>/placeholder
+
+<span class="cm">/* 입력된 텍스트 */</span>
+<span class="ck">text</span>/body</pre>
+    </div>
+  </div>
+
+  <!-- 상태 배지 -->
+  <div class="card" style="margin-top:14px">
+    <div class="card-eyebrow ey-tip">Status Badge</div>
+    <h3>예약 상태 배지</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0">
+      <div style="background:#FAFFF0;color:#4D6E1E;padding:5px 12px;border-radius:20px;
+                  font-size:12px;font-weight:600">✓ 예약 완료</div>
+      <div style="background:#FFAF85;color:#662400;padding:5px 12px;border-radius:20px;
+                  font-size:12px;font-weight:600">⏰ 마감 임박</div>
+      <div style="background:#E8EEF2;color:#BBC5CC;padding:5px 12px;border-radius:20px;
+                  font-size:12px;font-weight:600">— 예약 불가</div>
+    </div>
+    <div class="grid3" style="margin-top:4px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:4px">예약 완료</div>
+        <div style="font-size:11px;color:var(--g400)">배경: <code class="tag">bg/success-subtle</code></div>
+        <div style="font-size:11px;color:var(--g400)">텍스트: <code class="tag">text/success</code></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:4px">마감 임박</div>
+        <div style="font-size:11px;color:var(--g400)">배경: <code class="tag">status/warning</code></div>
+        <div style="font-size:11px;color:var(--g400)">텍스트: <code class="tag">status/warning-text</code></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:4px">예약 불가</div>
+        <div style="font-size:11px;color:var(--g400)">배경: <code class="tag">bg/disabled</code></div>
+        <div style="font-size:11px;color:var(--g400)">텍스트: <code class="tag">text/disabled</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout c-tip" style="margin-top:24px">
+    <div class="callout-icon">🎯</div>
+    <div><strong>다음 단계:</strong> Variables 설정 완료 → 버튼·카드·입력창 컴포넌트 만들기 → Interactive Components로 hover/press 상태 연결 → Library 배포. 컬러 다음엔 <strong>Typography</strong>(폰트 크기, 행간, 자간)와 <strong>Spacing</strong>(여백 값)도 같은 방식으로 Variables에 추가하면 완전한 디자인 시스템이 됩니다.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — Typography
+════════════════════════════════════════════════ -->
+<div class="sec" id="typography">
+  <div class="sec-label">Step 6</div>
+  <div class="sec-title">Typography — Text Style + Number Variables</div>
+  <div class="sec-sub">웹(64px)과 모바일(36px)처럼 플랫폼별로 크기가 달라지는 문제는 <strong>Number Variables의 Modes</strong>로 해결합니다. Text Style은 굵기·행간·자간 등 고정 속성만 담고, 크기는 Variable이 자동으로 바꿔줍니다.</div>
+
+  <!-- 핵심 개념 -->
+  <div class="grid2" style="margin-bottom:28px">
+    <div class="card">
+      <div class="card-eyebrow ey-new">Number Variable + Modes</div>
+      <h3>폰트 크기 — 플랫폼별로 자동 변경</h3>
+      <p>하나의 변수에 Web / Mobile 두 개 값을 넣어두면, 프레임의 Mode를 바꾸는 것만으로 안에 있는 모든 텍스트 크기가 한 번에 바뀝니다.</p>
+      <div style="margin-top:12px;background:var(--g50);border-radius:8px;padding:12px;font-size:12px;font-family:'SF Mono',monospace">
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 12px;color:var(--g600)">
+          <span style="font-weight:700;color:var(--g800)">Variable</span><span style="font-weight:700;color:var(--g800)">Web</span><span style="font-weight:700;color:var(--g800)">Mobile</span>
+          <span>font/headline-l</span><span style="color:#1D4ED8">64</span><span style="color:#059669">36</span>
+          <span>font/headline-m</span><span style="color:#1D4ED8">56</span><span style="color:#059669">32</span>
+          <span>font/headline-s</span><span style="color:#1D4ED8">48</span><span style="color:#059669">28</span>
+          <span>font/title-1</span><span style="color:#1D4ED8">36</span><span style="color:#059669">24</span>
+          <span>font/title-2</span><span style="color:#1D4ED8">24</span><span style="color:#059669">20</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow ey-old">Text Style만 쓰는 경우</div>
+      <h3>Text Style — 고정 속성만 담기</h3>
+      <p>굵기(Bold/Regular), 행간(125%/140%/180%), 자간(-2.5%)처럼 <strong>플랫폼이 달라도 바뀌지 않는 값</strong>은 Text Style에 넣습니다.</p>
+      <ul class="list" style="margin-top:8px">
+        <li>Font weight → Text Style ✅</li>
+        <li>Line height → Text Style ✅</li>
+        <li>Letter spacing → Text Style ✅</li>
+        <li>Font size → <strong>Number Variable</strong> ✅</li>
+        <li>Color → <strong>Color Variable</strong> ✅</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout c-tip">
+    <div class="callout-icon">💡</div>
+    <div><strong>핵심 워크플로우:</strong> 웹 프레임은 Mode = "Web", 앱 프레임은 Mode = "Mobile"로 설정. 그러면 같은 Text Style + Variable을 써도 각 프레임에서 크기가 자동으로 달라집니다. 나중에 Headline L 크기를 바꾸고 싶으면 Variable 하나만 수정하면 웹/모바일 모두 반영됩니다.</div>
+  </div>
+
+  <!-- Collection 구조 -->
+  <h3 style="font-size:16px;font-weight:700;margin:32px 0 14px;color:var(--g900)">📐 03 Typography — Variable 구조</h3>
+  <div class="vtree" style="margin-bottom:24px">
+    <div class="vtree-header">
+      <span style="font-size:16px">📐</span>
+      <span class="coll-name">03 Typography</span>
+      <span class="coll-badge">Number type · Modes: Web / Mobile</span>
+    </div>
+    <div class="vtree-body">
+      <div class="vg-label"><span class="icon">▾</span>font/ <span style="font-size:10px;background:#EFF6FF;color:#1E40AF;padding:1px 6px;border-radius:3px;margin-left:4px;font-weight:500">Number Variable</span></div>
+
+      <!-- Hero -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Hero</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/hero</span>
+        <span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">Web: 128</span>
+        <span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">Mobile: 72</span>
+      </div>
+
+      <!-- Headline -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Headline</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/headline-l</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">64</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">36</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/headline-m</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">56</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">32</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/headline-s</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">48</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">28</span>
+      </div>
+
+      <!-- Title -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Title</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/title-1</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">36</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">24</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/title-2</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">24</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">20</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/title-3</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">20</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">18</span>
+      </div>
+
+      <!-- Label -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Label (Bold — 버튼, 탭, 칩)</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/label-l</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">18</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">16</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/label-m</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">16</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">14</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/label-s</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">14</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">12</span>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Body (Regular — 본문)</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/body-1</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">16</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">16</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/body-2</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">14</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">14</span>
+      </div>
+
+      <!-- Caption -->
+      <div style="padding:3px 18px 3px 36px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:.04em;text-transform:uppercase;background:var(--g50)">Caption (Regular — 보조 정보)</div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/caption-l</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">16</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">16</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/caption-m</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">14</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">14</span>
+      </div>
+      <div class="vi" style="display:grid;grid-template-columns:1fr auto auto;gap:0 24px">
+        <span class="vname">font/caption-s</span><span style="font-size:11px;color:#1D4ED8;font-family:'SF Mono',monospace">12</span><span style="font-size:11px;color:#059669;font-family:'SF Mono',monospace">12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Style 목록 -->
+  <h3 style="font-size:16px;font-weight:700;margin:0 0 14px;color:var(--g900)">🔤 Text Style 전체 목록</h3>
+  <div class="callout c-info" style="margin-bottom:16px">
+    <div class="callout-icon">ℹ️</div>
+    <div>Text Style에는 <strong>굵기, 행간, 자간만</strong> 설정합니다. 폰트 크기 칸은 일단 대표값(모바일 기준)으로 설정해두고, 실제 텍스트에 Variable을 바인딩하면 Mode에 따라 자동으로 바뀝니다.</div>
+  </div>
+
+  <table class="tok-table">
+    <tr>
+      <th>Text Style 이름</th>
+      <th>Weight</th>
+      <th>Line Height</th>
+      <th>Letter Spacing</th>
+      <th>함께 쓸 Color Variable</th>
+    </tr>
+    <!-- Headline -->
+    <tr class="tok-group-row"><td colspan="5">Headline — 주요 타이틀, 랜딩·섹션 헤더</td></tr>
+    <tr><td><code class="tag">Headline/L</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/title</code></td></tr>
+    <tr><td><code class="tag">Headline/M</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/title</code></td></tr>
+    <tr><td><code class="tag">Headline/S</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/title</code></td></tr>
+    <!-- Title -->
+    <tr class="tok-group-row"><td colspan="5">Title — 카드 제목, 섹션 소제목</td></tr>
+    <tr><td><code class="tag">Title/1</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/title</code></td></tr>
+    <tr><td><code class="tag">Title/2</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/title</code></td></tr>
+    <tr><td><code class="tag">Title/3</code></td><td>Bold 700</td><td>125%</td><td>-2.5%</td><td><code class="tag">text/body</code></td></tr>
+    <!-- Label -->
+    <tr class="tok-group-row"><td colspan="5">Label — 버튼, 탭, 칩, 배지 텍스트 (항상 Bold)</td></tr>
+    <tr><td><code class="tag">Label/L</code></td><td>Bold 700</td><td>24px</td><td>-2.5%</td><td>상황에 따라</td></tr>
+    <tr><td><code class="tag">Label/M</code></td><td>Bold 700</td><td>20px</td><td>-2.5%</td><td>상황에 따라</td></tr>
+    <tr><td><code class="tag">Label/S</code></td><td>Bold 700</td><td>20px</td><td>-2.5%</td><td>상황에 따라</td></tr>
+    <!-- Body -->
+    <tr class="tok-group-row"><td colspan="5">Body — 본문 텍스트, 설명, 리뷰 내용 (Regular)</td></tr>
+    <tr><td><code class="tag">Body/1</code></td><td>Regular 400</td><td>180%</td><td>-2.5%</td><td><code class="tag">text/body</code></td></tr>
+    <tr><td><code class="tag">Body/2</code></td><td>Regular 400</td><td>180%</td><td>-2.5%</td><td><code class="tag">text/body</code></td></tr>
+    <!-- Button -->
+    <tr class="tok-group-row"><td colspan="5">Button — 버튼 전용 (Label과 별도 관리 권장)</td></tr>
+    <tr><td><code class="tag">Button/1</code></td><td>Bold 700</td><td>24px</td><td>-2.5%</td><td><code class="tag">interactive/primary/text</code></td></tr>
+    <tr><td><code class="tag">Button/2</code></td><td>Bold 700</td><td>20px</td><td>-2.5%</td><td><code class="tag">interactive/primary/text</code></td></tr>
+    <tr><td><code class="tag">Button/3</code></td><td>Bold 700</td><td>20px</td><td>-2.5%</td><td><code class="tag">interactive/primary/text</code></td></tr>
+    <!-- Caption -->
+    <tr class="tok-group-row"><td colspan="5">Caption — 부가 정보, 날짜, 카운트, 태그 (Regular)</td></tr>
+    <tr><td><code class="tag">Caption/L</code></td><td>Regular 400</td><td>24px</td><td>-2.5%</td><td><code class="tag">text/caption</code></td></tr>
+    <tr><td><code class="tag">Caption/M</code></td><td>Regular 400</td><td>20px</td><td>-2.5%</td><td><code class="tag">text/caption</code></td></tr>
+    <tr><td><code class="tag">Caption/S</code></td><td>Regular 400</td><td>20px</td><td>-2.5%</td><td><code class="tag">text/caption</code></td></tr>
+  </table>
+
+  <!-- 실제 적용 방법 step by step -->
+  <h3 style="font-size:16px;font-weight:700;margin:36px 0 14px;color:var(--g900)">🛠 실제 설정 순서</h3>
+  <div class="howto">
+    <div class="ht-step">
+      <div class="ht-num">1</div>
+      <div class="ht-body">
+        <h3>03 Typography 컬렉션 만들기 + Modes 추가</h3>
+        <ol>
+          <li>Variables 패널 → <strong>+ Create collection</strong> → 이름: <code class="tag">03 Typography</code></li>
+          <li>우측 상단 <strong>Edit modes</strong> 클릭 → Mode 이름을 <code class="tag">Web</code> / <code class="tag">Mobile</code> 으로 변경</li>
+          <li><strong>+ Add variable → Number</strong></li>
+          <li>이름: <code class="tag">font/headline-l</code> → Web값: <code class="tag">64</code>, Mobile값: <code class="tag">36</code> 입력</li>
+          <li>위 목록의 모든 폰트 사이즈 변수를 추가</li>
+        </ol>
+        <div class="callout c-warn">
+          <div class="callout-icon">⚠️</div>
+          <div>Modes는 <strong>Figma Professional 이상</strong> 플랜에서 사용 가능합니다. Starter 플랜은 Mode가 1개(Default)만 지원돼서 이 기능을 쓸 수 없어요.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">2</div>
+      <div class="ht-body">
+        <h3>Text Style 만들기</h3>
+        <ol>
+          <li>임시 텍스트 레이어 만들고 → Font: Pretendard, Weight: Bold, Line height: 125%, Letter spacing: -2.5% 설정</li>
+          <li>우측 패널 Text 섹션 → <strong>4-dot 아이콘(⊞)</strong> 클릭 → <strong>+ Create Style</strong></li>
+          <li>이름: <code class="tag">Headline/L</code> 입력 → 저장</li>
+          <li>나머지 스타일 반복 생성</li>
+        </ol>
+        <div class="callout c-tip">
+          <div class="callout-icon">💡</div>
+          <div>Text Style 이름에 슬래시(/)를 쓰면 Figma에서 자동으로 폴더로 그룹화됩니다. <code class="tag">Headline/L</code>, <code class="tag">Headline/M</code>은 Headline 폴더 안에 묶여요.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">3</div>
+      <div class="ht-body">
+        <h3>텍스트 레이어에 Style + Variable 동시 적용</h3>
+        <ol>
+          <li>텍스트 레이어 선택 → 우측 Text 섹션에서 <strong>Headline/L</strong> 스타일 적용</li>
+          <li>Font size 숫자 칸 우클릭 → <strong>"Apply variable"</strong> → <code class="tag">font/headline-l</code> 선택</li>
+          <li>텍스트 Fill 색상 → Variable <code class="tag">text/title</code> 연결</li>
+        </ol>
+        <p style="margin-top:8px;font-size:13px;color:var(--g600)">이제 이 텍스트는 프레임의 Mode가 바뀌면 크기가 자동으로 변경됩니다.</p>
+      </div>
+    </div>
+
+    <div class="ht-step">
+      <div class="ht-num">4</div>
+      <div class="ht-body">
+        <h3>웹 프레임 / 앱 프레임에서 Mode 전환</h3>
+        <ol>
+          <li>웹 디자인 최상위 Frame 선택 → 우측 패널 Variables 섹션 → <code class="tag">03 Typography</code> → <strong>Web</strong> 선택</li>
+          <li>앱 디자인 최상위 Frame 선택 → 같은 방식으로 <strong>Mobile</strong> 선택</li>
+          <li>이제 두 프레임 안의 모든 텍스트 크기가 자동으로 달라집니다</li>
+        </ol>
+        <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px;background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:14px">
+            <div style="font-size:10px;font-weight:700;color:#1D4ED8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">🖥 Web Frame (Mode: Web)</div>
+            <div style="font-size:28px;font-weight:800;color:var(--g900);line-height:1.2">Headline L</div>
+            <div style="font-size:10px;color:var(--g400);margin-top:4px">font/headline-l → 64px 자동 적용</div>
+          </div>
+          <div style="flex:1;min-width:200px;background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:14px">
+            <div style="font-size:10px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">📱 App Frame (Mode: Mobile)</div>
+            <div style="font-size:20px;font-weight:800;color:var(--g900);line-height:1.2">Headline L</div>
+            <div style="font-size:10px;color:var(--g400);margin-top:4px">font/headline-l → 36px 자동 적용</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 언제 무엇을 쓸지 -->
+  <h3 style="font-size:16px;font-weight:700;margin:36px 0 14px;color:var(--g900)">🗂 언제 무엇을 써야 하나 — 한눈에 정리</h3>
+  <table class="tok-table">
+    <tr><th>속성</th><th>어디에 저장?</th><th>이유</th></tr>
+    <tr><td>Font size (크기)</td><td><code class="tag">Number Variable + Modes</code></td><td>플랫폼마다 다름 → Mode로 자동 전환</td></tr>
+    <tr><td>Font weight (굵기)</td><td><code class="tag">Text Style</code></td><td>Bold/Regular는 플랫폼 무관하게 고정</td></tr>
+    <tr><td>Line height (행간)</td><td><code class="tag">Text Style</code></td><td>125%/140%/180% 고정값</td></tr>
+    <tr><td>Letter spacing (자간)</td><td><code class="tag">Text Style</code></td><td>-2.5% 고정값</td></tr>
+    <tr><td>Color (색상)</td><td><code class="tag">Color Variable (Semantic)</code></td><td>컴포넌트 재사용성 위해 항상 토큰 사용</td></tr>
+  </table>
+</div>
+
+</div><!-- /page -->
+
+<nav style="position:static;margin-top:0;padding:20px 40px;border-top:1px solid var(--g200);border-bottom:none;background:#fff">
+  <span style="font-size:13px;color:var(--g400)">260310_디자인시스템_v01 기반 가이드</span>
+  <a href="color-scale.html" style="margin-left:16px;font-size:13px;color:var(--orange);text-decoration:none;font-weight:600">↗ Color Scale 미리보기</a>
+</nav>
+
+<script>
+  // Nav active state on scroll
+  const secs = document.querySelectorAll('.sec[id]');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        tabs.forEach(t => t.classList.toggle('on', t.getAttribute('href')==='#'+e.target.id));
+      }
+    });
+  },{threshold:0.25});
+  secs.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

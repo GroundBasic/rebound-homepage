@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Scales — Design System</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #EBEBEB;
+      min-height: 100vh;
+      padding: 56px 48px;
+    }
+
+    header {
+      margin-bottom: 48px;
+    }
+    header h1 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    header p {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    /* ── Section ───────────────────────────────────────────── */
+    .scale-section { margin-bottom: 56px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .section-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      color: #fff;
+    }
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+    .section-sub {
+      font-size: 12px;
+      color: #aaa;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ── Scale row ─────────────────────────────────────────── */
+    .scale-wrap {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .swatch {
+      flex: 1;
+      border-radius: 10px;
+      overflow: visible;
+      position: relative;
+      transition: transform 0.15s;
+      cursor: default;
+    }
+    .swatch:hover { transform: translateY(-4px); }
+    .swatch.brand { transform: translateY(-6px); }
+    .swatch.brand:hover { transform: translateY(-10px); }
+
+    .color-block {
+      height: 80px;
+      border-radius: 10px 10px 0 0;
+      position: relative;
+    }
+    .brand-dot {
+      display: none;
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .swatch.brand .brand-dot { display: block; }
+
+    .info-block {
+      background: #F7F7F7;
+      border-radius: 0 0 10px 10px;
+      padding: 10px 8px;
+    }
+    .step-num {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+    .hex-code {
+      font-size: 10px;
+      color: #999;
+      margin-top: 2px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-top: 5px;
+      letter-spacing: 0.02em;
+    }
+    .badge-aaa  { background: #D1FAE5; color: #065F46; }
+    .badge-aa   { background: #DBEAFE; color: #1E40AF; }
+    .badge-fail { background: #F3F3F3; color: #BBBBBB; }
+
+    .copy-btn {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 4px 0;
+      background: #EFEFEF;
+      border: none;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: background 0.1s, color 0.1s;
+    }
+    .copy-btn:hover  { background: #E2E2E2; color: #444; }
+    .copy-btn.copied { background: #D1FAE5; color: #065F46; }
+
+    /* ── Bottom cards ──────────────────────────────────────── */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .card h2 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .card-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+    .card-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .card-label { font-size: 12px; color: #444; }
+    .card-label strong { font-weight: 600; color: #1a1a1a; }
+    .card-label small {
+      display: block;
+      font-size: 10px;
+      color: #aaa;
+      font-family: 'SF Mono', monospace;
+    }
+    .ratio-pill {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .ratio-aaa  { background: #D1FAE5; color: #065F46; }
+    .ratio-aa   { background: #DBEAFE; color: #1E40AF; }
+    .ratio-fail { background: #F3F3F3; color: #BBBBBB; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Design System</h1>
+  <p>Color Scales</p>
+</header>
+
+<div id="app"></div>
+
+<script>
+  // ── OKLab interpolation ───────────────────────────────────────
+  function linearize(c) {
+    return c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+  }
+  function gammify(c) {
+    return c <= 0.0031308 ? 12.92*c : 1.055*Math.pow(c, 1/2.4) - 0.055;
+  }
+  function hexToOklab(hex) {
+    const r = linearize(parseInt(hex.slice(1,3),16)/255);
+    const g = linearize(parseInt(hex.slice(3,5),16)/255);
+    const b = linearize(parseInt(hex.slice(5,7),16)/255);
+    const l = Math.cbrt(0.4122214708*r + 0.5363325363*g + 0.0514459929*b);
+    const m = Math.cbrt(0.2119034982*r + 0.6806995451*g + 0.1073969566*b);
+    const s = Math.cbrt(0.0883024619*r + 0.2817188376*g + 0.6299787005*b);
+    return [
+      0.2104542553*l + 0.7936177850*m - 0.0040720468*s,
+      1.9779984951*l - 2.4285922050*m + 0.4505937099*s,
+      0.0259040371*l + 0.7827717662*m - 0.8086757660*s,
+    ];
+  }
+  function oklabToHex(L, a, b) {
+    const l_ = L + 0.3963377774*a + 0.2158037573*b;
+    const m_ = L - 0.1055613458*a - 0.0638541728*b;
+    const s_ = L - 0.0894841775*a - 1.2914855480*b;
+    const r  =  4.0767416621*l_**3 - 3.3077115913*m_**3 + 0.2309699292*s_**3;
+    const g  = -1.2684380046*l_**3 + 2.6097574011*m_**3 - 0.3413193965*s_**3;
+    const bv = -0.0041960863*l_**3 - 0.7034186147*m_**3 + 1.7076147010*s_**3;
+    const h  = c => Math.round(Math.max(0,Math.min(1,gammify(c)))*255).toString(16).padStart(2,'0').toUpperCase();
+    return '#' + h(r) + h(g) + h(bv);
+  }
+  function lerpOklab(hex1, hex2, t) {
+    const [L1,a1,b1] = hexToOklab(hex1);
+    const [L2,a2,b2] = hexToOklab(hex2);
+    return oklabToHex(L1+(L2-L1)*t, a1+(a2-a1)*t, b1+(b2-b1)*t);
+  }
+
+  // ── WCAG helpers ──────────────────────────────────────────────
+  function toLinear(c) {
+    const v = c/255;
+    return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  }
+  function luminance(hex) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return 0.2126*toLinear(r) + 0.7152*toLinear(g) + 0.0722*toLinear(b);
+  }
+  function contrast(hex1, hex2) {
+    const l1 = luminance(hex1), l2 = luminance(hex2);
+    return (Math.max(l1,l2)+0.05) / (Math.min(l1,l2)+0.05);
+  }
+  function wcagLevel(ratio) {
+    if (ratio >= 7)   return 'aaa';
+    if (ratio >= 4.5) return 'aa';
+    return 'fail';
+  }
+  function badgeHtml(ratio) {
+    const lvl = wcagLevel(ratio);
+    const label = lvl === 'fail'
+      ? ratio.toFixed(1)+':1'
+      : lvl.toUpperCase()+' '+ratio.toFixed(1)+':1';
+    return `<span class="badge badge-${lvl}">${label}</span>`;
+  }
+  function isLight(hex) { return luminance(hex) > 0.179; }
+
+  // ── Scale configs ─────────────────────────────────────────────
+  const SCALES = [
+    {
+      id:        'primary',
+      label:     'Primary',
+      name:      'Orange',
+      brand:     '#FF5900',
+      brandStep: 50,
+      steps:     [0,5,10,20,30,40,50,60,70,80,90,100],
+      hoverStep: 40,
+      pressStep: 60,
+      getColor(step) {
+        if (step ===   0) return '#FFFFFF';
+        if (step === 100) return '#000000';
+        if (step <=   50) return lerpOklab('#FFFFFF', this.brand, step/50);
+        return lerpOklab(this.brand, '#000000', Math.pow((step-50)/40, 1.5)*0.55);
+      }
+    },
+    {
+      id:        'secondary',
+      label:     'Secondary',
+      name:      'Green',
+      brand:     '#C7F64F',
+      brandStep: 400,
+      steps:     [50,100,200,300,400,500,600,700,800,900],
+      hoverStep: 300,
+      pressStep: 500,
+      getColor(step) {
+        if (step <= 400) return lerpOklab('#FFFFFF', this.brand, step/400);
+        return lerpOklab(this.brand, '#000000', Math.pow((step-400)/500, 1.5)*0.55);
+      }
+    },
+    {
+      id:        'neutral',
+      label:     'Neutral',
+      name:      'Blue Gray',
+      brand:     '#607D8B',
+      brandStep: 500,
+      steps:     [50,100,200,300,400,500,600,700,800,900],
+      hoverStep: 400,
+      pressStep: 600,
+      _palette:  {
+        50:'#ECEFF1', 100:'#CFD8DC', 200:'#B0BEC5', 300:'#90A4AE',
+        400:'#78909C', 500:'#607D8B', 600:'#546E7A', 700:'#455A64',
+        800:'#37474F', 900:'#263238'
+      },
+      getColor(step) { return this._palette[step]; }
+    },
+    {
+      id:        'gray',
+      label:     'Neutral',
+      name:      'Gray',
+      brand:     '#8C9499',
+      brandStep: 500,
+      steps:     [0,100,200,300,400,500,600,700,800,900,1000,1100],
+      hoverStep: 400,
+      pressStep: 600,
+      _palette:  {
+        0:'#FFFFFF', 100:'#F2F8FC', 200:'#E8EEF2', 300:'#BBC5CC',
+        400:'#A4ADB2', 500:'#8C9499', 600:'#757B80', 700:'#5E6366',
+        800:'#464A4D', 900:'#2F3133', 1000:'#17191A', 1100:'#000000'
+      },
+      getColor(step) { return this._palette[step]; }
+    },
+    {
+      id:        'blue',
+      label:     'Extended',
+      name:      'Blue',
+      brand:     '#009DFF',
+      brandStep: 50,
+      steps:     [0,5,10,20,30,40,50,60,70,80,90,100],
+      hoverStep: 40,
+      pressStep: 60,
+      getColor(step) {
+        if (step ===   0) return '#FFFFFF';
+        if (step === 100) return '#000000';
+        if (step <=   50) return lerpOklab('#FFFFFF', this.brand, step/50);
+        return lerpOklab(this.brand, '#000000', Math.pow((step-50)/40, 1.5)*0.55);
+      }
+    },
+    {
+      id:        'teal',
+      label:     'Extended',
+      name:      'Teal',
+      brand:     '#C0FFF9',
+      brandStep: 30,
+      steps:     [0,5,10,20,30,40,50,60,70,80,90,100],
+      hoverStep: 20,
+      pressStep: 40,
+      getColor(step) {
+        if (step ===   0) return '#FFFFFF';
+        if (step === 100) return '#000000';
+        // teal brand(#C0FFF9)은 매우 밝은 색이므로 step 30 기준으로 보간
+        if (step <=   30) return lerpOklab('#FFFFFF', this.brand, step/30);
+        return lerpOklab(this.brand, '#000000', ((step-30)/60) * 0.75);
+      }
+    }
+  ];
+
+  // ── Build each scale ──────────────────────────────────────────
+  const app = document.getElementById('app');
+
+  SCALES.forEach(scale => {
+    // Build color list
+    const colors = scale.steps.map(step => ({
+      step,
+      hex: scale.getColor(step),
+      brand: step === scale.brandStep
+    }));
+
+    const brandColor   = colors.find(c => c.brand).hex;
+    const hoverColor   = colors.find(c => c.step === scale.hoverStep).hex;
+    const pressColor   = colors.find(c => c.step === scale.pressStep).hex;
+    const btnTextColor = isLight(brandColor)
+      ? colors[colors.length - 1].hex   // darkest shade for light brand
+      : '#FFFFFF';
+    const dotTextColor = isLight(brandColor) ? colors[colors.length - 2].hex : '#FFFFFF';
+
+    // ── Section wrapper
+    const section = document.createElement('div');
+    section.className = 'scale-section';
+
+    // ── Section header
+    section.innerHTML = `
+      <div class="section-header">
+        <span class="section-tag" style="background:${brandColor};color:${btnTextColor}">${scale.label}</span>
+        <span class="section-title">${scale.name}</span>
+        <span class="section-sub">${scale.brand} · step ${scale.brandStep}</span>
+      </div>
+    `;
+
+    // ── Scale row
+    const scaleWrap = document.createElement('div');
+    scaleWrap.className = 'scale-wrap';
+
+    colors.forEach(({ step, hex, brand }) => {
+      const ratioW = contrast(hex, '#FFFFFF');
+      const el = document.createElement('div');
+      el.className = 'swatch' + (brand ? ' brand' : '');
+      el.innerHTML = `
+        <div class="color-block" style="background:${hex}">
+          ${brand ? `<span class="brand-dot" style="background:${isLight(hex)?'rgba(0,0,0,0.12)':'rgba(255,255,255,0.2)'};color:${dotTextColor}">${scale.label}</span>` : ''}
+        </div>
+        <div class="info-block">
+          <div class="step-num">${step}</div>
+          <div class="hex-code">${hex}</div>
+          ${badgeHtml(ratioW)}
+          <button class="copy-btn" data-hex="${hex}">복사</button>
+        </div>
+      `;
+      scaleWrap.appendChild(el);
+    });
+    section.appendChild(scaleWrap);
+
+    // ── Cards
+    const cards = document.createElement('div');
+    cards.className = 'cards';
+
+    // Contrast vs White
+    const cwCard = document.createElement('div');
+    cwCard.className = 'card';
+    cwCard.innerHTML = `<h2>Contrast — White BG</h2>` +
+      colors.filter(c => c.step >= scale.brandStep).map(({ step, hex }) => {
+        const r   = contrast(hex, '#FFFFFF');
+        const lvl = wcagLevel(r);
+        return `<div class="card-row">
+          <div class="card-swatch" style="background:${hex};border:1px solid #eee"></div>
+          <div class="card-label"><strong>${step}</strong><small>${hex}</small></div>
+          <span class="ratio-pill ratio-${lvl}">${r.toFixed(2)}:1</span>
+        </div>`;
+      }).join('');
+    cards.appendChild(cwCard);
+
+    // Contrast vs Black
+    const cbCard = document.createElement('div');
+    cbCard.className = 'card';
+    cbCard.innerHTML = `<h2>Contrast — Black BG</h2>` +
+      colors.filter(c => c.step <= scale.brandStep).map(({ step, hex }) => {
+        const r   = contrast(hex, '#000000');
+        const lvl = wcagLevel(r);
+        return `<div class="card-row">
+          <div class="card-swatch" style="background:${hex};border:1px solid #eee"></div>
+          <div class="card-label"><strong>${step}</strong><small>${hex}</small></div>
+          <span class="ratio-pill ratio-${lvl}">${r.toFixed(2)}:1</span>
+        </div>`;
+      }).join('');
+    cards.appendChild(cbCard);
+
+    // Usage Preview
+    const pvCard = document.createElement('div');
+    pvCard.className = 'card';
+    const lightBg  = colors.find(c => c.step === scale.steps[1]).hex;
+    const darkText  = colors[colors.length - 2].hex;
+    const borderCol = colors.find(c => c.step === scale.steps[Math.floor(scale.steps.length/2) - 1]).hex;
+    pvCard.innerHTML = `
+      <h2>Usage Preview</h2>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button id="demo-btn-${scale.id}" style="
+          background:${brandColor};color:${btnTextColor};
+          padding:10px 16px;border-radius:8px;
+          font-weight:600;font-size:13px;
+          border:none;cursor:pointer;width:100%;
+          transition:background 0.12s ease,transform 0.08s ease;
+          user-select:none;
+        ">${scale.name} Button</button>
+
+        <div style="display:flex;gap:6px">
+          ${[
+            { label:'Default', bg: brandColor,  color: btnTextColor },
+            { label:'Hover',   bg: hoverColor,  color: btnTextColor },
+            { label:'Press',   bg: pressColor,  color: isLight(pressColor) ? btnTextColor : '#FFFFFF' },
+          ].map(s => `
+            <div style="flex:1;background:${s.bg};border-radius:6px;padding:8px;text-align:center">
+              <div style="font-size:9px;color:${s.color}88;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">${s.label}</div>
+              <div style="font-size:9px;font-family:monospace;color:${s.color}">${s.bg}</div>
+            </div>`).join('')}
+        </div>
+
+        <div style="background:${lightBg};color:${darkText};padding:10px 16px;border-radius:8px;font-size:13px;">
+          Light Background · Dark Text
+        </div>
+        <div style="background:white;border:1.5px solid ${borderCol};color:${darkText};padding:9px 16px;border-radius:8px;font-size:13px;">
+          Outlined Variant
+        </div>
+
+        <div style="display:flex;gap:4px;margin-top:2px">
+          ${colors.filter(c => c.step !== scale.steps[0] && c.step !== scale.steps[scale.steps.length-1]).map(c =>
+            `<div style="flex:1;height:20px;border-radius:3px;background:${c.hex}" title="${c.step} · ${c.hex}"></div>`
+          ).join('')}
+        </div>
+      </div>
+    `;
+    cards.appendChild(pvCard);
+    section.appendChild(cards);
+    app.appendChild(section);
+
+    // Copy buttons
+    scaleWrap.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.hex).then(() => {
+          btn.textContent = '복사됨 ✓';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+
+    // Button interaction
+    const demoBtn = document.getElementById(`demo-btn-${scale.id}`);
+    demoBtn.addEventListener('mouseenter',  () => { demoBtn.style.background = hoverColor; demoBtn.style.transform = 'translateY(-1px)'; });
+    demoBtn.addEventListener('mouseleave',  () => { demoBtn.style.background = brandColor; demoBtn.style.transform = 'translateY(0)'; });
+    demoBtn.addEventListener('mousedown',   () => { demoBtn.style.background = pressColor; demoBtn.style.transform = 'translateY(1px)'; });
+    demoBtn.addEventListener('mouseup',     () => { demoBtn.style.background = hoverColor; demoBtn.style.transform = 'translateY(-1px)'; });
+  });
+</script>
+</body>
+</html>

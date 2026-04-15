@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>리바운드 — 개인 채권 회수</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:     #FF6D24;
+      --orange-dim: rgba(255,109,36,0.08);
+      --orange-border: rgba(255,109,36,0.2);
+      --white:      #ffffff;
+      --off:        #F5F6F5;
+      --off2:       #ECEEED;
+      --border:     #E4E7E4;
+      --text:       #111827;
+      --text2:      #4B5563;
+      --text3:      #9CA3AF;
+      --navy:       #111827;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    /* ── GNB ── */
+    .gnb {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 64px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .gnb-inner {
+      max-width: 1256px; margin: 0 auto;
+      padding: 0 48px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .gnb-left { display: flex; align-items: center; gap: 28px; }
+    .gnb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .toggle-pill {
+      display: flex;
+      background: var(--off);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 3px;
+    }
+    .toggle-pill a {
+      padding: 5px 16px; border-radius: 16px;
+      font-size: 13px; font-weight: 500;
+      text-decoration: none; color: var(--text3);
+      transition: all 0.2s;
+    }
+    .toggle-pill a.on { background: var(--orange); color: #fff; font-weight: 700; }
+    .gnb-nav { display: flex; gap: 24px; align-items: center; }
+    .gnb-nav { gap: 4px; }
+    .gnb-nav a { font-size: 14px; color: #302622; font-weight: 600; text-decoration: none; padding: 7px 13px; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .gnb-nav a:hover { background: #F1F5F7; color: #17191A; }
+    .gnb-nav-active { background: none !important; color: var(--orange) !important; font-weight: 800; }
+    .gnb-actions { display: flex; align-items: center; gap: 4px; }
+    .gnb-login { font-size: 14px; color: #302622; text-decoration: none; padding: 7px 13px; border-radius: 8px; font-weight: 600; transition: background 0.15s, color 0.15s; }
+    .gnb-login:hover { background: #F1F5F7; color: #17191A; }
+    a.gnb-start {
+      background: var(--orange); color: #fff !important;
+      font-size: 14px; font-weight: 600;
+      padding: 7px 13px; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s;
+      white-space: nowrap;    }
+    a.gnb-start:hover { opacity: 0.85; }
+
+    /* ── BIZ HINT ── */
+    .biz-hint-wrap { position: relative; }
+    .biz-hint {
+      position: absolute; top: calc(100% + 12px); left: auto; right: 0;
+      background: #1B1F26; border-radius: 14px;
+      padding: 14px 40px 14px 16px; width: 272px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
+      opacity: 0; pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 300;
+    }
+    .biz-hint.visible { opacity: 1; pointer-events: auto; transform: translateY(0); animation: bizFloat 2.8s ease-in-out infinite; }
+    @keyframes bizFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .biz-hint::before {
+      content: ''; position: absolute; top: -7px; right: 28px; left: auto;
+      width: 14px; height: 8px; background: #1B1F26;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .biz-hint-close {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none; color: rgba(255,255,255,0.45);
+      font-size: 16px; line-height: 1; cursor: pointer;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    .biz-hint-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .biz-hint-link { text-decoration: none; display: block; }
+    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .biz-hint-desc { display: block; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; white-space: nowrap; }
+    .biz-hint-desc strong { font-weight: 700; color: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: #ffffff;
+      padding: 160px 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-glow { display: none; }
+    .hero-inner {
+      max-width: 1160px; margin: 0 auto;
+      padding: 0 48px;
+      text-align: center;
+      position: relative; z-index: 2;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--orange-dim);
+      border: 1px solid var(--orange-border);
+      color: var(--orange);
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 20px;
+      margin-bottom: 28px; letter-spacing: 0.3px;
+    }
+    .hero-tag::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--orange);
+    }
+    .hero h1 {
+      font-size: 56px; font-weight: 800;
+      color: var(--text); line-height: 1.17;
+      letter-spacing: -2px; margin-bottom: 22px;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange); }
+    .hero-desc {
+      font-size: 17px; color: var(--text2);
+      line-height: 1.75; max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions {
+      display: flex; justify-content: center;
+      gap: 12px; margin-bottom: 60px;
+    }
+    .btn-orange {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--orange); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px 26px; border-radius: 9px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-orange:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      font-size: 15px; font-weight: 500;
+      padding: 14px 26px; border-radius: 9px;
+      text-decoration: none; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text3); color: var(--text); }
+
+    /* ── Hero blob background (bottom half of hero) ── */
+    .hero-blob-bg {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 62%;
+      z-index: 0;
+      overflow: hidden;
+      -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 30%);
+      mask: linear-gradient(to bottom, transparent 0%, #000 30%);
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px);
+    }
+    .hero-blob.hb1 {
+      width: 700px; height: 540px;
+      background: rgba(0,157,255,0.24);
+      top: -80px; left: -180px;
+      animation: blob1 9s ease-in-out infinite;
+    }
+    .hero-blob.hb2 {
+      width: 540px; height: 480px;
+      background: rgba(255,109,36,0.18);
+      top: 20px; right: -80px;
+      animation: blob2 7s ease-in-out infinite;
+    }
+    .hero-blob.hb3 {
+      width: 480px; height: 400px;
+      background: rgba(52,199,89,0.16);
+      bottom: -80px; left: 25%;
+      animation: blob3 11s ease-in-out infinite;
+    }
+    .hero-blob.hb4 {
+      width: 360px; height: 320px;
+      background: rgba(180,100,255,0.13);
+      top: 40px; left: 40%;
+      animation: blob4 8s ease-in-out infinite;
+    }
+    /* blob1 · blob3: 가까워지다 합쳐지는 느낌 */
+    @keyframes blob1 {
+      0%,100% { transform: translate(0,0)      scale(1);    border-radius: 50%; }
+      30%      { transform: translate(120px, 60px) scale(1.18); border-radius: 44% 56% 60% 40%/50% 44% 56% 50%; }
+      60%      { transform: translate(60px,-40px)  scale(0.88); border-radius: 60% 40% 44% 56%/40% 60% 44% 56%; }
+    }
+    @keyframes blob2 {
+      0%,100% { transform: translate(0,0)       scale(1);    border-radius: 50%; }
+      25%      { transform: translate(-100px, 40px) scale(1.22); border-radius: 56% 44% 38% 62%/48% 56% 44% 52%; }
+      55%      { transform: translate(-40px,-60px)  scale(0.85); border-radius: 40% 60% 56% 44%/60% 40% 56% 44%; }
+      80%      { transform: translate(-140px, 20px) scale(1.1);  border-radius: 50%; }
+    }
+    /* blob3 · blob4: 하나로 합쳐졌다 갈라지는 느낌 */
+    @keyframes blob3 {
+      0%,100% { transform: translate(0,0)      scale(1);    border-radius: 50%; }
+      35%      { transform: translate(80px,-80px) scale(1.3);  border-radius: 50% 50% 30% 70%/60% 40% 60% 40%; }
+      65%      { transform: translate(-60px,50px) scale(0.8);  border-radius: 70% 30% 50% 50%/40% 60% 40% 60%; }
+    }
+    @keyframes blob4 {
+      0%,100% { transform: translate(0,0)        scale(1);    border-radius: 50%; }
+      40%      { transform: translate(-90px, 80px) scale(1.35); border-radius: 30% 70% 50% 50%/50% 50% 70% 30%; }
+      70%      { transform: translate(60px, 30px)  scale(0.78); border-radius: 50%; }
+    }
+
+    /* ── Hero mockup — floating glass notifications ── */
+    .hero-mockup {
+      position: relative;
+      height: 340px;
+      max-width: 1160px;
+      margin: 0 auto;
+      pointer-events: none;
+      z-index: 2;
+    }
+    @keyframes float-1 {
+      0%,100% { transform: translateY(0px) rotate(-1.5deg); }
+      50%      { transform: translateY(-8px) rotate(-0.8deg); }
+    }
+    @keyframes float-2 {
+      0%,100% { transform: translateY(0px) rotate(0deg); }
+      50%      { transform: translateY(-10px) rotate(0.4deg); }
+    }
+    @keyframes float-3 {
+      0%,100% { transform: translateY(0px) rotate(0deg); }
+      40%      { transform: translateY(-7px) rotate(-0.3deg); }
+    }
+    @keyframes float-4 {
+      0%,100% { transform: translateY(0px) rotate(-0.5deg); }
+      55%      { transform: translateY(-9px) rotate(0.5deg); }
+    }
+    @keyframes float-5 {
+      0%,100% { transform: translateY(0px) rotate(1.5deg); }
+      45%      { transform: translateY(-6px) rotate(0.8deg); }
+    }
+
+    /* iOS-style notification card */
+    .notif-card {
+      position: absolute;
+      background: rgba(236,236,240,0.78);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255,255,255,0.90);
+      border-radius: 26px;
+      padding: 16px 22px 16px 16px;
+      display: flex; gap: 14px; align-items: center;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      white-space: nowrap;
+      min-width: 300px;
+    }
+    /* 리바운드 앱 아이콘 — 흰색 배경 + 오렌지 로고 */
+    .nc-icon {
+      width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+      position: relative; flex-shrink: 0;
+    }
+    /* 리바운드 로고 — 오렌지 부메랑/체크 모양 SVG */
+    .nc-icon svg {
+      width: 26px; height: 26px;
+    }
+    .nc-body { flex: 1; min-width: 0; text-align: left; }
+    .nc-app  { font-size: 13px; font-weight: 700; color: #1C1C1E; margin-bottom: 3px; }
+    .nc-title{ font-size: 14px; font-weight: 400; color: #3C3C43; line-height: 1.4; }
+    .nc-time { font-size: 12px; color: #8E8E93; flex-shrink: 0; align-self: flex-start; margin-top: 1px; text-align: left; }
+    .nc-amount {
+      font-size: 14px; font-weight: 700; color: #16A34A;
+      letter-spacing: -0.3px; white-space: nowrap; align-self: center; margin-left: 4px;
+    }
+
+    /* ── SECTION COMMON ── */
+    .section { padding: 100px 48px; }
+    .section.off { background: var(--off); }
+    .section.off2 { background: var(--off2); }
+    .section-inner { max-width: 1160px; margin: 0 auto; }
+    .eyebrow {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 14px;
+    }
+    .eyebrow.center { text-align: center; }
+    .h2 {
+      font-size: 40px; font-weight: 800;
+      letter-spacing: -1.2px; line-height: 1.18;
+      color: var(--text);
+    }
+    .h2.white { color: #fff; }
+    .h2.center { text-align: center; }
+    .body-text { font-size: 16px; color: var(--text2); line-height: 1.75; }
+
+    /* ── PAIN ── */
+    .pain-split {
+      display: grid; grid-template-columns: 400px 1fr;
+      gap: 80px; align-items: start; padding-top: 8px;
+    }
+    .pain-left { }
+    .pain-left .h2 { margin-bottom: 20px; }
+    .pain-left p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 32px; }
+    .pain-right { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+    .pain-row {
+      display: flex; align-items: flex-start; gap: 18px;
+      padding: 24px 24px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .pain-row:hover {
+      border-color: var(--orange-border);
+      box-shadow: 0 4px 20px rgba(255,109,36,0.06);
+      transform: translateX(4px);
+    }
+    .pain-icon {
+      width: 44px; height: 44px; background: var(--off);
+      border-radius: 12px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .pain-text h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .pain-text p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    /* Quote card */
+    .pain-quote {
+      background: var(--off); border-radius: 16px; padding: 24px;
+      border: 1.5px solid var(--border);
+    }
+    .pain-quote-mark { font-size: 28px; color: var(--orange); font-family: Georgia, serif; line-height: 1; margin-bottom: 8px; display: block; }
+    .pain-quote p { font-size: 15px; color: var(--text2); line-height: 1.7; font-style: italic; }
+    .pain-quote-person { font-size: 12px; color: var(--text3); margin-top: 10px; }
+
+    /* ── YOUTUBE ── */
+    .yt-wrap {
+      background: var(--text);
+      border-radius: 24px; overflow: hidden;
+      position: relative;
+    }
+    .yt-head {
+      padding: 48px 56px 40px;
+    }
+    .yt-eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: rgba(255,109,36,0.75); margin-bottom: 14px;
+    }
+    .yt-head h2 {
+      font-size: 36px; font-weight: 800; color: #fff;
+      letter-spacing: -1.2px; line-height: 1.2; margin-bottom: 0;
+    }
+    .yt-head h2 em { font-style: normal; color: var(--orange); }
+    .yt-embed-wrap {
+      position: relative; padding-bottom: 52%; height: 0; overflow: hidden;
+    }
+    .yt-embed-wrap iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+    }
+
+    /* ── HOW IT WORKS (process split) ── */
+    .process-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .process-left .h2 { margin-bottom: 14px; }
+    .process-left > p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 40px; }
+    .proc-steps { display: flex; flex-direction: column; gap: 0; margin: 0 -16px; }
+    .proc-step {
+      display: flex; gap: 16px;
+      padding: 16px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      align-items: flex-start;
+      transition: background 0.2s;
+    }
+    .proc-step + .proc-step { border-top: 1px solid var(--border); border-radius: 0; }
+    .proc-step:first-child { border-radius: 12px 12px 0 0; }
+    .proc-step:last-child { border-radius: 0 0 12px 12px; }
+    .proc-step:hover:not(.active) { background: rgba(0,0,0,0.02); }
+    .proc-step.active { background: var(--navy); border-color: transparent !important; border-radius: 12px !important; }
+    .proc-step.active + .proc-step { border-top-color: transparent; }
+    .proc-num {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--off);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--text3);
+      flex-shrink: 0; margin-top: 2px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .proc-step.active .proc-num { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .proc-body h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; transition: color 0.2s; }
+    .proc-step.active .proc-body h4 { color: #fff; }
+    .proc-body p { font-size: 13px; color: var(--text2); line-height: 1.6; transition: color 0.2s; }
+    .proc-step.active .proc-body p { color: rgba(255,255,255,0.5); }
+    .process-right { position: relative; height: 460px; }
+    .proc-panel {
+      position: absolute; inset: 0;
+      display: none;
+      animation: procFadeIn 0.25s ease;
+    }
+    .proc-panel.active { display: flex; flex-direction: column; }
+    @keyframes procFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .proc-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    }
+    .proc-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--white));
+      pointer-events: none;
+    }
+    .proc-card-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .proc-card-title { font-size: 13px; font-weight: 700; color: var(--text3); }
+    .proc-tag-orange {
+      font-size: 11px; padding: 3px 10px; border-radius: 8px;
+      background: rgba(255,109,36,0.10); color: var(--orange); font-weight: 700;
+    }
+
+    /* Inner mockups for each how-step */
+    /* Step 1: form input */
+    .step-form { display: flex; flex-direction: column; gap: 8px; }
+    .step-form-row { display: flex; flex-direction: column; gap: 4px; }
+    .step-form-label { font-size: 10px; font-weight: 600; color: var(--text3); }
+    .step-form-input {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 9px 12px;
+      font-size: 12px; color: var(--text2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .step-form-input.filled { border-color: var(--orange-border); color: var(--text); font-weight: 600; }
+    .step-form-input .check { color: var(--orange); font-size: 11px; font-weight: 800; }
+
+    /* Step 2: alimtalk */
+    .alimtalk-card {
+      background: var(--white); border-radius: 12px;
+      padding: 14px; border: 1.5px solid var(--border);
+    }
+    .at-sender {
+      display: flex; align-items: center; gap: 7px;
+      margin-bottom: 10px;
+    }
+    .at-sender-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: #3A1D96; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: #FAE100; flex-shrink: 0;
+    }
+    .at-sender-info { display: flex; flex-direction: column; }
+    .at-sender-name { font-size: 11px; font-weight: 700; color: var(--text); }
+    .at-sender-sub { font-size: 10px; color: var(--text3); }
+    .at-body { font-size: 11px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+    .at-amount-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--off); border-radius: 8px; padding: 8px 10px;
+      margin-bottom: 10px;
+    }
+    .at-amount-label { font-size: 10px; color: var(--text3); }
+    .at-amount-val { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .at-btn {
+      background: #FAE100; border-radius: 7px; padding: 9px;
+      text-align: center; font-size: 11px; font-weight: 800; color: #1A1714;
+    }
+
+    /* Step 3: repayment options */
+    .repay-options { display: flex; flex-direction: column; gap: 6px; }
+    .repay-option {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      font-size: 12px; font-weight: 600; color: var(--text2);
+    }
+    .repay-option.selected { border-color: var(--orange); color: var(--text); }
+    .repay-option .radio {
+      width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+    .repay-option.selected .radio {
+      border-color: var(--orange); background: var(--orange);
+      box-shadow: inset 0 0 0 2px #fff;
+    }
+    .repay-option-sub { font-size: 10px; color: var(--text3); font-weight: 400; }
+    .repay-plan-card {
+      background: var(--white); border: 1.5px solid var(--orange-border);
+      border-radius: 10px; padding: 10px 14px;
+      background: linear-gradient(135deg, #FFF8F4 0%, #fff 100%);
+    }
+    .repay-plan-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; }
+    .repay-plan-key { color: var(--text3); }
+    .repay-plan-val { font-weight: 700; color: var(--text); }
+    .repay-plan-val.orange { color: var(--orange); }
+
+    /* Step 4: CMS auto transfer */
+    .cms-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .cms-header {
+      background: var(--text); padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cms-header-title { font-size: 11px; font-weight: 700; color: #fff; }
+    .cms-badge {
+      font-size: 9px; font-weight: 700;
+      background: rgba(255,109,36,0.2); color: var(--orange);
+      padding: 2px 8px; border-radius: 6px;
+    }
+    .cms-body { padding: 12px 14px; }
+    .cms-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 0; border-bottom: 1px solid var(--border);
+    }
+    .cms-row:last-child { border-bottom: none; }
+    .cms-date { font-size: 10px; color: var(--text3); }
+    .cms-name { font-size: 11px; font-weight: 600; color: var(--text); }
+    .cms-amount { font-size: 11px; font-weight: 700; color: var(--orange); }
+    .cms-status {
+      font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+      background: rgba(34,197,94,0.1); color: #16A34A;
+    }
+    .cms-status.pending { background: var(--off2); color: var(--text3); }
+
+    /* ── RECOVER (회수 방법) ── */
+    .recover-unified {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .rpanel {
+      border-radius: 20px; overflow: hidden;
+      display: flex; flex-direction: column;
+      border: 1.5px solid var(--border);
+    }
+    .rpanel-light { background: var(--off); }
+    .rpanel-dark { background: var(--text); border-color: transparent; }
+    .rpanel-warm { background: #FFF5EE; border-color: var(--orange-border); }
+    .rpanel-body { padding: 32px 28px 0; display: flex; flex-direction: column; flex: 1; }
+    .rpanel-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+      padding: 4px 11px; border-radius: 20px;
+      margin-bottom: 16px; align-self: flex-start;
+    }
+    .rpanel-light .rpanel-badge { background: rgba(0,0,0,0.06); color: var(--text2); }
+    .rpanel-dark .rpanel-badge { background: rgba(255,109,36,0.15); color: rgba(255,109,36,0.85); }
+    .rpanel-warm .rpanel-badge { background: var(--orange-dim); color: var(--orange); }
+    .rpanel-body h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.3; margin-bottom: 10px; }
+    .rpanel-light .rpanel-body h3, .rpanel-warm .rpanel-body h3 { color: var(--text); }
+    .rpanel-dark .rpanel-body h3 { color: #fff; }
+    .rpanel-body > p { font-size: 13px; line-height: 1.65; margin-bottom: 20px; }
+    .rpanel-light .rpanel-body > p, .rpanel-warm .rpanel-body > p { color: var(--text2); }
+    .rpanel-dark .rpanel-body > p { color: rgba(255,255,255,0.48); }
+    .rpanel-footer {
+      padding: 18px 28px;
+      border-top: 1.5px solid;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto;
+    }
+    .rpanel-light .rpanel-footer { border-color: var(--border); }
+    .rpanel-dark .rpanel-footer { border-color: rgba(255,255,255,0.08); }
+    .rpanel-warm .rpanel-footer { border-color: var(--orange-border); }
+    .rpanel-tag {
+      font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px;
+    }
+    .rpanel-light .rpanel-tag { background: var(--off2); color: var(--text2); }
+    .rpanel-dark .rpanel-tag { background: rgba(255,109,36,0.12); color: rgba(255,109,36,0.8); }
+    .rpanel-warm .rpanel-tag { background: var(--orange-dim); color: var(--orange); }
+
+    /* inner visuals for rpanels */
+    .rpanel-visual { padding: 0 28px 28px; }
+    /* alimtalk mini */
+    .mini-alimtalk {
+      background: var(--white); border-radius: 12px; overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+    .mini-at-top {
+      background: #3A1D96; padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .mini-at-top-icon { width: 18px; height: 18px; border-radius: 5px; background: #FAE100; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: #3A1D96; flex-shrink: 0; }
+    .mini-at-top-title { font-size: 10px; font-weight: 700; color: #fff; }
+    .mini-at-top-sub { font-size: 9px; color: rgba(255,255,255,0.5); margin-left: auto; }
+    .mini-at-body { padding: 10px 12px; font-size: 11px; color: var(--text2); line-height: 1.55; }
+    .mini-at-btn { margin: 0 12px 10px; background: #FAE100; border-radius: 6px; padding: 7px; text-align: center; font-size: 10px; font-weight: 800; color: #1A1714; }
+    /* options mini */
+    .mini-options { display: flex; flex-direction: column; gap: 6px; }
+    .mini-opt {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 10px 12px;
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.7);
+    }
+    .mini-opt.on { background: rgba(255,109,36,0.12); border-color: rgba(255,109,36,0.3); color: #fff; }
+    .mini-opt .dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+    .mini-opt.on .dot { background: var(--orange); border-color: var(--orange); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8); }
+    /* cms mini */
+    .mini-cms { background: var(--white); border-radius: 10px; border: 1.5px solid var(--border); overflow: hidden; }
+    .mini-cms-head { background: var(--text); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+    .mini-cms-head-title { font-size: 10px; font-weight: 700; color: #fff; }
+    .mini-cms-head-badge { font-size: 9px; font-weight: 700; background: rgba(255,109,36,0.2); color: var(--orange); padding: 2px 7px; border-radius: 5px; }
+    .mini-cms-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      gap: 6px;
+    }
+    .mini-cms-row:last-child { border-bottom: none; }
+    .mini-cms-date { font-size: 9px; color: var(--text3); flex: 0 0 40px; }
+    .mini-cms-name { font-size: 10px; font-weight: 600; color: var(--text); flex: 1; }
+    .mini-cms-amt { font-size: 10px; font-weight: 700; color: var(--orange); flex: 0 0 60px; text-align: right; }
+    .mini-cms-st { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(34,197,94,0.1); color: #16A34A; }
+    .mini-cms-st.wait { background: var(--off2); color: var(--text3); }
+
+    /* ── COST BENTO ── */
+    .cost-bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .cost-card {
+      border-radius: 20px; padding: 40px 36px; position: relative; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--white);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .cost-card:hover { box-shadow: 0 10px 36px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .cost-card.span2 { grid-column: span 2; }
+    .cost-num {
+      font-size: 72px; font-weight: 800; letter-spacing: -4px; line-height: 1;
+      margin-bottom: 8px; color: var(--orange);
+    }
+    .cost-card-lbl { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    .cost-card p { font-size: 14px; line-height: 1.8; color: var(--text2); }
+    /* wide breakdown row */
+    .cost-breakdown {
+      display: flex; gap: 0;
+    }
+    .cost-bk-item {
+      flex: 1; padding: 28px 24px;
+      border-right: 1.5px solid var(--border);
+    }
+    .cost-bk-item:last-child { border-right: none; }
+    .cost-bk-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .cost-bk-val { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -1px; margin-bottom: 4px; }
+    .cost-bk-val span { color: var(--orange); }
+    .cost-bk-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+    /* ── TRUST ── */
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .trust-card {
+      border-radius: 20px; padding: 36px 32px;
+      border: 1.5px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .trust-card.law {
+      grid-row: 1 / 3;
+      background: var(--white);
+      border-color: var(--border);
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 400px;
+    }
+    .trust-card.light { background: var(--white); }
+    .trust-card.soft { background: var(--white); }
+    .trust-law-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--orange-dim); border: 1px solid var(--orange-border);
+      color: var(--orange); font-size: 11px; font-weight: 700;
+      padding: 5px 12px; border-radius: 20px; margin-bottom: 24px;
+    }
+    .trust-law-name { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+    .trust-law-sub { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+    .trust-card.law p { font-size: 14px; color: var(--text2); line-height: 1.8; }
+    .trust-law-footer {
+      margin-top: auto; padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .trust-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: var(--orange-dim); border: 1px solid var(--orange-border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .trust-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+    .trust-card p { font-size: 14px; color: var(--text2); line-height: 1.75; }
+    .trust-deco { display: none; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden;
+    }
+    .stat-cell {
+      padding: 44px 32px; text-align: center;
+      border-right: 1.5px solid var(--border);
+      transition: background 0.2s;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:hover { background: var(--off); }
+    .stat-num {
+      font-size: 48px; font-weight: 800; color: var(--orange);
+      letter-spacing: -2px; line-height: 1; margin-bottom: 10px;
+    }
+    .stat-label { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .stat-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; border-top: 1.5px solid var(--border); margin-top: 48px; }
+    .faq-item { border-bottom: 1.5px solid var(--border); }
+    .faq-question {
+      width: 100%; text-align: left; background: none; border: none;
+      padding: 24px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+      transition: color 0.2s;
+    }
+    .faq-question:hover .faq-q-text { color: var(--orange); }
+    .faq-q-text { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.4; transition: color 0.2s; }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--off2); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s, transform 0.3s;
+    }
+    .faq-item.open .faq-icon { background: var(--orange); border-color: var(--orange); transform: rotate(45deg); }
+    .faq-item.open .faq-icon svg path, .faq-item.open .faq-icon svg line { stroke: #fff; }
+    .faq-answer {
+      font-size: 15px; color: var(--text2); line-height: 1.8;
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding-bottom: 0;
+    }
+    .faq-item.open .faq-answer { max-height: 400px; padding-bottom: 24px; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--text); padding: 120px 48px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute; top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(255,109,36,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .cta-eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: rgba(255,109,36,0.8); margin-bottom: 16px;
+    }
+    .cta-h2 {
+      font-size: 48px; font-weight: 800; color: #fff;
+      letter-spacing: -2px; line-height: 1.15; margin-bottom: 16px;
+    }
+    .cta-h2 em { font-style: normal; color: var(--orange); }
+    .cta-desc { font-size: 17px; color: rgba(255,255,255,0.4); line-height: 1.75; margin-bottom: 40px; }
+    .cta-btns { display: flex; justify-content: center; gap: 12px; }
+    .btn-outline-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.75); font-size: 15px; font-weight: 500;
+      padding: 14px 26px; border-radius: 10px;
+      text-decoration: none; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline-white:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* ── FOOTER ── */
+    footer { background: #F5F5F5; }
+    .footer-inner { max-width: 1256px; margin: 0 auto; padding: 0 48px; }
+    .footer-top {
+      display: flex; gap: 80px;
+      padding: 64px 0 48px;
+    }
+    .footer-brand { flex: 0 0 380px; }
+    .footer-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .footer-brand-title { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px; }
+    .footer-brand p { font-size: 13px; color: #9CA3AF; line-height: 1.8; }
+    .footer-links { display: flex; gap: 80px; flex: 1; justify-content: flex-start; padding-left: 40px; }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; min-width: 120px; }
+    .footer-col h5 {
+      font-size: 14px; font-weight: 700; color: #374151;
+      margin-bottom: 4px;
+    }
+    .footer-col a { font-size: 14px; color: #9CA3AF; text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: #374151; }
+    .footer-bottom { padding: 32px 0 48px; }
+    .footer-copy { font-size: 13px; color: #9CA3AF; }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+    .reveal-d4 { transition-delay: 0.32s; }
+
+    /* ── MOBILE MENU BUTTON (hidden on desktop) ── */
+    .gnb-mobile-btn {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .gnb-mobile-btn:hover { background: #F1F5F7; }
+    .gnb-mobile-btn span {
+      display: block; width: 20px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: all 0.3s; position: relative;
+    }
+    .gnb-mobile-btn span::before,
+    .gnb-mobile-btn span::after {
+      content: ''; position: absolute; left: 0;
+      width: 20px; height: 2px; background: var(--text);
+      border-radius: 2px; transition: all 0.3s;
+    }
+    .gnb-mobile-btn span::before { top: -6px; }
+    .gnb-mobile-btn span::after { top: 6px; }
+    .gnb-mobile-btn.open span { background: transparent; }
+    .gnb-mobile-btn.open span::before { top: 0; transform: rotate(45deg); }
+    .gnb-mobile-btn.open span::after { top: 0; transform: rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 199; flex-direction: column;
+      padding: 24px 24px 40px; overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 17px; font-weight: 600; color: var(--text);
+      text-decoration: none; padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu a:last-of-type { border-bottom: none; }
+    .mobile-menu-actions {
+      margin-top: 24px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .mobile-menu-actions a {
+      text-align: center; border-radius: 10px;
+      padding: 14px; font-size: 15px; font-weight: 700; border-bottom: none;
+    }
+    .mobile-menu-actions .m-login {
+      border: 1.5px solid var(--orange); color: var(--orange); background: #fff;
+    }
+    .mobile-menu-actions .m-start {
+      background: var(--orange); color: #fff;
+    }
+
+    /* ===================================================
+       RESPONSIVE – TABLET (≤ 960px)
+    =================================================== */
+    @media (max-width: 960px) {
+      .gnb-inner { padding: 0 24px; }
+      .gnb-nav, .gnb-actions { display: none; }
+      .gnb-mobile-btn { display: flex; }
+      .biz-hint-wrap { display: none; }
+
+      .hero { padding: 120px 0 0; }
+      .hero-inner { padding: 0 24px; }
+      .hero h1 { font-size: 40px; }
+      .hero-desc { font-size: 15px; }
+      .hero-mockup { transform: scale(0.8); transform-origin: top center; }
+
+      .section { padding: 72px 24px; }
+      .section-inner { max-width: 100%; }
+      .h2 { font-size: 32px; }
+
+      .pain-split { grid-template-columns: 1fr; gap: 40px; }
+      .pain-left { text-align: center; }
+
+      .process-split { grid-template-columns: 1fr; gap: 40px; }
+      .process-right { height: 360px; }
+
+      .recover-unified {
+        display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+        gap: 14px; -webkit-overflow-scrolling: touch;
+      }
+      .recover-unified::-webkit-scrollbar { display: none; }
+      .rpanel { flex: 0 0 55vw; scroll-snap-align: start; }
+
+      .cost-bento { grid-template-columns: 1fr; }
+      .cost-bento > *:last-child { grid-column: auto; }
+
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-card.law { grid-row: auto; }
+
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+
+      .cta-section { padding: 80px 24px; }
+      .cta-h2 { font-size: 32px; }
+
+      .footer-inner { padding: 0 24px; }
+      .footer-top { gap: 40px; }
+      .footer-brand { flex: 0 0 200px; }
+      .footer-links { gap: 32px; }
+    }
+
+    /* ===================================================
+       RESPONSIVE – MOBILE (≤ 640px)
+    =================================================== */
+    @media (max-width: 640px) {
+      .gnb { height: 56px; }
+      .gnb-inner { padding: 0 16px; }
+      .gnb-logo svg:last-child { width: 72px; height: auto; }
+      .mobile-menu { top: 56px; }
+
+      /* Hero */
+      .hero { padding: 100px 0 0; overflow: visible; }
+      .hero-inner { padding: 0 20px; }
+      .hero h1 { font-size: 30px; letter-spacing: -1.2px; line-height: 1.25; }
+      .hero-desc { font-size: 14px; margin-bottom: 24px; }
+      .hero-tag { font-size: 11px; padding: 5px 12px; }
+      .hero-actions { flex-direction: row; gap: 8px; align-items: stretch; }
+      .hero-actions .btn-orange,
+      .hero-actions .btn-outline { flex: 1; justify-content: center; padding: 13px 10px; font-size: 14px; }
+      .hero-mockup {
+        transform: none;
+        height: 320px;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .hero-blob-bg {
+        opacity: 1;
+        transform: none;
+      }
+      .hero-blob {
+        transform: scale(0.55) !important;
+      }
+      /* 모바일 카드 — zoom으로 축소 (transform 애니메이션 유지) */
+      .hero-mockup .notif-card {
+        zoom: 0.72;
+        border-radius: 20px;
+      }
+      .hero-mockup .notif-card:nth-child(1) {
+        left: -10px !important; top: 160px !important;
+      }
+      .hero-mockup .notif-card:nth-child(2) {
+        left: 5% !important; top: 20px !important;
+        zoom: 0.82;
+      }
+      .hero-mockup .notif-card:nth-child(3) {
+        left: auto !important; right: 0 !important; top: 120px !important;
+      }
+      .hero-mockup .notif-card:nth-child(4) {
+        left: auto !important; right: 2% !important; top: 5px !important;
+      }
+      .hero-mockup .notif-card:nth-child(5) {
+        left: auto !important; right: -5px !important; top: 230px !important;
+      }
+
+      /* Sections */
+      .section { padding: 56px 20px; }
+      .h2 { font-size: 26px; letter-spacing: -0.8px; }
+      .eyebrow { font-size: 11px; padding: 4px 10px; }
+      .body-text { font-size: 14px; }
+
+      /* Pain */
+      .pain-split { grid-template-columns: 1fr; gap: 32px; }
+      .pain-left { text-align: center; }
+      .pain-left .h2 { font-size: 24px; }
+      .pain-row { padding: 18px 18px; }
+      .pain-row p { font-size: 14px; }
+
+      /* YouTube */
+      section[style*="padding: 80px 48px"] { padding: 32px 0 !important; }
+      .yt-wrap { border-radius: 0; }
+      .yt-head { padding: 28px 20px !important; }
+      .yt-head h2 { font-size: 22px !important; }
+
+      /* Process */
+      .process-split { grid-template-columns: 1fr; gap: 24px; }
+      .process-left > p { font-size: 14px; margin-bottom: 24px; }
+      .process-right { height: auto; min-height: 320px; }
+      .proc-panel { position: relative; inset: auto; }
+      .proc-panel.active { position: relative; }
+      .proc-step { padding: 14px 14px; }
+      .proc-card { padding: 20px; }
+      .proc-card h3 { font-size: 18px; }
+      .proc-card > p { font-size: 13px; }
+
+      /* Recovery — 가로 스크롤 */
+      .recover-unified {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .recover-unified::-webkit-scrollbar { display: none; }
+      .rpanel {
+        flex: 0 0 72vw;
+        scroll-snap-align: start;
+        border-radius: 16px;
+      }
+      .rpanel-body { padding: 24px 20px 12px; }
+      .rpanel-body h3 { font-size: 18px; }
+      .rpanel-body > p { font-size: 13px; line-height: 1.6; }
+      .rpanel-footer { padding: 14px 20px; }
+      .rpanel-visual { padding: 0 20px 20px; }
+      .rpanel-visual svg { max-height: 100px; }
+      .rpanel-tag { font-size: 11px; }
+
+      /* Cost */
+      .cost-bento { grid-template-columns: 1fr; gap: 12px; }
+      .cost-bento > *:last-child { grid-column: auto; }
+      .cost-card { padding: 28px 20px; }
+      .cost-card h3 { font-size: 20px; }
+      .cost-card p { font-size: 13px; }
+
+      /* Trust */
+      .trust-grid { grid-template-columns: 1fr; gap: 12px; }
+      .trust-card { padding: 28px 24px; }
+      .trust-card.law { grid-row: auto; }
+      .trust-card h3 { font-size: 20px; }
+      .trust-card p { font-size: 13px; }
+
+      /* Stats */
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 0; }
+      .stat-cell { padding: 28px 16px; }
+      .stat-num { font-size: 32px; }
+      .stat-label { font-size: 13px; }
+      .stat-sub { font-size: 11px; }
+
+      /* FAQ */
+      .faq-question { padding: 18px 0; }
+      .faq-question span { font-size: 15px; }
+
+      /* Self Check */
+      section[style*="0B1C2C"] { padding: 56px 20px !important; }
+
+      /* CTA */
+      .cta-section { padding: 64px 20px; }
+      .cta-h2 { font-size: 24px; letter-spacing: -0.8px; }
+      .cta-section p { font-size: 14px; }
+      .btn-orange { font-size: 14px; padding: 13px 24px; }
+
+      /* Footer */
+      .footer-inner { padding: 0 20px; }
+      .footer-top { flex-direction: column; gap: 28px; padding: 32px 0 24px; }
+      .footer-brand { flex: none; }
+      .footer-links { gap: 24px; flex-wrap: wrap; }
+      .footer-col { min-width: 80px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GNB -->
+<header class="gnb">
+  <div class="gnb-inner">
+    <div class="gnb-left">
+      <a href="#" class="gnb-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 54 55" fill="none">
+          <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#FF6D24"/>
+          <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.3046 1.89892 43.6648 1.62155 44.025 1.34418C43.7072 1.62155 43.4106 1.94159 43.1351 2.30431C42.436 3.2431 42.0334 4.4166 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF6D24"/>
+          <path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1925 5.6356 23.1925H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#FF6D24"/>
+          <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#FF6D24"/>
+          <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C51.2506 10.0707 51.2082 10.1134 51.1658 10.1561C51.1658 10.1561 50.954 10.3267 50.8481 10.4121C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C43.4116 1.98427 43.7082 1.66423 44.0472 1.36552C44.2379 1.21617 44.4074 1.08815 44.598 0.938796C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#FF6D24"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="88" height="27" viewBox="0 0 145 44" fill="none">
+          <g clip-path="url(#wm-g)">
+            <path d="M5.28317 25.6802H19.9764V8.82065H0.0732422V13.7767H14.664V20.7241H0.0732422V37.5394H25.4351V43.9262H30.645V8.82065H25.4351V32.6276H5.28317V25.6802Z" fill="#1A1714"/>
+            <path d="M41.8261 8.82065H36.6162V37.4509H56.5193V8.82065H51.3094V18.6443H41.8261V8.82065ZM51.2948 23.5561V32.4506H41.8115V23.5561H51.2948Z" fill="#1A1714"/>
+            <path d="M67.3779 8.82065H62.168V43.9262H67.3779V19.4851H73.3781V14.588H67.3779V8.82065Z" fill="#1A1714"/>
+            <path d="M88.276 35.9759H93.7054V28.5122H106.891V23.4087H74.3877V28.5122H88.276V35.9759Z" fill="#1A1714"/>
+            <path d="M79.5976 31.6835H74.3877V43.9262H106.891V39.0292H79.5976V31.6835Z" fill="#1A1714"/>
+            <path d="M119.038 13.88H143.449V8.82065H113.77V30.3118H143.449V25.3557H119.038V13.88Z" fill="#1A1714"/>
+            <path d="M144.927 38.8227H113.023V43.9263H144.927V38.8227Z" fill="#1A1714"/>
+            <path d="M90.6617 20.3259C97.3936 20.3259 102.486 15.9598 102.486 10.1777C102.486 4.39558 97.3936 0.073761 90.6617 0.073761C83.9297 0.073761 78.8076 4.42508 78.8076 10.1924C78.8076 15.9598 83.9005 20.3406 90.6617 20.3406V20.3259ZM90.6617 4.64634C94.2911 4.64634 97.0424 7.03588 97.0424 10.1924C97.0424 13.349 94.3057 15.7828 90.6617 15.7828C87.0177 15.7828 84.2517 13.3785 84.2517 10.1924C84.2517 7.00638 87.003 4.64634 90.6617 4.64634Z" fill="#1A1714"/>
+          </g>
+          <defs><clipPath id="wm-g"><rect width="145" height="44" fill="white"/></clipPath></defs>
+        </svg>
+      </a>
+      <div class="biz-hint-wrap">
+        <div class="toggle-pill">
+          <a href="#" class="on">개인</a>
+          <a href="rebound-biz.html">기업 Biz</a>
+        </div>
+        <div class="biz-hint" id="bizHint">
+          <button class="biz-hint-close" id="bizHintClose" aria-label="닫기">✕</button>
+          <a href="rebound-biz.html" class="biz-hint-link">
+            <span class="biz-hint-title">사업자 회원이신가요?</span>
+            <span class="biz-hint-desc">기업 회원 전용 회수 기능과 혜택을 확인해보세요.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <nav class="gnb-nav">
+      <a href="rebound-personal.html" class="gnb-nav-active">홈</a>
+      <a href="team.html">팀 리바운드</a>
+      <a href="support.html">고객센터</a>
+      <a href="https://blog.naver.com/reboundkr">블로그</a>
+      <a href="self-check.html" target="_blank" >셀프 진단</a>
+    </nav>
+    <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
+    <div class="gnb-actions">
+      <a href="#" class="gnb-login">로그인</a>
+      <a href="#" class="gnb-start">리바운드 시작하기</a>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="rebound-personal.html">홈</a>
+  <a href="team.html">팀 리바운드</a>
+  <a href="support.html">고객센터</a>
+  <a href="https://blog.naver.com/reboundkr">블로그</a>
+  <a href="self-check.html" target="_blank">셀프 진단</a>
+  <div class="mobile-menu-actions">
+    <a href="#" class="m-login">로그인</a>
+    <a href="#" class="m-start">리바운드 시작하기</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <!-- Blob background — bottom half -->
+  <div class="hero-blob-bg">
+    <div class="hero-blob hb1"></div>
+    <div class="hero-blob hb2"></div>
+    <div class="hero-blob hb3"></div>
+    <div class="hero-blob hb4"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-tag reveal">개인 간 채권 · 지인 차용금 · 프리랜서 미수금</div>
+    <h1 class="reveal">못 받은 돈,<br>이제 그냥 <em>포기하지 마세요</em></h1>
+    <p class="hero-desc reveal">받는 사람도, 갚는 사람도 불편하지 않도록<br>리바운드가 회수의 방법을 바꿨어요</p>
+    <div class="hero-actions reveal">
+      <a href="#cta" class="btn-orange">서비스 신청하기 →</a>
+      <a href="#how" class="btn-outline">진행 방식 보기</a>
+    </div>
+
+    <!-- Floating iOS-style notification cards -->
+    <div class="hero-mockup reveal">
+
+      <!-- 공통 아이콘 SVG 템플릿 (인라인으로 각 카드에 삽입) -->
+
+      <!-- 카드 1 · 왼쪽 끝, 가장 멀리 -->
+      <div class="notif-card" style="top:172px; left:-20px; opacity:0.32; filter:blur(3px); animation:float-1 7s ease-in-out infinite;">
+        <div class="nc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path opacity="0.35" d="M13.6965 20.9507V21.0914C13.6589 19.7847 12.5794 18.7344 11.2588 18.7344C9.93832 18.7344 8.82746 19.8191 8.81807 21.1539V21.1727H8.81181V21.0445C8.74297 17.6184 5.91105 14.8362 2.49085 14.8268H2.46582C3.79885 14.8112 4.87842 13.7233 4.87842 12.3885C4.87842 11.0537 3.80511 9.96895 2.47521 9.9502C5.41977 9.9502 8.12026 11.1131 10.1355 13.0043C12.2758 15.005 13.637 17.8247 13.6965 20.9476V20.9507Z" fill="#FF6D24"/><path opacity="0.45" d="M21.9922 4.46653C21.1317 5.11988 20.3212 5.84199 19.564 6.63288C19.2135 6.9955 18.8787 7.37063 18.5564 7.75513C15.4554 11.472 13.75 16.0798 13.6999 20.9502V21.1659C13.6936 19.8248 12.6015 18.7369 11.2591 18.7369C9.9167 18.7369 8.82149 19.8248 8.81836 21.1659V21.0502C8.83401 18.243 9.29087 15.5421 10.1357 13.01C11.1965 9.81832 12.8675 6.90172 15.0048 4.39151C16.0906 3.12859 17.2859 1.97195 18.5845 0.940354C18.7347 0.818438 18.8881 0.702774 19.0383 0.583984C18.8975 0.7059 18.7692 0.843447 18.6565 0.993497C18.353 1.39988 18.1778 1.90005 18.1778 2.44398C18.1778 3.79131 19.273 4.8823 20.6185 4.8823C21.1254 4.8823 21.5948 4.72599 21.986 4.46653H21.9922Z" fill="#FF6D24"/><path opacity="0.5" d="M4.88153 12.3914C4.88153 13.7294 3.80196 14.8173 2.46893 14.8298H2.44076C1.09209 14.8298 0 13.7356 0 12.3914C0 11.0472 1.09521 9.95312 2.44076 9.95312H2.47831C3.80822 9.97188 4.88153 11.0597 4.88153 12.3914Z" fill="#FF6D24"/><path opacity="0.8" d="M13.7028 21.1635V21.1729C13.7028 22.5202 12.6076 23.6112 11.2621 23.6112C9.9165 23.6112 8.82442 22.5233 8.82129 21.176V21.1604C8.82755 19.8193 9.91963 18.7314 11.2621 18.7314C12.6045 18.7314 13.6997 19.8193 13.7028 21.1604V21.1635Z" fill="#FF6D24"/><path d="M23.0651 2.44144C23.0651 3.18857 22.7272 3.86067 22.2015 4.30456C22.1764 4.32332 22.1577 4.33895 22.1389 4.35771H22.1326C22.0888 4.39522 22.0388 4.42961 21.9918 4.46399C21.6007 4.72345 21.1313 4.87976 20.6244 4.87976C19.2757 4.87976 18.1836 3.78564 18.1836 2.44144C18.1836 1.90064 18.3588 1.39734 18.6624 0.990957C18.775 0.840907 18.9033 0.70336 19.0441 0.581444C19.1223 0.518923 19.2006 0.459529 19.2819 0.400134C19.6668 0.146924 20.1331 0 20.6244 0C21.9762 0 23.0651 1.09412 23.0651 2.43832V2.44144Z" fill="#FF6D24"/></svg></div>
+        <div class="nc-body">
+          <div class="nc-app">리바운드</div>
+          <div class="nc-title">정○○님 500,000원 입금 완료</div>
+        </div>
+        <div class="nc-time">어제</div>
+      </div>
+
+      <!-- 카드 2 · 메인 메시지, 가장 선명 -->
+      <div class="notif-card" style="top:28px; left:80px; opacity:1; z-index:3; box-shadow:0 10px 44px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.07); animation:float-2 6s ease-in-out infinite; animation-delay:-1s;">
+        <div class="nc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path opacity="0.35" d="M13.6965 20.9507V21.0914C13.6589 19.7847 12.5794 18.7344 11.2588 18.7344C9.93832 18.7344 8.82746 19.8191 8.81807 21.1539V21.1727H8.81181V21.0445C8.74297 17.6184 5.91105 14.8362 2.49085 14.8268H2.46582C3.79885 14.8112 4.87842 13.7233 4.87842 12.3885C4.87842 11.0537 3.80511 9.96895 2.47521 9.9502C5.41977 9.9502 8.12026 11.1131 10.1355 13.0043C12.2758 15.005 13.637 17.8247 13.6965 20.9476V20.9507Z" fill="#FF6D24"/><path opacity="0.45" d="M21.9922 4.46653C21.1317 5.11988 20.3212 5.84199 19.564 6.63288C19.2135 6.9955 18.8787 7.37063 18.5564 7.75513C15.4554 11.472 13.75 16.0798 13.6999 20.9502V21.1659C13.6936 19.8248 12.6015 18.7369 11.2591 18.7369C9.9167 18.7369 8.82149 19.8248 8.81836 21.1659V21.0502C8.83401 18.243 9.29087 15.5421 10.1357 13.01C11.1965 9.81832 12.8675 6.90172 15.0048 4.39151C16.0906 3.12859 17.2859 1.97195 18.5845 0.940354C18.7347 0.818438 18.8881 0.702774 19.0383 0.583984C18.8975 0.7059 18.7692 0.843447 18.6565 0.993497C18.353 1.39988 18.1778 1.90005 18.1778 2.44398C18.1778 3.79131 19.273 4.8823 20.6185 4.8823C21.1254 4.8823 21.5948 4.72599 21.986 4.46653H21.9922Z" fill="#FF6D24"/><path opacity="0.5" d="M4.88153 12.3914C4.88153 13.7294 3.80196 14.8173 2.46893 14.8298H2.44076C1.09209 14.8298 0 13.7356 0 12.3914C0 11.0472 1.09521 9.95312 2.44076 9.95312H2.47831C3.80822 9.97188 4.88153 11.0597 4.88153 12.3914Z" fill="#FF6D24"/><path opacity="0.8" d="M13.7028 21.1635V21.1729C13.7028 22.5202 12.6076 23.6112 11.2621 23.6112C9.9165 23.6112 8.82442 22.5233 8.82129 21.176V21.1604C8.82755 19.8193 9.91963 18.7314 11.2621 18.7314C12.6045 18.7314 13.6997 19.8193 13.7028 21.1604V21.1635Z" fill="#FF6D24"/><path d="M23.0651 2.44144C23.0651 3.18857 22.7272 3.86067 22.2015 4.30456C22.1764 4.32332 22.1577 4.33895 22.1389 4.35771H22.1326C22.0888 4.39522 22.0388 4.42961 21.9918 4.46399C21.6007 4.72345 21.1313 4.87976 20.6244 4.87976C19.2757 4.87976 18.1836 3.78564 18.1836 2.44144C18.1836 1.90064 18.3588 1.39734 18.6624 0.990957C18.775 0.840907 18.9033 0.70336 19.0441 0.581444C19.1223 0.518923 19.2006 0.459529 19.2819 0.400134C19.6668 0.146924 20.1331 0 20.6244 0C21.9762 0 23.0651 1.09412 23.0651 2.43832V2.44144Z" fill="#FF6D24"/></svg></div>
+        <div class="nc-body">
+          <div class="nc-app">리바운드</div>
+          <div class="nc-title">번거로운 회수, 리바운드가 대신해드릴게요</div>
+        </div>
+      </div>
+
+      <!-- 카드 3 · 그 아래 오른쪽, 두 번째로 선명 -->
+      <div class="notif-card" style="top:162px; left:370px; opacity:0.82; z-index:2; box-shadow:0 6px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06); animation:float-3 8s ease-in-out infinite; animation-delay:-3s;">
+        <div class="nc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path opacity="0.35" d="M13.6965 20.9507V21.0914C13.6589 19.7847 12.5794 18.7344 11.2588 18.7344C9.93832 18.7344 8.82746 19.8191 8.81807 21.1539V21.1727H8.81181V21.0445C8.74297 17.6184 5.91105 14.8362 2.49085 14.8268H2.46582C3.79885 14.8112 4.87842 13.7233 4.87842 12.3885C4.87842 11.0537 3.80511 9.96895 2.47521 9.9502C5.41977 9.9502 8.12026 11.1131 10.1355 13.0043C12.2758 15.005 13.637 17.8247 13.6965 20.9476V20.9507Z" fill="#FF6D24"/><path opacity="0.45" d="M21.9922 4.46653C21.1317 5.11988 20.3212 5.84199 19.564 6.63288C19.2135 6.9955 18.8787 7.37063 18.5564 7.75513C15.4554 11.472 13.75 16.0798 13.6999 20.9502V21.1659C13.6936 19.8248 12.6015 18.7369 11.2591 18.7369C9.9167 18.7369 8.82149 19.8248 8.81836 21.1659V21.0502C8.83401 18.243 9.29087 15.5421 10.1357 13.01C11.1965 9.81832 12.8675 6.90172 15.0048 4.39151C16.0906 3.12859 17.2859 1.97195 18.5845 0.940354C18.7347 0.818438 18.8881 0.702774 19.0383 0.583984C18.8975 0.7059 18.7692 0.843447 18.6565 0.993497C18.353 1.39988 18.1778 1.90005 18.1778 2.44398C18.1778 3.79131 19.273 4.8823 20.6185 4.8823C21.1254 4.8823 21.5948 4.72599 21.986 4.46653H21.9922Z" fill="#FF6D24"/><path opacity="0.5" d="M4.88153 12.3914C4.88153 13.7294 3.80196 14.8173 2.46893 14.8298H2.44076C1.09209 14.8298 0 13.7356 0 12.3914C0 11.0472 1.09521 9.95312 2.44076 9.95312H2.47831C3.80822 9.97188 4.88153 11.0597 4.88153 12.3914Z" fill="#FF6D24"/><path opacity="0.8" d="M13.7028 21.1635V21.1729C13.7028 22.5202 12.6076 23.6112 11.2621 23.6112C9.9165 23.6112 8.82442 22.5233 8.82129 21.176V21.1604C8.82755 19.8193 9.91963 18.7314 11.2621 18.7314C12.6045 18.7314 13.6997 19.8193 13.7028 21.1604V21.1635Z" fill="#FF6D24"/><path d="M23.0651 2.44144C23.0651 3.18857 22.7272 3.86067 22.2015 4.30456C22.1764 4.32332 22.1577 4.33895 22.1389 4.35771H22.1326C22.0888 4.39522 22.0388 4.42961 21.9918 4.46399C21.6007 4.72345 21.1313 4.87976 20.6244 4.87976C19.2757 4.87976 18.1836 3.78564 18.1836 2.44144C18.1836 1.90064 18.3588 1.39734 18.6624 0.990957C18.775 0.840907 18.9033 0.70336 19.0441 0.581444C19.1223 0.518923 19.2006 0.459529 19.2819 0.400134C19.6668 0.146924 20.1331 0 20.6244 0C21.9762 0 23.0651 1.09412 23.0651 2.43832V2.44144Z" fill="#FF6D24"/></svg></div>
+        <div class="nc-body">
+          <div class="nc-app">리바운드</div>
+          <div class="nc-title">250,000원이 입금되었어요!</div>
+        </div>
+        <div class="nc-time">방금</div>
+      </div>
+
+      <!-- 카드 4 · 오른쪽 -->
+      <div class="notif-card" style="top:32px; left:680px; opacity:0.82; animation:float-4 9s ease-in-out infinite; animation-delay:-2s;">
+        <div class="nc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path opacity="0.35" d="M13.6965 20.9507V21.0914C13.6589 19.7847 12.5794 18.7344 11.2588 18.7344C9.93832 18.7344 8.82746 19.8191 8.81807 21.1539V21.1727H8.81181V21.0445C8.74297 17.6184 5.91105 14.8362 2.49085 14.8268H2.46582C3.79885 14.8112 4.87842 13.7233 4.87842 12.3885C4.87842 11.0537 3.80511 9.96895 2.47521 9.9502C5.41977 9.9502 8.12026 11.1131 10.1355 13.0043C12.2758 15.005 13.637 17.8247 13.6965 20.9476V20.9507Z" fill="#FF6D24"/><path opacity="0.45" d="M21.9922 4.46653C21.1317 5.11988 20.3212 5.84199 19.564 6.63288C19.2135 6.9955 18.8787 7.37063 18.5564 7.75513C15.4554 11.472 13.75 16.0798 13.6999 20.9502V21.1659C13.6936 19.8248 12.6015 18.7369 11.2591 18.7369C9.9167 18.7369 8.82149 19.8248 8.81836 21.1659V21.0502C8.83401 18.243 9.29087 15.5421 10.1357 13.01C11.1965 9.81832 12.8675 6.90172 15.0048 4.39151C16.0906 3.12859 17.2859 1.97195 18.5845 0.940354C18.7347 0.818438 18.8881 0.702774 19.0383 0.583984C18.8975 0.7059 18.7692 0.843447 18.6565 0.993497C18.353 1.39988 18.1778 1.90005 18.1778 2.44398C18.1778 3.79131 19.273 4.8823 20.6185 4.8823C21.1254 4.8823 21.5948 4.72599 21.986 4.46653H21.9922Z" fill="#FF6D24"/><path opacity="0.5" d="M4.88153 12.3914C4.88153 13.7294 3.80196 14.8173 2.46893 14.8298H2.44076C1.09209 14.8298 0 13.7356 0 12.3914C0 11.0472 1.09521 9.95312 2.44076 9.95312H2.47831C3.80822 9.97188 4.88153 11.0597 4.88153 12.3914Z" fill="#FF6D24"/><path opacity="0.8" d="M13.7028 21.1635V21.1729C13.7028 22.5202 12.6076 23.6112 11.2621 23.6112C9.9165 23.6112 8.82442 22.5233 8.82129 21.176V21.1604C8.82755 19.8193 9.91963 18.7314 11.2621 18.7314C12.6045 18.7314 13.6997 19.8193 13.7028 21.1604V21.1635Z" fill="#FF6D24"/><path d="M23.0651 2.44144C23.0651 3.18857 22.7272 3.86067 22.2015 4.30456C22.1764 4.32332 22.1577 4.33895 22.1389 4.35771H22.1326C22.0888 4.39522 22.0388 4.42961 21.9918 4.46399C21.6007 4.72345 21.1313 4.87976 20.6244 4.87976C19.2757 4.87976 18.1836 3.78564 18.1836 2.44144C18.1836 1.90064 18.3588 1.39734 18.6624 0.990957C18.775 0.840907 18.9033 0.70336 19.0441 0.581444C19.1223 0.518923 19.2006 0.459529 19.2819 0.400134C19.6668 0.146924 20.1331 0 20.6244 0C21.9762 0 23.0651 1.09412 23.0651 2.43832V2.44144Z" fill="#FF6D24"/></svg></div>
+        <div class="nc-body">
+          <div class="nc-app">리바운드</div>
+          <div class="nc-title">홍길동님과 합의 완료 · 전액 회수</div>
+        </div>
+        <div class="nc-time">어제</div>
+      </div>
+
+      <!-- 카드 5 · 오른쪽 끝, 가장 멀리 -->
+      <div class="notif-card" style="top:130px; right:-20px; opacity:0.30; filter:blur(3px); animation:float-5 7.5s ease-in-out infinite; animation-delay:-4.5s;">
+        <div class="nc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path opacity="0.35" d="M13.6965 20.9507V21.0914C13.6589 19.7847 12.5794 18.7344 11.2588 18.7344C9.93832 18.7344 8.82746 19.8191 8.81807 21.1539V21.1727H8.81181V21.0445C8.74297 17.6184 5.91105 14.8362 2.49085 14.8268H2.46582C3.79885 14.8112 4.87842 13.7233 4.87842 12.3885C4.87842 11.0537 3.80511 9.96895 2.47521 9.9502C5.41977 9.9502 8.12026 11.1131 10.1355 13.0043C12.2758 15.005 13.637 17.8247 13.6965 20.9476V20.9507Z" fill="#FF6D24"/><path opacity="0.45" d="M21.9922 4.46653C21.1317 5.11988 20.3212 5.84199 19.564 6.63288C19.2135 6.9955 18.8787 7.37063 18.5564 7.75513C15.4554 11.472 13.75 16.0798 13.6999 20.9502V21.1659C13.6936 19.8248 12.6015 18.7369 11.2591 18.7369C9.9167 18.7369 8.82149 19.8248 8.81836 21.1659V21.0502C8.83401 18.243 9.29087 15.5421 10.1357 13.01C11.1965 9.81832 12.8675 6.90172 15.0048 4.39151C16.0906 3.12859 17.2859 1.97195 18.5845 0.940354C18.7347 0.818438 18.8881 0.702774 19.0383 0.583984C18.8975 0.7059 18.7692 0.843447 18.6565 0.993497C18.353 1.39988 18.1778 1.90005 18.1778 2.44398C18.1778 3.79131 19.273 4.8823 20.6185 4.8823C21.1254 4.8823 21.5948 4.72599 21.986 4.46653H21.9922Z" fill="#FF6D24"/><path opacity="0.5" d="M4.88153 12.3914C4.88153 13.7294 3.80196 14.8173 2.46893 14.8298H2.44076C1.09209 14.8298 0 13.7356 0 12.3914C0 11.0472 1.09521 9.95312 2.44076 9.95312H2.47831C3.80822 9.97188 4.88153 11.0597 4.88153 12.3914Z" fill="#FF6D24"/><path opacity="0.8" d="M13.7028 21.1635V21.1729C13.7028 22.5202 12.6076 23.6112 11.2621 23.6112C9.9165 23.6112 8.82442 22.5233 8.82129 21.176V21.1604C8.82755 19.8193 9.91963 18.7314 11.2621 18.7314C12.6045 18.7314 13.6997 19.8193 13.7028 21.1604V21.1635Z" fill="#FF6D24"/><path d="M23.0651 2.44144C23.0651 3.18857 22.7272 3.86067 22.2015 4.30456C22.1764 4.32332 22.1577 4.33895 22.1389 4.35771H22.1326C22.0888 4.39522 22.0388 4.42961 21.9918 4.46399C21.6007 4.72345 21.1313 4.87976 20.6244 4.87976C19.2757 4.87976 18.1836 3.78564 18.1836 2.44144C18.1836 1.90064 18.3588 1.39734 18.6624 0.990957C18.775 0.840907 18.9033 0.70336 19.0441 0.581444C19.1223 0.518923 19.2006 0.459529 19.2819 0.400134C19.6668 0.146924 20.1331 0 20.6244 0C21.9762 0 23.0651 1.09412 23.0651 2.43832V2.44144Z" fill="#FF6D24"/></svg></div>
+        <div class="nc-body">
+          <div class="nc-app">리바운드</div>
+          <div class="nc-title">김○○님 입금 예정 D-3</div>
+        </div>
+        <div class="nc-time">예정</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" id="pain">
+  <div class="section-inner">
+    <div class="pain-split">
+      <div class="pain-left">
+        <div class="reveal">
+          <p class="eyebrow">이런 분들께 추천해요</p>
+          <h2 class="h2">혹시 이런<br>고민 있으신가요?</h2>
+          <p>못 받은 돈 문제는 시간이 지날수록 해결이 어려워져요. 리바운드가 빠르고 전문적으로 처리해드릴게요.</p>
+        </div>
+      </div>
+      <div class="pain-right">
+        <div class="pain-row reveal">
+          <div class="pain-icon">😰</div>
+          <div class="pain-text">
+            <h3>직접 연락하기 너무 불편해요</h3>
+            <p>돈 문제로 직접 독촉하면 관계가 망가질 것 같고, 그렇다고 포기하기엔 금액이 아까워요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal reveal-d1">
+          <div class="pain-icon">⚖️</div>
+          <div class="pain-text">
+            <h3>변호사를 쓰기엔 금액이 너무 작아요</h3>
+            <p>수백만 원 때문에 변호사 선임비를 쓰기 부담스럽고, 직접 소송하기엔 절차가 너무 복잡해요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal reveal-d2">
+          <div class="pain-icon">📱</div>
+          <div class="pain-text">
+            <h3>차용증도 없고 증거가 부족해요</h3>
+            <p>카카오톡 대화나 계좌이체 내역만 있어도 진행 가능한지 모르겠고, 어디서부터 시작해야 할 지 막막해요.</p>
+          </div>
+        </div>
+        <div class="pain-row reveal reveal-d3">
+          <div class="pain-icon">🕐</div>
+          <div class="pain-text">
+            <h3>시간이 지날수록 받기 어려워질 것 같아요</h3>
+            <p>채무자가 돈이 없다고 버티거나, 연락이 점점 줄어들면서 포기하게 될까 봐 걱정돼요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section style="padding:140px 48px; background:#fff; position:relative; overflow:hidden; border-top:1px solid var(--border);">
+
+  <div style="max-width:1060px; margin:0 auto; position:relative; z-index:1;">
+
+    <!-- 상단: 헤드라인 -->
+    <div class="reveal" style="text-align:center; margin-bottom:80px;">
+      <p style="font-size:11px; font-weight:700; color:var(--orange); letter-spacing:2.5px; text-transform:uppercase; margin-bottom:22px;">We Create Second Chances</p>
+      <h2 style="font-size:48px; font-weight:900; color:var(--text); letter-spacing:-2px; line-height:1.2; margin-bottom:26px;">놓친 슛을 다시 잡아내는 것처럼,<br>돈 관계도 <em style="font-style:normal; color:var(--orange);">두 번째 기회</em>가 있습니다</h2>
+      <p style="font-size:16px; color:var(--text2); line-height:1.9; max-width:620px; margin:0 auto;">돈 문제는 원만한 합의가 이루어지지 않으면 결국 법대로 갈 수밖에 없습니다.<br>리바운드는 법적 분쟁으로 번지기 <span style="color:var(--text); font-weight:600;">전 단계</span>에서, 가장 빠르고 현실적인 해결책을 제시합니다.</p>
+    </div>
+
+    <!-- 하단: 3열 원칙 -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:20px; overflow:hidden;">
+
+      <div class="reveal" style="background:#fff; padding:40px 36px; position:relative;">
+        <p style="font-size:48px; font-weight:900; color:rgba(0,0,0,0.04); letter-spacing:-2px; line-height:1; margin:0; font-family:'Pretendard',sans-serif; position:absolute; top:28px; right:28px;">01</p>
+        <div style="width:40px; height:2px; background:var(--orange); margin-bottom:24px; border-radius:2px;"></div>
+        <h3 style="font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.3px; line-height:1.45; margin-bottom:14px;">합의를<br>먼저 찾습니다</h3>
+        <p style="font-size:13px; color:var(--text2); line-height:1.85; margin:0;">감정 대립 없이 채무자와 협의할 수 있는 방법을 먼저 찾습니다. 돈도 받고, 관계도 지킵니다.</p>
+      </div>
+
+      <div class="reveal reveal-d1" style="background:#fff; padding:40px 36px; position:relative;">
+        <p style="font-size:48px; font-weight:900; color:rgba(0,0,0,0.04); letter-spacing:-2px; line-height:1; margin:0; font-family:'Pretendard',sans-serif; position:absolute; top:28px; right:28px;">02</p>
+        <div style="width:40px; height:2px; background:var(--orange); margin-bottom:24px; border-radius:2px;"></div>
+        <h3 style="font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.3px; line-height:1.45; margin-bottom:14px;">핀테크로<br>실현합니다</h3>
+        <p style="font-size:13px; color:var(--text2); line-height:1.85; margin:0;">분할상환·원금이자 조정·자동이체까지. 합의된 내용이 실제로 이행되도록 시스템이 뒷받침합니다.</p>
+      </div>
+
+      <div class="reveal reveal-d2" style="background:#fff; padding:40px 36px; position:relative;">
+        <p style="font-size:48px; font-weight:900; color:rgba(0,0,0,0.04); letter-spacing:-2px; line-height:1; margin:0; font-family:'Pretendard',sans-serif; position:absolute; top:28px; right:28px;">03</p>
+        <div style="width:40px; height:2px; background:var(--orange); margin-bottom:24px; border-radius:2px;"></div>
+        <h3 style="font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.3px; line-height:1.45; margin-bottom:14px;">법적 절차까지<br>책임집니다</h3>
+        <p style="font-size:13px; color:var(--text2); line-height:1.85; margin:0;">협의가 안 될 경우, 법무법인 수륜아시아와 연계해 법적 절차로 자연스럽게 이어집니다.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- YOUTUBE -->
+<section style="padding: 80px 48px;">
+  <div style="max-width: 1160px; margin: 0 auto; overflow: hidden;">
+    <div style="position:relative; padding-bottom:56.25%; height:0;">
+      <iframe
+        src="https://www.youtube.com/embed/3Vtu8kZn5Cw?autoplay=1&mute=1&loop=1&playlist=3Vtu8kZn5Cw&controls=1&rel=0"
+        title="리바운드 서비스 소개"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; display:block;">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-inner">
+    <div class="process-split">
+
+      <!-- 왼쪽: 스텝 리스트 -->
+      <div class="process-left reveal">
+        <p class="eyebrow">진행 방식</p>
+        <h2 class="h2">리바운드는<br>어떻게<br>진행되나요?</h2>
+        <p>채권 정보를 등록하면, 나머지는 리바운드가 알아서 처리해요.</p>
+        <div class="proc-steps">
+          <div class="proc-step active">
+            <div class="proc-num">01</div>
+            <div class="proc-body">
+              <h4>채권 정보 등록</h4>
+              <p>빌려준 금액, 채무자 연락처를 입력해요. 차용증이 없어도 가능해요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">02</div>
+            <div class="proc-body">
+              <h4>카카오 알림톡으로 채무자 안내</h4>
+              <p>법무법인 수륜아시아 명의의 공식 알림톡이 발송돼요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">03</div>
+            <div class="proc-body">
+              <h4>채무자가 상환 방식 선택</h4>
+              <p>채권자가 설정한 범위 안에서 채무자가 직접 상환 방식을 선택해요.</p>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">04</div>
+            <div class="proc-body">
+              <h4>CMS 자동이체로 매달 입금</h4>
+              <p>합의 후 매달 정해진 날에 채권자 계좌로 자동 입금돼요.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 패널 -->
+      <div class="process-right reveal">
+
+        <!-- 패널 01: 채권 정보 등록 -->
+        <div class="proc-panel active" id="proc-panel-1">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">채권 정보 입력</span>
+              <span class="proc-tag-orange">5분이면 완료</span>
+            </div>
+            <div class="step-form">
+              <div class="step-form-row">
+                <div class="step-form-label">채권금액</div>
+                <div class="step-form-input filled">3,500,000원 <span class="check">✓</span></div>
+              </div>
+              <div class="step-form-row">
+                <div class="step-form-label">채무자 연락처</div>
+                <div class="step-form-input filled">010-****-5678 <span class="check">✓</span></div>
+              </div>
+              <div class="step-form-row">
+                <div class="step-form-label">발생원인</div>
+                <div class="step-form-input filled">돈을 빌려줬어요 <span class="check">✓</span></div>
+              </div>
+              <div class="step-form-row">
+                <div class="step-form-label">증거자료 (선택)</div>
+                <div class="step-form-input" style="color:var(--text3);">카카오톡 캡처 첨부 가능</div>
+              </div>
+              <div style="margin-top:8px;padding:12px 14px;background:rgba(255,109,36,0.07);border:1px solid rgba(255,109,36,0.15);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6;">
+                차용증, 계약서가 없어도 카카오톡 대화나 계좌이체 내역만으로 진행할 수 있어요.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 02: 알림톡 발송 -->
+        <!-- 패널 02: 카카오톡 알림 수신 -->
+        <div class="proc-panel" id="proc-panel-2">
+          <div class="proc-card" style="padding:0; overflow:hidden;">
+            <!-- 카카오톡 앱 상단 바 -->
+            <div style="background:#3C1E78; padding:11px 16px; display:flex; align-items:center; gap:10px;">
+              <span style="color:rgba(255,255,255,0.7); font-size:16px; line-height:1;">←</span>
+              <div style="flex:1;">
+                <div style="font-size:13px; font-weight:700; color:#fff;">리바운드</div>
+              </div>
+              <div style="display:flex; gap:16px;">
+                <span style="color:rgba(255,255,255,0.7); font-size:13px;">🔍</span>
+                <span style="color:rgba(255,255,255,0.7); font-size:13px;">☰</span>
+              </div>
+            </div>
+            <!-- 채팅 배경 -->
+            <div style="background:#B2C4D4; padding:16px 14px 20px; min-height:320px;">
+              <!-- 발신자 이름 + 프로필 -->
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <div style="width:36px; height:36px; border-radius:12px; background:#FAE100; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  <span style="font-size:14px; font-weight:900; color:#3C1E78;">카</span>
+                </div>
+                <div>
+                  <div style="font-size:11px; font-weight:700; color:#2c2c2c; margin-bottom:5px;">리바운드 · 법무법인 수륜아시아</div>
+                  <!-- 알림톡 말풍선 -->
+                  <div style="background:#fff; border-radius:4px 14px 14px 14px; padding:14px; max-width:230px; box-shadow:0 1px 3px rgba(0,0,0,0.12);">
+                    <!-- 알림톡 헤더 -->
+                    <div style="display:flex; align-items:center; gap:6px; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid #f0f0f0;">
+                      <div style="width:20px; height:20px; border-radius:5px; background:#FAE100; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:900; color:#3C1E78;">카</div>
+                      <div style="font-size:10px; font-weight:700; color:#111;">알림톡</div>
+                      <div style="margin-left:auto; font-size:9px; color:#999;">공식 채널</div>
+                    </div>
+                    <!-- 메시지 본문 -->
+                    <div style="font-size:11px; color:#222; line-height:1.65; margin-bottom:10px;">
+                      안녕하세요.<br>
+                      <b>법무법인 수륜아시아 리바운드</b>입니다.<br><br>
+                      채무 상환 관련 안내 드립니다. 아래 버튼을 통해 상환 방식을 선택해 주세요.
+                    </div>
+                    <!-- 금액 박스 -->
+                    <div style="background:#F7F7F7; border-radius:8px; padding:9px 11px; margin-bottom:10px;">
+                      <div style="font-size:9px; color:#999; margin-bottom:2px;">청구금액</div>
+                      <div style="font-size:16px; font-weight:900; color:#111; letter-spacing:-0.5px;">3,500,000원</div>
+                    </div>
+                    <!-- CTA 버튼 -->
+                    <div style="background:#FAE100; border-radius:8px; padding:9px; text-align:center; font-size:12px; font-weight:800; color:#1A1714; cursor:pointer;">
+                      상환 방식 선택하기
+                    </div>
+                  </div>
+                  <!-- 시간 -->
+                  <div style="font-size:9px; color:#4a4a4a; margin-top:4px; margin-left:2px;">오전 10:32</div>
+                </div>
+              </div>
+            </div>
+            <!-- 하단 입력창 -->
+            <div style="background:#fff; border-top:1px solid #e0e0e0; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:18px; color:#999;">+</span>
+              <div style="flex:1; background:#F2F2F2; border-radius:20px; padding:7px 14px; font-size:11px; color:#aaa;">메시지 입력</div>
+              <span style="font-size:16px; color:#FAE100;">▶</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 03: 채무자 상환 플랜 선택 UI -->
+        <div class="proc-panel" id="proc-panel-3">
+          <div class="proc-card" style="padding:0; overflow:hidden;">
+            <!-- 앱 콘텐츠 영역 -->
+            <div style="padding:22px 22px 0;">
+              <div style="font-size:17px; font-weight:800; color:var(--text); line-height:1.35; margin-bottom:5px;">이 플랜으로<br>상환을 시작해보세요!</div>
+              <div style="font-size:11px; color:var(--text3); margin-bottom:16px;">응답을 바탕으로 맞춤 상환 플랜을 만들었어요</div>
+              <!-- 탭 -->
+              <div style="display:inline-flex; background:#F2F2F2; border-radius:8px; padding:3px; margin-bottom:16px;">
+                <div style="padding:5px 16px; font-size:12px; font-weight:600; color:var(--text3); border-radius:6px; cursor:pointer;">금액</div>
+                <div style="padding:5px 16px; font-size:12px; font-weight:700; color:var(--text); background:#fff; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">기간</div>
+              </div>
+              <!-- 기간 표시 -->
+              <div style="text-align:center; margin-bottom:14px;">
+                <div style="font-size:10px; color:var(--text3); margin-bottom:2px;">총 상환 기간</div>
+                <div style="font-size:30px; font-weight:900; color:var(--text); letter-spacing:-1px;">12개월</div>
+                <!-- 슬라이더 -->
+                <div style="position:relative; height:20px; display:flex; align-items:center; margin:10px 0 4px;">
+                  <div style="width:100%; height:4px; background:#E8E8E8; border-radius:2px; position:relative;">
+                    <div style="width:48%; height:100%; background:var(--orange); border-radius:2px;"></div>
+                    <div style="width:18px; height:18px; border-radius:50%; background:#fff; border:2.5px solid var(--orange); box-shadow:0 1px 5px rgba(255,109,36,0.3); position:absolute; left:calc(48% - 9px); top:-7px;"></div>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text3);">
+                  <span>1개월</span><span>12개월</span><span>24개월</span>
+                </div>
+              </div>
+            </div>
+            <!-- 구분선 -->
+            <div style="height:1px; background:var(--border); margin:0 22px 12px;"></div>
+            <!-- 상세 내역 -->
+            <div style="padding:0 22px 14px;">
+              <div style="display:flex; justify-content:space-between; padding:6px 0; font-size:12px; border-bottom:1px solid var(--border);">
+                <span style="color:var(--text2);">매달 상환 금액</span>
+                <span style="font-weight:700; color:var(--text);">291,666원</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; font-size:12px; border-bottom:1px solid var(--border);">
+                <span style="color:var(--text2);">원금</span>
+                <span style="font-weight:700; color:var(--text);">3,500,000원</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; font-size:12px; border-bottom:1px solid var(--border);">
+                <span style="color:var(--text2);">이자 <span style="display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1px solid #ccc;font-size:9px;color:#999;vertical-align:middle;">?</span></span>
+                <span style="font-weight:700; color:var(--text);">+0원</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:13px;">
+                <span style="font-weight:700; color:var(--orange);">총 상환 금액</span>
+                <span style="font-weight:900; color:var(--orange); letter-spacing:-0.5px;">3,500,000원</span>
+              </div>
+            </div>
+            <!-- 결제일 -->
+            <div style="border-top:8px solid #F5F5F5; padding:14px 22px 16px;">
+              <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:8px;">결제일을 선택해주세요</div>
+              <div style="border:1px solid var(--border); border-radius:10px; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text);">
+                <span>매월 5일</span>
+                <span style="color:var(--text3);">∨</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 패널 04: CMS 자동이체 -->
+        <div class="proc-panel" id="proc-panel-4">
+          <div class="proc-card">
+            <div class="proc-card-top">
+              <span class="proc-card-title">자동이체 입금 내역</span>
+              <span class="proc-tag-orange">CMS 연동</span>
+            </div>
+            <div class="cms-card">
+              <div class="cms-header">
+                <span class="cms-header-title">자동이체 내역</span>
+                <span class="cms-badge">CMS 연동</span>
+              </div>
+              <div class="cms-body">
+                <div class="cms-row">
+                  <span class="cms-date">11/25</span>
+                  <span class="cms-name">박○○</span>
+                  <span class="cms-amount">350,000원</span>
+                  <span class="cms-status">입금완료</span>
+                </div>
+                <div class="cms-row">
+                  <span class="cms-date">10/25</span>
+                  <span class="cms-name">박○○</span>
+                  <span class="cms-amount">350,000원</span>
+                  <span class="cms-status">입금완료</span>
+                </div>
+                <div class="cms-row">
+                  <span class="cms-date">09/25</span>
+                  <span class="cms-name">박○○</span>
+                  <span class="cms-amount">350,000원</span>
+                  <span class="cms-status">입금완료</span>
+                </div>
+                <div class="cms-row">
+                  <span class="cms-date">12/25</span>
+                  <span class="cms-name">박○○</span>
+                  <span class="cms-amount">350,000원</span>
+                  <span class="cms-status pending">예정</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:14px;font-size:12px;color:var(--text3);line-height:1.6;">
+              매달 정해진 날 자동으로 입금돼요. 따로 챙기지 않아도 됩니다.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOVER (회수 방법) -->
+<section id="recover" style="background:var(--off); padding:120px 0;">
+  <div class="section-inner">
+
+    <!-- 헤더 -->
+    <div style="text-align:center; margin-bottom:64px;" class="reveal">
+      <p class="eyebrow center">회수 방법</p>
+      <h2 class="h2 center">리바운드는 왜<br>효과적일까요?</h2>
+      <p style="font-size:16px; color:var(--text2); max-width:440px; margin:12px auto 0; line-height:1.8;">
+        강압이 아닌 설득, 독촉이 아닌 자동화.<br>리바운드가 돈을 돌려받는 세 가지 이유예요.
+      </p>
+    </div>
+
+    <!-- 3컬럼 이유 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;" class="reveal">
+
+      <!-- 01 -->
+      <div style="background:#fff; border:1px solid var(--border); border-radius:20px; padding:40px 32px; display:flex; flex-direction:column; transition:box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.boxShadow='0 12px 40px rgba(0,0,0,0.08)';this.style.transform='translateY(-3px)'" onmouseout="this.style.boxShadow='none';this.style.transform='translateY(0)'">
+        <div style="font-size:48px; font-weight:900; color:rgba(255,109,36,0.12); letter-spacing:-2px; line-height:1; margin-bottom:20px;">01</div>
+        <h3 style="font-size:20px; font-weight:800; color:var(--text); letter-spacing:-0.5px; line-height:1.35; margin-bottom:12px;">공식 채널이라서<br>무시하기 힘들어요</h3>
+        <p style="font-size:14px; color:var(--text2); line-height:1.8; flex:1;">친구의 카톡은 읽고도 무시할 수 있어요. 하지만 법무법인 명의의 공식 알림톡은 달라요. 법적 효력을 가진 공식 채널이라, 채무자가 진지하게 받아들이고 응답률이 크게 높아져요.</p>
+        <div style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border);">
+          <div style="font-size:30px; font-weight:900; color:var(--orange); letter-spacing:-1px; line-height:1;">3.2배</div>
+          <div style="font-size:12px; color:var(--text3); margin-top:4px;">직접 연락 대비 응답률</div>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div style="background:#fff; border:1px solid var(--border); border-radius:20px; padding:40px 32px; display:flex; flex-direction:column; transition:box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.boxShadow='0 12px 40px rgba(0,0,0,0.08)';this.style.transform='translateY(-3px)'" onmouseout="this.style.boxShadow='none';this.style.transform='translateY(0)'">
+        <div style="font-size:48px; font-weight:900; color:rgba(255,109,36,0.12); letter-spacing:-2px; line-height:1; margin-bottom:20px;">02</div>
+        <h3 style="font-size:20px; font-weight:800; color:var(--text); letter-spacing:-0.5px; line-height:1.35; margin-bottom:12px;">채무자가 직접<br>선택하게 해요</h3>
+        <p style="font-size:14px; color:var(--text2); line-height:1.8; flex:1;">일방적으로 요구하면 저항이 생겨요. 리바운드는 채무자가 자신의 상황에 맞게 상환 방식을 직접 고르게 해요. 선택권을 주면 합의율이 올라가고, 실제로 갚는 비율도 높아져요.</p>
+        <div style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border);">
+          <div style="font-size:30px; font-weight:900; color:var(--orange); letter-spacing:-1px; line-height:1;">87%</div>
+          <div style="font-size:12px; color:var(--text3); margin-top:4px;">최종 합의 성공률</div>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div style="background:#fff; border:1px solid var(--border); border-radius:20px; padding:40px 32px; display:flex; flex-direction:column; transition:box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.boxShadow='0 12px 40px rgba(0,0,0,0.08)';this.style.transform='translateY(-3px)'" onmouseout="this.style.boxShadow='none';this.style.transform='translateY(0)'">
+        <div style="font-size:48px; font-weight:900; color:rgba(255,109,36,0.12); letter-spacing:-2px; line-height:1; margin-bottom:20px;">03</div>
+        <h3 style="font-size:20px; font-weight:800; color:var(--text); letter-spacing:-0.5px; line-height:1.35; margin-bottom:12px;">합의 후엔<br>알아서 들어와요</h3>
+        <p style="font-size:14px; color:var(--text2); line-height:1.8; flex:1;">합의가 되면 CMS 자동이체로 매달 정해진 날에 채권자 계좌에 바로 입금돼요. 따로 확인하거나 독촉하지 않아도 돼요. 그냥 받을 날짜만 기다리면 돼요.</p>
+        <div style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border);">
+          <div style="font-size:30px; font-weight:900; color:var(--orange); letter-spacing:-1px; line-height:1;">자동</div>
+          <div style="font-size:12px; color:var(--text3); margin-top:4px;">CMS 자동이체로 매달 입금</div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</section>
+
+<!-- COST -->
+<section class="section">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow center">비용 구조</p>
+      <h2 class="h2 center">초기 비용 없이<br>빠른 회수 경험을 제공해요</h2>
+    </div>
+    <div class="cost-bento">
+      <div class="cost-card reveal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="29" height="21" viewBox="0 0 29 21" fill="none" style="margin-bottom:28px; display:block;">
+          <path d="M24.8028 2.079C22.119 0.71925 18.5561 0 14.5 0C10.4439 0 6.88103 0.71925 4.19723 2.079C1.51344 3.43875 0 5.35237 0 7.35V13.65C0 15.6476 1.53027 17.5678 4.19723 18.921C6.8642 20.2742 10.4439 21 14.5 21C18.5561 21 22.119 20.2808 24.8028 18.921C27.4866 17.5612 29 15.6476 29 13.65V7.35C29 5.35237 27.4697 3.43219 24.8028 2.079ZM13.4643 14.679V18.879C11.0045 18.7976 8.93304 18.4301 7.25 17.8959V13.7878C9.27887 14.3358 11.3651 14.6359 13.4643 14.6816V14.679ZM15.5357 14.679C17.6349 14.6333 19.7211 14.3332 21.75 13.7852V17.8946C20.067 18.4288 17.9955 18.7963 15.5357 18.8777V14.679ZM2.07143 13.65V11.2258C2.72331 11.7742 3.43686 12.2425 4.19723 12.621C4.51183 12.7798 4.84455 12.9294 5.17857 13.0712V17.0625C3.12915 16.0335 2.07143 14.7381 2.07143 13.65ZM23.8214 17.0625V13.0712C24.1593 12.9294 24.4882 12.7798 24.8028 12.621C25.5631 12.2425 26.2767 11.7742 26.9286 11.2258V13.65C26.9286 14.7381 25.8708 16.0335 23.8214 17.0625Z" fill="#FF6D24"/>
+        </svg>
+        <div class="cost-card-lbl" style="font-size:22px; margin-bottom:10px;">시작비용 0원으로 서비스를 시작해보세요</div>
+        <p>100% 온라인 운영으로 비용을 최소화했어요.<br>초기비용 없이 서비스를 시작하고, 회수 성공 시에만 수수료를 지불해요.</p>
+      </div>
+      <div class="cost-card reveal reveal-d1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="29" viewBox="0 0 20 29" fill="none" style="margin-bottom:28px; display:block;">
+          <path d="M11.901 0.563024C12.1026 0.304792 12.3828 0.121916 12.6977 0.0431228C13.0127 -0.0356706 13.3444 -0.00591718 13.6409 0.12771C13.9374 0.261336 14.1818 0.491265 14.3357 0.781378C14.4896 1.07149 14.5444 1.40535 14.4913 1.73051L12.9474 11.1537H18.5363C18.8114 11.1536 19.0809 11.2324 19.314 11.3809C19.5471 11.5294 19.7342 11.7417 19.854 11.9934C19.9738 12.2451 20.0213 12.526 19.9912 12.8039C19.9611 13.0818 19.8545 13.3454 19.6836 13.5645L8.09752 28.437C7.89598 28.6952 7.61573 28.8781 7.30081 28.9569C6.98588 29.0357 6.65413 29.0059 6.35765 28.8723C6.06117 28.7387 5.81677 28.5087 5.66284 28.2186C5.50891 27.9285 5.45417 27.5947 5.50722 27.2695L7.05116 17.8463H1.46226C1.18728 17.8461 0.917935 17.7671 0.685079 17.6185C0.452223 17.4699 0.265282 17.2576 0.145681 17.0059C0.0260798 16.7543 -0.0213426 16.4735 0.00884849 16.1958C0.0390396 15.918 0.145623 15.6545 0.316383 15.4355L11.901 0.563024Z" fill="#FF6D24"/>
+        </svg>
+        <div class="cost-card-lbl" style="font-size:22px; margin-bottom:10px;">최대 1개월 안에 첫 회수를 경험해보세요</div>
+        <p>수 개월에 걸쳐 진행되는 법적 분쟁과는 달리,<br>리바운드는 채무자의 반응에 따라 최대 1개월 내에 첫 회수가 이루어져요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="section off">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">신뢰와 안전</p>
+      <h2 class="h2">법률 전문성과<br>철저한 보안을 기반으로 해요</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card law reveal">
+        <div>
+          <div class="trust-law-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            법률 파트너
+          </div>
+          <div class="trust-law-name">법무법인 수륜아시아</div>
+          <div class="trust-law-sub">Sulryu Asia Law Firm</div>
+          <p>리바운드는 법무법인 수륜아시아와 정식 제휴를 맺고 운영돼요. 모든 채권 회수 과정은 법무법인 명의로 진행되어 법적 효력이 보장돼요.<br><br>감정적인 갈등 없이, 전문적이고 공식적인 방법으로 채무자에게 상환을 요청해요.</p>
+        </div>
+        <div class="trust-law-footer">
+          <a href="http://srlaw.co.kr/" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--text2); background:var(--white); border:1px solid var(--border); border-radius:8px; padding:8px 16px; text-decoration:none; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">
+            법무법인 수륜아시아 홈페이지
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="trust-deco"></div>
+      </div>
+      <div class="trust-card light reveal reveal-d1">
+        <div class="trust-deco"></div>
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="27" viewBox="0 0 34 41" fill="none"><path d="M17 0L0 7.45455V18.6364C0 28.9795 7.25333 38.6518 17 41C26.7467 38.6518 34 28.9795 34 18.6364V7.45455L17 0ZM17 11.1818C19.6444 11.1818 22.2889 13.2318 22.2889 15.8409V18.6364C23.4222 18.6364 24.5556 19.7545 24.5556 21.0591V27.5818C24.5556 28.7 23.4222 29.8182 22.1 29.8182H11.7111C10.5778 29.8182 9.44444 28.7 9.44444 27.3955V20.8727C9.44444 19.7545 10.5778 18.6364 11.7111 18.6364V15.8409C11.7111 13.2318 14.3556 11.1818 17 11.1818ZM17 13.4182C15.4889 13.4182 14.1667 14.35 14.1667 15.8409V18.6364H19.8333V15.8409C19.8333 14.35 18.5111 13.4182 17 13.4182Z" fill="var(--orange)"/></svg>
+        </div>
+        <h3>데이터 암호화</h3>
+        <p>모든 개인정보와 채권 정보는 AES-256 암호화로 보호돼요. 채권자와 채무자 정보는 철저하게 분리 관리되며, 제3자에게 제공되지 않아요.</p>
+      </div>
+      <div class="trust-card soft reveal reveal-d2">
+        <div class="trust-deco"></div>
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="20" viewBox="0 0 50 34" fill="none"><path d="M40.3125 12.5833C39.6127 9.03691 37.7033 5.84346 34.9106 3.54843C32.1178 1.2534 28.6148 -0.000817172 25 3.99451e-07C18.9792 3.99451e-07 13.75 3.41667 11.1458 8.41667C8.08382 8.74757 5.2521 10.1983 3.19477 12.4903C1.13744 14.7822 -0.000357712 17.7535 8.43599e-08 20.8333C8.43599e-08 27.7292 5.60417 33.3333 12.5 33.3333H39.5833C45.3333 33.3333 50 28.6667 50 22.9167C50 17.4167 45.7292 12.9583 40.3125 12.5833Z" fill="var(--orange)"/></svg>
+        </div>
+        <h3>클라우드 보안</h3>
+        <p>AWS 기반의 안전한 클라우드 인프라에서 운영되며, 24시간 모니터링과 정기적인 보안 감사를 통해 서비스 안정성을 유지해요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="section-inner">
+    <div class="stats-row reveal">
+      <div class="stat-cell">
+        <div class="stat-num">94%</div>
+        <div class="stat-label">평균 회수율</div>
+        <div class="stat-desc">업계 평균 대비 41% 높음</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">5분</div>
+        <div class="stat-label">등록 소요 시간</div>
+        <div class="stat-desc">차용증 없이 스마트폰으로</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">0원</div>
+        <div class="stat-label">미회수 시 비용</div>
+        <div class="stat-desc">성공 보수 방식</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">3일</div>
+        <div class="stat-label">평균 첫 접촉</div>
+        <div class="stat-desc">법무법인 명의 신속 처리</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:0;">
+      <p class="eyebrow center">FAQ</p>
+      <h2 class="h2 center">자주 묻는 질문들</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-question">
+          <span class="faq-q-text">리바운드는 채권추심 서비스인가요?</span>
+          <span class="faq-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">리바운드는 일반 채권추심 회사와 달라요. 법무법인 수륜아시아와 협력하여 법적 효력이 있는 공식 채널로 상환을 안내하고, 채무자가 자발적으로 상환 방식을 선택할 수 있도록 돕는 서비스예요. 강압적인 추심이 아니라 양측이 납득할 수 있는 방법으로 문제를 해결해요.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span class="faq-q-text">차용증이 없어도 이용할 수 있나요?</span>
+          <span class="faq-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">네, 가능해요. 카카오톡 대화 내역, 계좌이체 내역, 문자 메시지 등 채무 관계를 확인할 수 있는 자료가 있으면 진행할 수 있어요. 어떤 자료를 갖고 계신지 먼저 상담을 통해 확인해 드릴게요.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span class="faq-q-text">리바운드의 독보적인 강점은 무엇인가요?</span>
+          <span class="faq-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">법무법인 명의의 공식 카카오 알림톡 발송, CMS 자동이체 연동, 성공 보수 방식의 비용 구조가 강점이에요. 채권자는 초기 비용 없이 시작할 수 있고, 채무자는 부담 없이 상환 방식을 선택할 수 있어요. 평균 회수율 94%, 등록 후 평균 3일 내 첫 접촉이라는 결과가 이를 증명해요.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span class="faq-q-text">리바운드를 믿고 맡길 수 있나요?</span>
+          <span class="faq-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">리바운드는 법무법인 수륜아시아와 공식 제휴를 맺고 운영되며, 금융위원회에 등록된 CMS 자동이체 서비스를 사용해요. 채권 회수 금액은 채권자 계좌로 직접 입금되며, 리바운드는 정산된 수수료만 받아요.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span class="faq-q-text">내 정보는 안전하게 관리되나요?</span>
+          <span class="faq-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">모든 데이터는 AES-256 암호화로 보호되며, AWS 보안 인프라에서 운영돼요. 채권자와 채무자의 정보는 서비스 목적 외로 사용되지 않으며, 회수 완료 후 관련 법령에 따라 안전하게 파기돼요.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELF CHECK -->
+<section style="background:#0B1C2C; padding:120px 48px; text-align:center; position:relative; overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(255,109,36,0.18) 0%, transparent 65%);pointer-events:none;"></div>
+  <div style="position:relative; z-index:1; max-width:600px; margin:0 auto;" class="reveal">
+    <p style="font-size:12px; font-weight:700; color:var(--orange); letter-spacing:1px; text-transform:uppercase; margin-bottom:18px;">불필요한 분쟁 없이 시작하는 첫 단계</p>
+    <h2 style="font-size:44px; font-weight:900; color:#ffffff; letter-spacing:-1.5px; line-height:1.25; margin-bottom:16px;">내 상황에 맞는<br>대응법을 확인하세요</h2>
+    <p style="font-size:16px; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:40px;">몇 가지 질문에 답하면 리바운드가 도움이 될 수 있는지<br>1분 만에 바로 알 수 있어요.</p>
+    <a href="self-check.html" target="_blank" class="btn-orange">셀프 진단하기 →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 54 55" fill="none">
+            <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#6B7280"/>
+            <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.1351 2.30431 42.436 3.2431 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#6B7280"/>
+            <path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1925 5.6356 23.1925H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#6B7280"/>
+            <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#6B7280"/>
+            <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C50.8481 10.4121 49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C44.0472 1.36552 45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#6B7280"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="72" height="22" viewBox="0 0 145 44" fill="none">
+            <g clip-path="url(#wm-f)">
+              <path d="M5.28317 25.6802H19.9764V8.82065H0.0732422V13.7767H14.664V20.7241H0.0732422V37.5394H25.4351V43.9262H30.645V8.82065H25.4351V32.6276H5.28317V25.6802Z" fill="#6B7280"/>
+              <path d="M41.8261 8.82065H36.6162V37.4509H56.5193V8.82065H51.3094V18.6443H41.8261V8.82065ZM51.2948 23.5561V32.4506H41.8115V23.5561H51.2948Z" fill="#6B7280"/>
+              <path d="M67.3779 8.82065H62.168V43.9262H67.3779V19.4851H73.3781V14.588H67.3779V8.82065Z" fill="#6B7280"/>
+              <path d="M88.276 35.9759H93.7054V28.5122H106.891V23.4087H74.3877V28.5122H88.276V35.9759Z" fill="#6B7280"/>
+              <path d="M79.5976 31.6835H74.3877V43.9262H106.891V39.0292H79.5976V31.6835Z" fill="#6B7280"/>
+              <path d="M119.038 13.88H143.449V8.82065H113.77V30.3118H143.449V25.3557H119.038V13.88Z" fill="#6B7280"/>
+              <path d="M144.927 38.8227H113.023V43.9263H144.927V38.8227Z" fill="#6B7280"/>
+              <path d="M90.6617 20.3259C97.3936 20.3259 102.486 15.9598 102.486 10.1777C102.486 4.39558 97.3936 0.073761 90.6617 0.073761C83.9297 0.073761 78.8076 4.42508 78.8076 10.1924C78.8076 15.9598 83.9005 20.3406 90.6617 20.3406V20.3259ZM90.6617 4.64634C94.2911 4.64634 97.0424 7.03588 97.0424 10.1924C97.0424 13.349 94.3057 15.7828 90.6617 15.7828C87.0177 15.7828 84.2517 13.3785 84.2517 10.1924C84.2517 7.00638 87.003 4.64634 90.6617 4.64634Z" fill="#6B7280"/>
+            </g>
+            <defs><clipPath id="wm-f"><rect width="145" height="44" fill="white"/></clipPath></defs>
+          </svg>
+        </div>
+        <div class="footer-brand-title">법무법인 수륜아시아</div>
+        <p>
+          광고책임변호사 : 이준철<br>
+          대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
+          E-mail : master@srlaw.co.kr<br>
+          주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
+        </p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>서비스</h5>
+          <a href="#">서비스 소개</a>
+          <a href="#">자주 묻는 질문</a>
+          <a href="team.html">리바운드 팀</a>
+        </div>
+        <div class="footer-col">
+          <h5>컨텐츠</h5>
+          <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
+          <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
+          <a href="blog.html">블로그</a>
+        </div>
+        <div class="footer-col">
+          <h5>이용약관</h5>
+          <a href="#">개인정보 처리 방침</a>
+          <a href="#">서비스 이용약관</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Mobile menu toggle ──
+  (function() {
+    const btn = document.getElementById('mobileMenuBtn');
+    const menu = document.getElementById('mobileMenu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('open');
+      menu.classList.toggle('open');
+      document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        btn.classList.remove('open');
+        menu.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+  })();
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Process 섹션 — 스텝 클릭 시 우측 패널 전환
+  document.querySelectorAll('.proc-step').forEach((step, i) => {
+    step.addEventListener('click', () => {
+      document.querySelectorAll('.proc-step').forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      document.querySelectorAll('.proc-panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('proc-panel-' + (i + 1));
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // ── Biz Hint ──
+  (function() {
+    const hint = document.getElementById('bizHint');
+    const closeBtn = document.getElementById('bizHintClose');
+    if (!hint || !closeBtn) return;
+    let autoHide;
+    setTimeout(function() {
+      hint.classList.add('visible');
+      autoHide = setTimeout(function() { hint.classList.remove('visible'); }, 10000);
+    }, 1500);
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      clearTimeout(autoHide);
+      hint.classList.remove('visible');
+    });
+  })();
+</script>
+</body>
+</html>

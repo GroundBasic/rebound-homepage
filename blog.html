@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>블로그 – Rebound</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6D24;
+      --navy: #111827;
+      --white: #fff;
+      --off: #F7F7F5;
+      --border: #EBEBEB;
+      --text: #1A1714;
+      --text2: #6B6B6B;
+      --text3: #ADADAD;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+    }
+
+    /* ── GNB ── */
+    .gnb {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 64px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .gnb-inner {
+      max-width: 1256px; margin: 0 auto;
+      padding: 0 48px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .gnb-left { display: flex; align-items: center; gap: 28px; }
+    .gnb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .toggle-pill {
+      display: flex; background: var(--off);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 3px;
+    }
+    .toggle-pill a {
+      padding: 5px 16px; border-radius: 16px;
+      font-size: 13px; font-weight: 500;
+      text-decoration: none; color: var(--text2);
+      transition: all 0.2s;
+    }
+    .toggle-pill a.on { background: var(--white); color: var(--text); font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .gnb-nav { display: flex; gap: 4px; align-items: center; }
+    .gnb-nav a { font-size: 14px; color: #302622; font-weight: 600; text-decoration: none; padding: 7px 13px; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .gnb-nav a:hover { background: #F1F5F7; color: #17191A; }
+    .gnb-nav-active { background: none !important; color: var(--orange) !important; font-weight: 800; }
+    .gnb-actions { display: flex; align-items: center; gap: 4px; }
+    .gnb-login { font-size: 14px; color: #302622; text-decoration: none; padding: 7px 13px; border-radius: 8px; font-weight: 600; transition: background 0.15s, color 0.15s; }
+    .gnb-login:hover { background: #F1F5F7; color: #17191A; }
+    a.gnb-start {
+      background: var(--orange); color: #fff !important;
+      font-size: 14px; font-weight: 600;
+      padding: 7px 13px; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s;
+      white-space: nowrap;    }
+    a.gnb-start:hover { opacity: 0.85; }
+
+    /* ── BIZ HINT ── */
+    .biz-hint-wrap { position: relative; }
+    .biz-hint {
+      position: absolute; top: calc(100% + 12px); left: auto; right: 0;
+      background: #1B1F26; border-radius: 14px;
+      padding: 14px 40px 14px 16px; width: 272px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
+      opacity: 0; pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 300;
+    }
+    .biz-hint.visible { opacity: 1; pointer-events: auto; transform: translateY(0); animation: bizFloat 2.8s ease-in-out infinite; }
+    @keyframes bizFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .biz-hint::before {
+      content: ''; position: absolute; top: -7px; right: 28px; left: auto;
+      width: 14px; height: 8px; background: #1B1F26;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .biz-hint-close {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none; color: rgba(255,255,255,0.45);
+      font-size: 16px; line-height: 1; cursor: pointer;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    .biz-hint-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .biz-hint-link { text-decoration: none; display: block; }
+    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .biz-hint-desc { display: block; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; white-space: nowrap; }
+    .biz-hint-desc strong { font-weight: 700; color: #fff; }
+
+    /* ── HERO ── */
+    .page-hero {
+      margin-top: 64px;
+      padding: 80px 48px 72px;
+      background: var(--off);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero-inner {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+    }
+    .page-hero h1 {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .page-hero p {
+      font-size: 17px;
+      color: var(--text2);
+    }
+
+    /* ── CATEGORIES ── */
+    .blog-categories {
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+    .blog-cats-inner {
+      max-width: 1160px; margin: 0 auto;
+      padding: 0 48px;
+      display: flex; gap: 0;
+    }
+    .blog-cats-inner a {
+      font-size: 14px; font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 18px 20px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .blog-cats-inner a:hover { color: var(--text); }
+    .blog-cats-inner a.active {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+      font-weight: 700;
+    }
+
+    /* ── BLOG GRID ── */
+    .blog-section {
+      padding: 64px 48px 100px;
+    }
+    .blog-inner {
+      max-width: 1160px; margin: 0 auto;
+    }
+    .blog-featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .blog-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .blog-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .blog-card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-card-thumb-featured {
+      aspect-ratio: 3/2;
+    }
+    .blog-card-thumb-label {
+      position: absolute;
+      top: 16px; left: 16px;
+      background: var(--orange);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
+    }
+    .blog-card-body {
+      padding: 24px;
+    }
+    .blog-card-cat {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .blog-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .blog-card-featured h3 { font-size: 22px; }
+    .blog-card p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .blog-card-meta {
+      display: flex; gap: 12px; align-items: center;
+      font-size: 12px; color: var(--text3);
+    }
+    .blog-card-meta-dot { width: 3px; height: 3px; background: var(--text3); border-radius: 50%; }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    /* ── PAGINATION ── */
+    .blog-pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 64px;
+    }
+    .blog-pagination button {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .blog-pagination button.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      font-weight: 700;
+    }
+    .blog-pagination button:hover:not(.active) {
+      border-color: var(--text2);
+      color: var(--text);
+    }
+
+    /* ── FOOTER ── */
+    footer { background: #F5F5F5; }
+    .footer-inner { max-width: 1256px; margin: 0 auto; padding: 0 48px; }
+    .footer-top { display:flex; gap:80px; padding:64px 0 48px; }
+    .footer-brand { flex: 0 0 380px; }
+    .footer-logo { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+    .footer-brand-title { font-size:14px; font-weight:700; color:#374151; margin-bottom:8px; }
+    .footer-brand p { font-size:13px; color:#9CA3AF; line-height:1.8; }
+    .footer-links { display:flex; gap:80px; flex:1; justify-content:flex-start; padding-left:40px; }
+    .footer-col { display:flex; flex-direction:column; gap:12px; min-width:120px; }
+    .footer-col h5 { font-size:14px; font-weight:700; color:#374151; margin-bottom:4px; }
+    .footer-col a { font-size:14px; color:#9CA3AF; text-decoration:none; transition:color 0.2s; }
+    .footer-col a:hover { color:#374151; }
+    .footer-bottom { padding:32px 0 48px; }
+    .footer-copy { font-size:13px; color:#9CA3AF; }
+
+    /* Thumb placeholder illustrations */
+    .thumb-placeholder {
+      color: #ccc;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (max-width: 1024px) {
+      .blog-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .gnb-inner { padding: 0 20px; }
+      .gnb-nav a:not(.gnb-cta) { display: none; }
+      .page-hero { padding: 48px 20px; }
+      .page-hero-inner { flex-direction: column; }
+      .blog-section { padding: 40px 20px 64px; }
+      .blog-featured { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .blog-cats-inner { padding: 0 20px; overflow-x: auto; }
+      .footer-inner { padding: 40px 20px 28px; }
+      .footer-top { flex-direction: column; gap: 28px; }
+      .footer-links { flex-wrap: wrap; gap: 28px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GNB -->
+<header class="gnb">
+  <div class="gnb-inner">
+    <div class="gnb-left">
+      <a href="rebound-personal.html" class="gnb-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 54 55" fill="none">
+          <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#FF6D24"/>
+          <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.3046 1.89892 43.6648 1.62155 44.025 1.34418C43.7072 1.62155 43.4106 1.94159 43.1351 2.30431C42.436 3.2431 42.0334 4.4166 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF6D24"/>
+          <path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1925 5.6356 23.1925H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#FF6D24"/>
+          <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#FF6D24"/>
+          <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C51.2506 10.0707 51.2082 10.1134 51.1658 10.1561C51.1658 10.1561 50.954 10.3267 50.8481 10.4121C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C43.4116 1.98427 43.7082 1.66423 44.0472 1.36552C44.2379 1.21617 44.4074 1.08815 44.598 0.938796C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#FF6D24"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="88" height="27" viewBox="0 0 145 44" fill="none">
+          <g clip-path="url(#wm-bl)">
+            <path d="M5.28317 25.6802H19.9764V8.82065H0.0732422V13.7767H14.664V20.7241H0.0732422V37.5394H25.4351V43.9262H30.645V8.82065H25.4351V32.6276H5.28317V25.6802Z" fill="#1A1714"/>
+            <path d="M41.8261 8.82065H36.6162V37.4509H56.5193V8.82065H51.3094V18.6443H41.8261V8.82065ZM51.2948 23.5561V32.4506H41.8115V23.5561H51.2948Z" fill="#1A1714"/>
+            <path d="M67.3779 8.82065H62.168V43.9262H67.3779V19.4851H73.3781V14.588H67.3779V8.82065Z" fill="#1A1714"/>
+            <path d="M88.276 35.9759H93.7054V28.5122H106.891V23.4087H74.3877V28.5122H88.276V35.9759Z" fill="#1A1714"/>
+            <path d="M79.5976 31.6835H74.3877V43.9262H106.891V39.0292H79.5976V31.6835Z" fill="#1A1714"/>
+            <path d="M119.038 13.88H143.449V8.82065H113.77V30.3118H143.449V25.3557H119.038V13.88Z" fill="#1A1714"/>
+            <path d="M144.927 38.8227H113.023V43.9263H144.927V38.8227Z" fill="#1A1714"/>
+            <path d="M90.6617 20.3259C97.3936 20.3259 102.486 15.9598 102.486 10.1777C102.486 4.39558 97.3936 0.073761 90.6617 0.073761C83.9297 0.073761 78.8076 4.42508 78.8076 10.1924C78.8076 15.9598 83.9005 20.3406 90.6617 20.3406V20.3259ZM90.6617 4.64634C94.2911 4.64634 97.0424 7.03588 97.0424 10.1924C97.0424 13.349 94.3057 15.7828 90.6617 15.7828C87.0177 15.7828 84.2517 13.3785 84.2517 10.1924C84.2517 7.00638 87.003 4.64634 90.6617 4.64634Z" fill="#1A1714"/>
+          </g>
+          <defs><clipPath id="wm-bl"><rect width="145" height="44" fill="white"/></clipPath></defs>
+        </svg>
+      </a>
+      <div class="biz-hint-wrap">
+        <div class="toggle-pill">
+          <a href="rebound-personal.html" class="on">개인</a>
+          <a href="rebound-biz.html">기업 Biz</a>
+        </div>
+        <div class="biz-hint" id="bizHint">
+          <button class="biz-hint-close" id="bizHintClose" aria-label="닫기">✕</button>
+          <a href="rebound-biz.html" class="biz-hint-link">
+            <span class="biz-hint-title">사업자 회원이신가요?</span>
+            <span class="biz-hint-desc">기업 회원 전용 회수 기능과 혜택을 확인해보세요.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <nav class="gnb-nav">
+      <a href="rebound-personal.html">홈</a>
+      <a href="team.html">팀 리바운드</a>
+      <a href="support.html">고객센터</a>
+      <a href="blog.html" class="gnb-nav-active">블로그</a>
+      <a href="self-check.html" target="_blank" >셀프 진단</a>
+    </nav>
+    <div class="gnb-actions">
+      <a href="#" class="gnb-login">로그인</a>
+      <a href="#" class="gnb-start">리바운드 시작하기</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div>
+      <h1>블로그</h1>
+      <p>채권 회수, 법률 상식, 리바운드 이야기를 전합니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="blog-categories">
+  <div class="blog-cats-inner">
+    <a href="#" class="active">전체</a>
+    <a href="#">채권 회수 가이드</a>
+    <a href="#">법률 상식</a>
+    <a href="#">성공 사례</a>
+    <a href="#">리바운드 뉴스</a>
+  </div>
+</div>
+
+<!-- BLOG POSTS -->
+<div class="blog-section">
+  <div class="blog-inner">
+
+    <!-- Featured Posts -->
+    <div class="blog-featured">
+      <a href="#" class="blog-card blog-card-featured" style="grid-column: span 2;">
+        <div class="blog-card-thumb blog-card-thumb-featured" style="background: linear-gradient(135deg, #FFF0E8 0%, #FFD9C2 100%);">
+          <div class="thumb-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#FF6D24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="#FF6D24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="#FF6D24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="blog-card-thumb-label">추천</span>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">채권 회수 가이드</div>
+          <h3>빌려준 돈, 어떻게 받을 수 있을까? 개인 채권 회수 완벽 가이드</h3>
+          <p>친구, 지인, 거래처에 빌려준 돈을 돌려받지 못하고 있다면? 내용증명부터 법적 절차까지 단계별로 알아봅니다.</p>
+          <div class="blog-card-meta">
+            <span>리바운드 팀</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2025.03.15</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>읽는 시간 7분</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Grid Posts -->
+    <div class="blog-grid">
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #EEF2FF 0%, #DDE6FF 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="#6B7FD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">법률 상식</div>
+          <h3>차용증 없이도 돈을 돌려받을 수 있을까?</h3>
+          <p>차용증이 없더라도 카카오톡 대화, 계좌이체 내역 등으로 증거를 확보할 수 있습니다.</p>
+          <div class="blog-card-meta">
+            <span>강영민 변호사</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2025.02.28</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #F0FDF4 0%, #D1FAE5 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#22C55E" stroke-width="1.5"/>
+              <path d="M8 12L10.5 14.5L16 9" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">성공 사례</div>
+          <h3>2년 동안 못 받은 3,000만 원, 두 달 만에 회수한 이야기</h3>
+          <p>포기했던 채권을 어떻게 되찾았는지, 실제 사례를 통해 알아봅니다.</p>
+          <div class="blog-card-meta">
+            <span>리바운드 팀</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2025.02.10</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #FFF7ED 0%, #FDE68A 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M12 9V11M12 15H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0377 2.66667 10.2679 4L3.33975 16C2.56998 17.3333 3.53223 19 5.07183 19Z" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">법률 상식</div>
+          <h3>소멸시효 주의! 채권 회수를 서둘러야 하는 이유</h3>
+          <p>채권에도 유통기한이 있습니다. 시효가 지나면 법적으로 청구할 수 없게 됩니다.</p>
+          <div class="blog-card-meta">
+            <span>강영민 변호사</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2025.01.25</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #FDF2F8 0%, #FBCFE8 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M17 21V19C17 16.7909 15.2091 15 13 15H5C2.79086 15 1 16.7909 1 19V21M23 21V19C22.9986 17.1771 21.765 15.5857 20 15.13M16 3.13C17.7699 3.58317 19.0078 5.17799 19.0078 7.005C19.0078 8.83201 17.7699 10.4268 16 10.88M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke="#EC4899" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">리바운드 뉴스</div>
+          <h3>리바운드, 법무법인 수륜아시아와 공식 파트너십 체결</h3>
+          <p>전문 법률 서비스를 플랫폼에 완전 통합하여 더 빠르고 안전한 채권 회수를 제공합니다.</p>
+          <div class="blog-card-meta">
+            <span>리바운드 팀</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2025.01.10</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #F0F9FF 0%, #BAE6FD 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 22V12H15V22" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">채권 회수 가이드</div>
+          <h3>전세 보증금 못 받을 때, 어떻게 해야 할까?</h3>
+          <p>전세 계약 만료 후 보증금을 돌려받지 못하는 상황, 단계별 대응 방법을 정리했습니다.</p>
+          <div class="blog-card-meta">
+            <span>리바운드 팀</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2024.12.20</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="blog-card">
+        <div class="blog-card-thumb" style="background: linear-gradient(135deg, #F5F3FF 0%, #DDD6FE 100%);">
+          <div class="thumb-placeholder">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 6C13.93 6 15.5 7.57 15.5 9.5C15.5 11.43 13.93 13 12 13C10.07 13 8.5 11.43 8.5 9.5C8.5 7.57 10.07 6 12 6ZM12 20C9.97 20 8.1 19.12 6.78 17.72C7.53 16.42 8.95 15.5 10.58 15.5H13.42C15.05 15.5 16.47 16.42 17.22 17.72C15.9 19.12 14.03 20 12 20Z" fill="#7C3AED" opacity="0.6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">성공 사례</div>
+          <h3>용역비 1,500만 원, 내용증명 한 통으로 해결된 케이스</h3>
+          <p>소송 없이도 내용증명만으로 상대방이 자진해서 지불한 실제 사례입니다.</p>
+          <div class="blog-card-meta">
+            <span>리바운드 팀</span>
+            <span class="blog-card-meta-dot"></span>
+            <span>2024.12.05</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="blog-pagination">
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>›</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <a href="rebound-personal.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 54 55" fill="none">
+              <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#6B7280"/>
+              <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#6B7280"/>
+              <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#6B7280"/>
+            </svg>
+            <span style="font-size:15px;font-weight:800;color:#6B7280;">리바운드</span>
+          </a>
+        </div>
+        <div class="footer-brand-title">법무법인 수륜아시아</div>
+        <p>
+          광고책임변호사 : 이준철<br>
+          대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
+          E-mail : master@srlaw.co.kr<br>
+          주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
+        </p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>서비스</h5>
+          <a href="#">서비스 소개</a>
+          <a href="#">자주 묻는 질문</a>
+          <a href="team.html">리바운드 팀</a>
+        </div>
+        <div class="footer-col">
+          <h5>컨텐츠</h5>
+          <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
+          <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
+          <a href="blog.html">블로그</a>
+        </div>
+        <div class="footer-col">
+          <h5>이용약관</h5>
+          <a href="#">개인정보 처리 방침</a>
+          <a href="#">서비스 이용약관</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── Biz Hint ──
+  (function() {
+    const hint = document.getElementById('bizHint');
+    const closeBtn = document.getElementById('bizHintClose');
+    if (!hint || !closeBtn) return;
+    let autoHide;
+    setTimeout(function() {
+      hint.classList.add('visible');
+      autoHide = setTimeout(function() { hint.classList.remove('visible'); }, 10000);
+    }, 1500);
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      clearTimeout(autoHide);
+      hint.classList.remove('visible');
+    });
+  })();
+</script>
+</body>
+</html>

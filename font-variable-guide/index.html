@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>아이콘 컴포넌트 등록 가이드 (내 상황 맞춤)</title>
+  <style>
+    :root {
+      --p:#7C5CFC;--pl:#EEE9FF;--pd:#5C3FDC;
+      --g:#14AE5C;--gl:#E6F9F0;
+      --b:#18A0FB;--bl:#E8F5FF;
+      --y:#F59E0B;--yl:#FFF8E6;
+      --r:#EF4444;--rl:#FFF0EE;
+      --bg:#F5F5F7;--card:#fff;
+      --text:#1A1A2E;--sub:#6E6E8A;--border:#E5E5EA;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+
+    .header{background:linear-gradient(135deg,#7C5CFC,#18A0FB);color:white;padding:48px 32px 40px;position:relative;overflow:hidden;}
+    .header::before{content:'';position:absolute;top:-60px;right:-80px;width:280px;height:280px;background:rgba(255,255,255,0.07);border-radius:50%;}
+    .hbadge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:100px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:14px;}
+    .header h1{font-size:28px;font-weight:900;line-height:1.3;margin-bottom:8px;position:relative;z-index:1;}
+    .header p{font-size:13px;opacity:0.85;position:relative;z-index:1;line-height:1.6;}
+
+    .nav-wrap{background:white;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+    .nav{display:flex;overflow-x:auto;padding:0 20px;}
+    .ni{display:flex;align-items:center;gap:7px;padding:13px 14px;font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap;border-bottom:3px solid transparent;text-decoration:none;transition:all 0.15s;}
+    .ni:hover{color:var(--p);}
+    .ni .nn{width:18px;height:18px;background:var(--border);color:var(--sub);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;}
+
+    .main{max-width:860px;margin:0 auto;padding:40px 20px 120px;}
+    .sec{margin-bottom:72px;scroll-margin-top:64px;}
+    .sec-hd{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+    .sec-n{width:36px;height:36px;min-width:36px;background:var(--p);color:white;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;}
+    .sec-title{font-size:22px;font-weight:900;}
+    .sec-desc{font-size:14px;color:var(--sub);margin-bottom:20px;line-height:1.75;}
+
+    .card{background:white;border-radius:18px;padding:24px 26px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+    .card-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+
+    .steps{display:flex;flex-direction:column;}
+    .step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+    .step:last-child{border-bottom:none;padding-bottom:0;}
+    .sn{width:26px;height:26px;min-width:26px;background:var(--pl);color:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;margin-top:2px;}
+    .sb{flex:1;}
+    .st{font-size:14px;font-weight:800;margin-bottom:4px;}
+    .sd{font-size:13px;color:var(--sub);line-height:1.75;}
+
+    .kbd{display:inline-block;background:#F0F0F5;border:1px solid #D0D0DA;border-bottom-width:2px;border-radius:5px;padding:1px 8px;font-size:11px;font-weight:700;font-family:monospace;color:var(--text);}
+    .krow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:6px 0;}
+
+    .tip{display:flex;gap:10px;background:var(--pl);border:1px solid #C9B8FF;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13px;color:#4A3080;line-height:1.7;}
+    .tip strong{font-weight:800;}
+    .warn{display:flex;gap:10px;background:var(--yl);border:1px solid #FCD34D;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13px;color:#78450A;line-height:1.7;}
+    .warn strong{font-weight:800;}
+    .ok{display:flex;gap:10px;background:var(--gl);border:1px solid #86EFAC;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13px;color:#14532D;line-height:1.7;}
+    .ok strong{font-weight:800;}
+    .err{display:flex;gap:10px;background:var(--rl);border:1px solid #FCA5A5;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13px;color:#7F1D1D;line-height:1.7;}
+    .err strong{font-weight:800;}
+
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+    .cmp{border-radius:14px;overflow:hidden;border:2px solid var(--border);}
+    .cmp-head{padding:11px 16px;font-size:13px;font-weight:800;}
+    .cmp-head.bad{background:var(--rl);color:var(--r);}
+    .cmp-head.good{background:var(--gl);color:var(--g);}
+    .cmp-body{background:var(--bg);padding:14px 16px;font-size:13px;line-height:1.8;color:var(--sub);}
+    .cmp-body strong{color:var(--text);}
+
+    .mockup{background:#1E1E2E;border-radius:14px;padding:18px 20px;margin:12px 0;}
+    .ml{font-size:10px;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;}
+    .tree{font-family:monospace;font-size:12px;}
+    .tr{display:flex;align-items:center;gap:6px;padding:4px 0;}
+    .tn{font-weight:700;}
+    .tn.c{color:#CBA6F7;}
+    .tn.f{color:#89B4FA;}
+    .tn.t{color:#A6E3A1;}
+    .tn.i{color:#F9E2AF;}
+    .ttag{font-size:10px;padding:1px 6px;border-radius:4px;font-family:sans-serif;font-weight:700;margin-left:4px;}
+    .ttag.b{background:#2D3F2D;color:#A6E3A1;}
+    .ttag.v{background:#3D2F5C;color:#CBA6F7;}
+    .ttag.y{background:#3F3020;color:#F9E2AF;}
+
+    .vn{font-family:monospace;font-weight:700;font-size:12px;}
+    .tag{display:inline-block;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:800;}
+    .name-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+    .name-table th{background:#FAFAFA;padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:0.4px;border-bottom:2px solid var(--border);}
+    .name-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;}
+    .name-table tr:last-child td{border-bottom:none;}
+
+    /* 아이콘 구조 시각화 */
+    .icon-row-demo{background:#F0EBF8;border-radius:14px;padding:20px;margin:14px 0;}
+    .irow-label{font-size:11px;font-weight:800;color:var(--p);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
+    .irow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .iicon{width:40px;height:40px;background:white;border-radius:8px;border:1.5px solid #DDD;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;}
+    .iicon .ilabel{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--sub);white-space:nowrap;}
+    .irow-sep{font-size:11px;color:var(--sub);align-self:center;margin-top:-4px;}
+
+    /* 옵션 비교 */
+    .option-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+    .opt{border-radius:16px;border:2px solid var(--border);overflow:hidden;}
+    .opt.recommended{border-color:var(--p);}
+    .opt-head{padding:14px 16px;font-size:14px;font-weight:800;background:var(--bg);}
+    .opt-head.rec{background:var(--pl);color:var(--p);}
+    .opt-body{padding:14px 16px;font-size:13px;line-height:1.8;color:var(--sub);}
+    .opt-body strong{color:var(--text);}
+    .opt-body .vn{font-size:11px;}
+
+    /* 색상 변수 흐름 */
+    .color-flow{background:#1E1E2E;border-radius:14px;padding:20px;margin:14px 0;}
+    .cf-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #2A2A3E;flex-wrap:wrap;}
+    .cf-row:last-child{border-bottom:none;}
+    .cf-label{font-size:12px;color:#BAC2DE;min-width:130px;}
+    .cf-arrow{color:#555;font-size:13px;}
+    .cf-var{font-family:monospace;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;}
+    .cf-var.c{background:#2D3F1F;color:#A6E3A1;}
+    .cf-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+
+    .summary{background:linear-gradient(135deg,#7C5CFC,#18A0FB);border-radius:20px;padding:28px;color:white;margin-top:20px;}
+    .summary h3{font-size:20px;font-weight:900;margin-bottom:18px;}
+    .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .sum-item{background:rgba(255,255,255,0.15);border-radius:12px;padding:16px;}
+    .sum-label{font-size:10px;font-weight:800;opacity:0.7;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
+    .sum-val{font-size:15px;font-weight:800;margin-bottom:4px;}
+    .sum-desc{font-size:12px;opacity:0.8;line-height:1.5;}
+
+    .badge{display:inline-flex;align-items:center;gap:5px;background:var(--pl);color:var(--p);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;}
+    .badge.green{background:var(--gl);color:var(--g);}
+    .badge.orange{background:var(--yl);color:#B45309;}
+
+    html{scroll-behavior:smooth;}
+    @media(max-width:600px){
+      .compare,.option-grid{grid-template-columns:1fr;}
+      .sum-grid{grid-template-columns:1fr;}
+      .header h1{font-size:22px;}
+      .main{padding:24px 14px 80px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="hbadge">🔷 내 상황 맞춤 가이드</div>
+  <h1>아이콘 컴포넌트 등록하기<br>카테고리 프레임 → Outline/Filled 2줄 구조</h1>
+  <p>Actions, Navigation, Settings 등 카테고리별 프레임 안에<br>아웃라인(위)·필드(아래) 두 줄로 배치된 아이콘을 컴포넌트로 만드는 방법이에요.</p>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav">
+    <a href="#s1" class="ni"><span class="nn">1</span> 현재 구조 파악</a>
+    <a href="#s2" class="ni"><span class="nn">2</span> 이름 전략 선택</a>
+    <a href="#s3" class="ni"><span class="nn">3</span> 컴포넌트 등록</a>
+    <a href="#s4" class="ni"><span class="nn">4</span> 색상 변수 연결</a>
+    <a href="#s5" class="ni"><span class="nn">5</span> 버튼에 활용</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 1. 현재 구조 파악 -->
+  <div class="sec" id="s1">
+    <div class="sec-hd"><div class="sec-n">1</div><div class="sec-title">현재 구조 파악</div></div>
+    <div class="sec-desc">
+      지금 이런 상태죠? 아이콘이 카테고리별 프레임 안에<br>
+      <strong>위 줄 = 아웃라인</strong>, <strong>아래 줄 = 필드</strong> 두 줄로 정렬되어 있어요.
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 현재 레이어 구조 (추정)</div>
+      <div class="mockup">
+        <div class="ml">Layers Panel</div>
+        <div class="tree">
+          <div class="tr"><span style="color:#89B4FA;">▢</span><span class="tn f">아이콘 모음 (1048×1693)</span></div>
+
+          <div class="tr" style="padding-left:16px;"><span style="color:#555;">├</span><span style="color:#89B4FA;">▢</span><span class="tn f">Actions</span></div>
+          <div class="tr" style="padding-left:32px;"><span style="color:#555;">├</span><span style="color:#89B4FA;">▢</span><span class="tn t">search</span><span class="ttag b">위 줄 = Outlined</span></div>
+          <div class="tr" style="padding-left:32px;"><span style="color:#555;">├</span><span style="color:#89B4FA;">▢</span><span class="tn t">favorite</span><span class="ttag b">위 줄 = Outlined</span></div>
+          <div class="tr" style="padding-left:32px;"><span style="color:#555;">├</span><span style="color:#89B4FA;">▢</span><span class="tn i">search</span><span class="ttag y">아래 줄 = Filled</span></div>
+          <div class="tr" style="padding-left:32px;"><span style="color:#555;">└</span><span style="color:#89B4FA;">▢</span><span class="tn i">favorite</span><span class="ttag y">아래 줄 = Filled</span></div>
+
+          <div class="tr" style="padding-left:16px;"><span style="color:#555;">├</span><span style="color:#89B4FA;">▢</span><span class="tn f">Navigation</span></div>
+          <div class="tr" style="padding-left:32px;"><span style="color:#555;">└</span><span style="color:#999;font-size:11px;font-style:italic;">... 위/아래 줄</span></div>
+
+          <div class="tr" style="padding-left:16px;"><span style="color:#555;">└</span><span style="color:#999;font-size:11px;font-style:italic;">... Alerts, Devices, Arrows ...</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🤔 핵심 질문 — Outline과 Filled를 어떻게 관리할까?</div>
+      <p style="font-size:13px;color:var(--sub);line-height:1.8;margin-bottom:14px;">
+        아이콘 하나당 <strong>아웃라인 버전</strong>과 <strong>필드 버전</strong>이 있어요.<br>
+        이걸 두 개의 독립 컴포넌트로 만들 수도 있고,<br>
+        하나의 컴포넌트 안에 Variant로 묶을 수도 있어요.
+      </p>
+      <div class="option-grid">
+        <div class="opt">
+          <div class="opt-head">방법 A — 경로로 구분</div>
+          <div class="opt-body">
+            <span class="vn">icon/search/outlined</span><br>
+            <span class="vn">icon/search/filled</span><br><br>
+            별도 컴포넌트 2개<br>
+            폴더에서 <strong>search</strong> 서브폴더로 분류됨
+          </div>
+        </div>
+        <div class="opt recommended">
+          <div class="opt-head rec">⭐ 방법 B — Variant로 묶기 <span class="badge" style="font-size:10px;">추천</span></div>
+          <div class="opt-body">
+            <span class="vn">icon/search</span> 컴포넌트 하나<br>
+            Variant 속성: <strong>Style = Outlined / Filled</strong><br><br>
+            Instance Swap 시 <strong>하나만 선택</strong>하면 됨<br>
+            버튼 안에서 스타일 교체가 간편!
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 <strong>추천은 방법 B</strong>예요. 버튼 안에서 아이콘을 Instance Swap할 때 <code>icon/search</code> 하나만 선택하면 되고, 세부 스타일은 Variant 드롭다운으로 바꿀 수 있어요. 관리하기 훨씬 편해요!</div>
+    </div>
+  </div>
+
+  <!-- 2. 이름 전략 선택 -->
+  <div class="sec" id="s2">
+    <div class="sec-hd"><div class="sec-n">2</div><div class="sec-title">이름 전략 선택 (방법 B 기준)</div></div>
+    <div class="sec-desc">
+      Variant로 묶는 방법 B 기준으로 설명할게요.<br>
+      먼저 각 아이콘 이름을 통일해야 해요.
+    </div>
+
+    <div class="card">
+      <div class="card-title">📁 이름 규칙 — <code>icon/이름</code></div>
+      <table class="name-table">
+        <thead><tr><th>카테고리</th><th>아이콘</th><th>컴포넌트 이름</th><th>Variant 속성</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Actions</td>
+            <td>🔍</td>
+            <td><span class="vn">icon/search</span></td>
+            <td rowspan="8" style="font-size:12px;color:var(--sub);vertical-align:middle;">
+              <strong>Style</strong><br>
+              = <span style="color:var(--p);font-weight:700;">Outlined</span><br>
+              / <span style="color:var(--p);font-weight:700;">Filled</span>
+            </td>
+          </tr>
+          <tr><td>Actions</td><td>♡</td><td><span class="vn">icon/favorite</span></td></tr>
+          <tr><td>Actions</td><td>+</td><td><span class="vn">icon/add</span></td></tr>
+          <tr><td>Navigation</td><td>⌂</td><td><span class="vn">icon/home</span></td></tr>
+          <tr><td>Navigation</td><td>←</td><td><span class="vn">icon/arrow-back</span></td></tr>
+          <tr><td>Alerts</td><td>🔔</td><td><span class="vn">icon/notifications</span></td></tr>
+          <tr><td>Settings</td><td>⚙</td><td><span class="vn">icon/settings</span></td></tr>
+          <tr><td>Arrows</td><td>→</td><td><span class="vn">icon/arrow-forward</span></td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 Google Material Symbols의 공식 이름을 그대로 쓰는 게 좋아요. 개발자도 같은 이름을 쓰거든요! <a href="https://fonts.google.com/icons" target="_blank" style="color:var(--p);">fonts.google.com/icons</a>에서 확인 가능해요.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 최종 컴포넌트 구조 미리 보기</div>
+      <div class="mockup">
+        <div class="ml">Assets Panel (완성 후)</div>
+        <div class="tree">
+          <div class="tr"><span style="color:#89B4FA;">📁</span><span class="tn f">icon</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">├</span><span>◇◇</span><span class="tn c" style="margin-left:4px;">add</span><span style="color:#555;font-size:10px;margin-left:8px;">Style: Outlined / Filled</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">├</span><span>◇◇</span><span class="tn c" style="margin-left:4px;">arrow-back</span><span style="color:#555;font-size:10px;margin-left:8px;">Style: Outlined / Filled</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">├</span><span>◇◇</span><span class="tn c" style="margin-left:4px;">favorite</span><span style="color:#555;font-size:10px;margin-left:8px;">Style: Outlined / Filled</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">├</span><span>◇◇</span><span class="tn c" style="margin-left:4px;">home</span><span style="color:#555;font-size:10px;margin-left:8px;">Style: Outlined / Filled</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">└</span><span>◇◇</span><span class="tn c" style="margin-left:4px;">search</span><span style="color:#555;font-size:10px;margin-left:8px;">Style: Outlined / Filled</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 컴포넌트 등록 -->
+  <div class="sec" id="s3">
+    <div class="sec-hd"><div class="sec-n">3</div><div class="sec-title">단계별 컴포넌트 등록</div></div>
+    <div class="sec-desc">
+      카테고리 프레임 안의 아이콘들을 컴포넌트로 만들고<br>
+      Outline + Filled를 하나의 컴포넌트로 묶어요.
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="card">
+      <div class="card-title">🔵 Phase 1 — 아이콘 이름 먼저 정리하기</div>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">Layers 패널 열기</div>
+            <div class="sd">
+              <div class="krow"><span class="kbd">Cmd</span>+<span class="kbd">\</span></div>
+              왼쪽 Layers 패널에서 아이콘 프레임들을 펼쳐요.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">각 아이콘 프레임 이름 확인</div>
+            <div class="sd">
+              현재 이름이 뭔지 확인해요. Material Symbols 글꼴로 넣었다면<br>
+              텍스트 레이어 이름이 아이콘 키워드로 되어 있을 거예요.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">아이콘 레이어 더블클릭 → 이름 수정</div>
+            <div class="sd">
+              Layers에서 레이어 이름 더블클릭 → 이름 입력<br>
+              <strong>아직 icon/ 접두사는 안 붙여도 돼요</strong><br>
+              일단 <code>search</code>, <code>favorite</code> 등 이름만 통일해요.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="warn">⚠️ <strong>같은 이름 아이콘 구분 중요!</strong><br>아웃라인 search 프레임, 필드 search 프레임이 있으면<br>지금 단계에선 임시로 <code>search-outlined</code>, <code>search-filled</code>라고 구분해두세요.<br>나중에 컴포넌트 묶을 때 정리돼요.</div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="card">
+      <div class="card-title">🔵 Phase 2 — 아이콘을 컴포넌트로 변환</div>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">카테고리 프레임 안 아이콘 프레임들 선택</div>
+            <div class="sd">
+              카테고리 프레임(예: Actions) 안으로 들어가서<br>
+              안의 아이콘 프레임들을 <strong>드래그로 전체 선택</strong>하거나<br>
+              카테고리 프레임 클릭 후 <span class="kbd">Cmd</span>+<span class="kbd">A</span>로 자식 전체 선택
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">컴포넌트로 변환</div>
+            <div class="sd">
+              <div class="krow"><span class="kbd">Cmd</span>+<span class="kbd">Alt</span>+<span class="kbd">K</span></div>
+              선택된 모든 아이콘 프레임이 한 번에 컴포넌트로 바뀌어요!<br>
+              Layers 패널에서 <strong>◇ 보라색 다이아몬드</strong>로 변하면 성공
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">모든 카테고리 반복</div>
+            <div class="sd">
+              Actions → Navigation → Settings → Media&amp;Files → Alerts → Devices → Arrows<br>
+              카테고리별로 같은 방법으로 반복해요.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="card">
+      <div class="card-title">⭐ Phase 3 — Outlined + Filled를 하나의 컴포넌트로 묶기</div>
+      <div class="sec-desc" style="margin-bottom:0;">
+        이제 같은 아이콘의 Outlined / Filled 두 컴포넌트를 하나로 합쳐서<br>
+        Variant 속성(Style)을 만들어요.
+      </div>
+      <div class="steps" style="margin-top:16px;">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">같은 아이콘의 Outlined + Filled 두 컴포넌트 선택</div>
+            <div class="sd">
+              예) <code>search-outlined</code> + <code>search-filled</code> 두 개를<br>
+              <span class="kbd">Shift</span>+클릭으로 함께 선택해요.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">Combine as Variants</div>
+            <div class="sd">
+              상단 툴바에서 <strong>Combine as variants</strong> 버튼 클릭<br>
+              또는 우클릭 → <strong>Combine as variants</strong><br>
+              보라색 점선 테두리 안으로 두 컴포넌트가 묶여요!
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">Property 이름 정리</div>
+            <div class="sd">
+              우측 패널 → <strong>Component properties</strong>에서<br>
+              자동으로 생긴 Property 이름을 <code>Property 1</code> → <code>Style</code> 로 변경<br>
+              값은 <code>search-outlined</code> → <code>Outlined</code>, <code>search-filled</code> → <code>Filled</code>로 정리
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <div class="st">컴포넌트 세트 이름 정하기</div>
+            <div class="sd">
+              묶인 컴포넌트 세트(보라 점선 테두리)를 클릭<br>
+              이름을 <strong>icon/search</strong> 로 입력<br>
+              이제 Assets 패널에서 icon 폴더 안의 <code>search</code>로 보여요!
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">5</div>
+          <div class="sb">
+            <div class="st">나머지 아이콘도 반복</div>
+            <div class="sd">
+              favorite, home, arrow-back, add, settings 등<br>
+              모든 아이콘에 대해 같은 과정을 반복해요.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup" style="margin-top:14px;">
+        <div class="ml">Combine as Variants 결과</div>
+        <div class="tree">
+          <div class="tr"><span style="color:#CBA6F7;font-size:16px;">⬚</span><span class="tn c" style="margin-left:4px;">icon/search</span><span style="color:#555;font-size:10px;margin-left:8px;">(컴포넌트 세트)</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">├</span><span>◇</span><span class="tn c" style="margin-left:4px;">Style=Outlined</span></div>
+          <div class="tr" style="padding-left:20px;"><span style="color:#555;">└</span><span>◇</span><span class="tn c" style="margin-left:4px;">Style=Filled</span></div>
+        </div>
+      </div>
+      <div class="ok">✅ 완성! 이제 버튼 안에서 <strong>icon/search</strong> 인스턴스를 넣고, 우측에서 <strong>Style: Outlined / Filled</strong>를 드롭다운으로 선택할 수 있어요.</div>
+    </div>
+  </div>
+
+  <!-- 4. 색상 변수 연결 -->
+  <div class="sec" id="s4">
+    <div class="sec-hd"><div class="sec-n">4</div><div class="sec-title">아이콘 색상 변수 설정 + 연결</div></div>
+    <div class="sec-desc">
+      아이콘 색이 버튼 상태(기본/Hover/Disabled)에 따라 자동으로 바뀌려면<br>
+      색상 변수를 아이콘 안의 텍스트 색상에 연결해야 해요.
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎨 Semantic 컬렉션에 아이콘 색 추가</div>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.7;">Variables 패널 → Semantic 컬렉션 → <strong>+ 변수 추가</strong> → Color 타입</p>
+      <table class="name-table">
+        <thead><tr><th>변수 이름</th><th>값</th><th>언제 사용</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="vn">icon/color/on-dark</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;border-radius:3px;background:#FFFFFF;border:1px solid #ddd;"></div>#FFFFFF</div></td>
+            <td style="font-size:12px;color:var(--sub);">검정/진한 배경 버튼 (기본 상태)</td>
+          </tr>
+          <tr>
+            <td><span class="vn">icon/color/on-light</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;border-radius:3px;background:#1A1A2E;"></div>#1A1A2E</div></td>
+            <td style="font-size:12px;color:var(--sub);">흰 배경 버튼</td>
+          </tr>
+          <tr>
+            <td><span class="vn">icon/color/primary</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;border-radius:3px;background:#7C5CFC;"></div>브랜드 컬러</div></td>
+            <td style="font-size:12px;color:var(--sub);">브랜드 컬러 버튼</td>
+          </tr>
+          <tr>
+            <td><span class="vn">icon/color/disabled</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:14px;height:14px;border-radius:3px;background:#A0A0B0;border:1px solid #ddd;"></div>gray/400</div></td>
+            <td style="font-size:12px;color:var(--sub);">Disabled 상태</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔗 아이콘 컴포넌트 안에 색 변수 연결</div>
+      <div class="warn">⚠️ <strong>Material Symbols는 폰트 기반!</strong><br>일반 SVG 아이콘은 Fill(채우기)에 색이 있지만,<br>Material Symbols는 텍스트 레이어라서 <strong>텍스트 색상(Color)</strong>에 연결해야 해요.</div>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">아이콘 컴포넌트(Outlined 버전) 더블클릭</div>
+            <div class="sd">
+              캔버스에서 컴포넌트를 더블클릭해서 내부로 진입해요.<br>
+              Layers 패널에서 <strong>텍스트 레이어</strong>를 선택해요.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">텍스트 색상에 변수 연결</div>
+            <div class="sd">
+              우측 패널 → <strong>Fill</strong> (텍스트라서 Fill이 텍스트 색이에요)<br>
+              색상 샘플 옆 <strong>⊞ (Variable 버튼)</strong> 클릭<br>
+              → Semantic 컬렉션 → <strong>icon/color/on-dark</strong> 선택
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">Filled 버전도 동일하게 적용</div>
+            <div class="sd">
+              Filled Variant로 이동 (Layers에서 Style=Filled 선택)<br>
+              같은 방법으로 텍스트 색 → <strong>icon/color/on-dark</strong> 연결
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <div class="st">모든 아이콘 컴포넌트 반복</div>
+            <div class="sd">
+              검색, 홈, 즐겨찾기 등 모든 아이콘 컴포넌트에 동일하게 적용해요.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 색 변수 연동 흐름</div>
+      <div class="color-flow">
+        <div style="color:#999;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;">버튼 기본상태 (검정 채운 버튼)</div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#1A1A2E;"></div>
+          <span class="cf-label">버튼 배경색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">btn/bg/black/default</span>
+        </div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#FFFFFF;border:1px solid #444;"></div>
+          <span class="cf-label">아이콘 색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">icon/color/on-dark → #FFFFFF</span>
+        </div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#FFFFFF;border:1px solid #444;"></div>
+          <span class="cf-label">텍스트 색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">btn/text/on-dark → #FFFFFF</span>
+        </div>
+        <div style="border-top:1px solid #3A3A5A;margin-top:10px;padding-top:10px;color:#999;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Disabled 상태로 Variant 바뀌면 자동으로 →</div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#E5E5EA;"></div>
+          <span class="cf-label">버튼 배경색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">btn/bg/black/disabled → gray/200</span>
+        </div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#A0A0B0;"></div>
+          <span class="cf-label">아이콘 색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">icon/color/disabled → gray/400</span>
+        </div>
+        <div class="cf-row">
+          <div class="cf-dot" style="background:#A0A0B0;"></div>
+          <span class="cf-label">텍스트 색</span>
+          <span class="cf-arrow">←</span>
+          <span class="cf-var c">btn/text/disabled → gray/400</span>
+        </div>
+      </div>
+      <div class="ok">✅ Variant를 기본상태 → Disabled로만 바꾸면 배경색, 아이콘 색, 텍스트 색이 <strong>모두 한 번에 자동으로</strong> 바뀌어요!</div>
+    </div>
+  </div>
+
+  <!-- 5. 버튼에서 활용 -->
+  <div class="sec" id="s5">
+    <div class="sec-hd"><div class="sec-n">5</div><div class="sec-title">Boolean 프로퍼티 연결 — 아이콘 보이기/숨기기</div></div>
+    <div class="sec-desc">
+      지금 버튼에 아이콘이 들어간 상태죠?<br>
+      이제 Boolean 프로퍼티를 연결해서 아이콘을 <strong>토글로 켜고 끌 수 있게</strong> 만들어요.
+    </div>
+
+    <div class="card">
+      <div class="card-title">💡 Boolean 프로퍼티가 뭔가요?</div>
+      <div class="compare">
+        <div class="cmp">
+          <div class="cmp-head bad">❌ 없으면</div>
+          <div class="cmp-body">
+            아이콘 없는 버튼 만들려면<br>
+            <strong>직접 레이어 숨김 처리</strong><br>
+            인스턴스마다 일일이 수동 😩
+          </div>
+        </div>
+        <div class="cmp">
+          <div class="cmp-head good">✅ 있으면</div>
+          <div class="cmp-body">
+            우측 패널에서<br>
+            <strong>토글 스위치 한 번</strong>으로<br>
+            아이콘 On/Off 전환 🎉
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔧 Boolean 연결 방법 — 왼쪽 아이콘</div>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">버튼 컴포넌트 더블클릭 → 내부 진입</div>
+            <div class="sd">
+              버튼 컴포넌트를 <strong>더블클릭</strong>해서 편집 모드로 들어가요.<br>
+              <span style="color:var(--r);font-size:12px;font-weight:700;">⚠️ 인스턴스가 아닌 원본 컴포넌트를 더블클릭해야 해요!</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">왼쪽 아이콘 레이어 선택</div>
+            <div class="sd">
+              Layers 패널 또는 캔버스에서 왼쪽 아이콘 인스턴스 클릭해서 선택해요.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">눈(Visibility) 옆 ⊞ 클릭</div>
+            <div class="sd">
+              우측 Design 패널 맨 위 레이어 영역을 보면<br>
+              <strong>레이어 이름</strong> 옆에 작은 <strong>⊞ 아이콘</strong>이 있어요.<br>
+              (없으면 레이어 이름에 마우스 호버하면 나타나요)
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <div class="st">"Boolean" 타입 선택 → 이름 입력</div>
+            <div class="sd">
+              팝업에서 타입: <strong>Boolean</strong> 선택<br>
+              이름: <code>Left Icon</code> (또는 <code>왼쪽 아이콘</code>)<br>
+              기본값: <strong>True</strong> (켜진 상태)<br>
+              <strong>Create property</strong> 클릭!
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">5</div>
+          <div class="sb">
+            <div class="st">오른쪽 아이콘도 동일하게 반복</div>
+            <div class="sd">
+              오른쪽 아이콘 인스턴스 선택 → 같은 방법으로<br>
+              이름: <code>Right Icon</code>, 타입: Boolean, 기본값: True
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ok">✅ 완료! 이제 버튼 인스턴스를 선택하면 우측 패널에 <strong>Left Icon ✓</strong> / <strong>Right Icon ✓</strong> 토글이 보여요. 체크 해제하면 아이콘이 사라져요!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔍 연결 위치 찾기가 어렵다면?</div>
+      <div class="mockup">
+        <div class="ml">우측 패널 — 레이어 이름 영역</div>
+        <div style="background:#2A2A3E;border-radius:10px;padding:14px;font-size:12px;font-family:monospace;">
+          <div style="color:#555;font-size:10px;margin-bottom:8px;letter-spacing:0.5px;">LAYER</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#1E1E2E;border-radius:8px;padding:10px 12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="color:#CBA6F7;">◈</span>
+              <span style="color:#E0E0E0;">Left_Icon</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="color:#555;font-size:14px;">👁</span>
+              <span style="background:#3D2F5C;color:#CBA6F7;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;">⊞</span>
+            </div>
+          </div>
+          <div style="color:#7C5CFC;font-size:11px;margin-top:8px;padding-left:4px;">↑ 이 ⊞ 버튼 클릭!</div>
+        </div>
+      </div>
+      <div class="tip">💡 <strong>⊞ 버튼이 안 보이면?</strong> 레이어 이름 오른쪽 끝에 마우스를 올려보세요. 호버 시에 나타나요. 또는 우클릭 → <strong>Add component property</strong>로도 가능해요.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 완성 후 버튼 컴포넌트 구조</div>
+      <div class="mockup">
+        <div class="ml">Component Properties (우측 패널)</div>
+        <div class="tree">
+          <div class="tr" style="border-bottom:1px solid #2A2A3E;padding-bottom:10px;margin-bottom:6px;">
+            <span style="color:#555;font-size:10px;">COMPONENT PROPERTIES</span>
+          </div>
+          <div class="tr" style="justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="background:#2D3F1F;color:#A6E3A1;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;">Bool</span>
+              <span style="color:#E0E0E0;font-size:12px;">Left Icon</span>
+            </div>
+            <span style="color:#A6E3A1;font-size:12px;">True ✓</span>
+          </div>
+          <div class="tr" style="justify-content:space-between;margin-top:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="background:#2D3F1F;color:#A6E3A1;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;">Bool</span>
+              <span style="color:#E0E0E0;font-size:12px;">Right Icon</span>
+            </div>
+            <span style="color:#A6E3A1;font-size:12px;">True ✓</span>
+          </div>
+          <div class="tr" style="justify-content:space-between;margin-top:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="background:#3D2F5C;color:#CBA6F7;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;">Swap</span>
+              <span style="color:#E0E0E0;font-size:12px;">Left Icon Type</span>
+            </div>
+            <span style="color:#CBA6F7;font-size:12px;">add_circle ▾</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ Instance Swap도 같이 연결하기</div>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.7;">Boolean로 아이콘 On/Off를 했다면, <strong>어떤 아이콘인지 교체</strong>하는 것도 설정해요.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">아이콘 인스턴스 선택 (내부 진입 상태)</div>
+            <div class="sd">버튼 컴포넌트 더블클릭 → 왼쪽 아이콘 선택</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">우측 패널 → 아이콘 이름 옆 ⊞ 클릭</div>
+            <div class="sd">
+              타입: <strong>Instance swap</strong> 선택<br>
+              이름: <code>Left Icon Type</code><br>
+              기본값: 현재 아이콘(예: add_circle)으로 자동 설정됨
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">완료!</div>
+            <div class="sd">
+              이제 버튼 인스턴스에서 <strong>Left Icon Type</strong> 드롭다운을 클릭하면<br>
+              등록된 모든 아이콘 컴포넌트 목록이 나와서 교체할 수 있어요!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>🎯 전체 작업 순서 요약</h3>
+      <div class="sum-grid">
+        <div class="sum-item">
+          <div class="sum-label">Step 1</div>
+          <div class="sum-val">이름 정리</div>
+          <div class="sum-desc">Outlined/Filled 아이콘에<br>임시 이름 붙이기</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Step 2</div>
+          <div class="sum-val">컴포넌트 변환</div>
+          <div class="sum-desc">Cmd+Alt+K로 모든 아이콘<br>컴포넌트로 변환</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Step 3</div>
+          <div class="sum-val">Variants 묶기</div>
+          <div class="sum-desc">Outlined+Filled 쌍으로<br>Combine as Variants</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Step 4</div>
+          <div class="sum-val">색 변수 연결</div>
+          <div class="sum-desc">텍스트 색 → icon/color/*<br>변수 연결</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Step 5</div>
+          <div class="sum-val">버튼에 넣기</div>
+          <div class="sum-desc">Assets에서 드래그 →<br>Instance Swap 프로퍼티 연결</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">완성!</div>
+          <div class="sum-val">자동화 달성 🎉</div>
+          <div class="sum-desc">Variant 전환 한 번으로<br>배경·아이콘·텍스트 색 일괄 변경</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ───────────────────────────── ROLE COLOR SEMANTIC ───────────────────────────── -->
+  <div style="max-width:860px;margin:0 auto;padding:40px 24px;">
+
+    <div style="background:linear-gradient(135deg,#14AE5C,#18A0FB);color:white;border-radius:16px;padding:32px;margin-bottom:32px;">
+      <div style="font-size:11px;font-weight:700;opacity:0.7;letter-spacing:1px;margin-bottom:8px;">BONUS GUIDE</div>
+      <div style="font-size:22px;font-weight:900;margin-bottom:8px;">Role Color → Semantic 변수 정리</div>
+      <div style="font-size:13px;opacity:0.85;line-height:1.7;">Danger / Warning / Success / Information 색을<br>배경·테두리·기본·텍스트 역할별로 Semantic 변수에 연결하는 방법</div>
+    </div>
+
+    <!-- 현재 구조 분석 -->
+    <div class="card">
+      <div class="card-title">📊 지금 상황 파악</div>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.7;">
+        Primitive 컬렉션에 <code>color/danger/5 ~ 90</code> 이런 식으로 10단계 색상이 들어있죠?<br>
+        이건 <strong>원재료(숫자)</strong>예요. 이걸 그대로 쓰면 나중에 "이게 배경용인지 텍스트용인지" 알 수 없어요.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:#FFF0EE;border-radius:10px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:#EF4444;margin-bottom:8px;">❌ 지금 이 상태</div>
+          <div style="font-size:12px;font-family:monospace;color:#444;line-height:2;">
+            color/danger/5<br>
+            color/danger/10<br>
+            color/danger/20<br>
+            color/danger/50<br>
+            color/danger/60<br>
+            <span style="color:#999;">...단순 숫자 나열</span>
+          </div>
+        </div>
+        <div style="background:#E6F9F0;border-radius:10px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:#14AE5C;margin-bottom:8px;">✅ 목표 상태</div>
+          <div style="font-size:12px;font-family:monospace;color:#444;line-height:2;">
+            danger/bg<br>
+            danger/border<br>
+            danger/base<br>
+            danger/text<br>
+            danger/icon<br>
+            <span style="color:#999;">...역할이 명확!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 단계 매핑 -->
+    <div class="card">
+      <div class="card-title">🗺️ Primitive 단계 → Semantic 역할 매핑표</div>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:16px;">디자인 문서의 Surface/Border/Base/Text 레이블을 기준으로 매핑해요.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#F0F0F5;">
+              <th style="padding:10px 14px;text-align:left;border-radius:8px 0 0 0;color:var(--sub);">Semantic 이름</th>
+              <th style="padding:10px 14px;text-align:left;color:var(--sub);">Primitive 단계</th>
+              <th style="padding:10px 14px;text-align:left;color:var(--sub);">역할</th>
+              <th style="padding:10px 14px;text-align:left;border-radius:0 8px 0 0;color:var(--sub);">사용 예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:10px 14px;font-family:monospace;font-weight:700;color:#14AE5C;">danger/bg</td>
+              <td style="padding:10px 14px;font-family:monospace;">color/danger/<strong>5</strong></td>
+              <td style="padding:10px 14px;">배경 (매우 연함)</td>
+              <td style="padding:10px 14px;color:var(--sub);">Alert 배경, Field 오류 배경</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#FAFAFA;">
+              <td style="padding:10px 14px;font-family:monospace;font-weight:700;color:#14AE5C;">danger/border</td>
+              <td style="padding:10px 14px;font-family:monospace;">color/danger/<strong>20</strong></td>
+              <td style="padding:10px 14px;">테두리</td>
+              <td style="padding:10px 14px;color:var(--sub);">오류 Input 테두리, Alert 테두리</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:10px 14px;font-family:monospace;font-weight:700;color:#14AE5C;">danger/base</td>
+              <td style="padding:10px 14px;font-family:monospace;">color/danger/<strong>50</strong></td>
+              <td style="padding:10px 14px;">메인 색상 (Base)</td>
+              <td style="padding:10px 14px;color:var(--sub);">아이콘 색, 강조 테두리</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#FAFAFA;">
+              <td style="padding:10px 14px;font-family:monospace;font-weight:700;color:#14AE5C;">danger/text</td>
+              <td style="padding:10px 14px;font-family:monospace;">color/danger/<strong>60</strong></td>
+              <td style="padding:10px 14px;">텍스트 (읽기 좋은 진하기)</td>
+              <td style="padding:10px 14px;color:var(--sub);">Alert 타이틀, 에러 메시지</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;font-family:monospace;font-weight:700;color:#14AE5C;">danger/icon</td>
+              <td style="padding:10px 14px;font-family:monospace;">color/danger/<strong>50</strong></td>
+              <td style="padding:10px 14px;">아이콘 색</td>
+              <td style="padding:10px 14px;color:var(--sub);">경고 아이콘, 삭제 아이콘</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip" style="margin-top:12px;">💡 Warning, Success, Information도 <strong>동일한 매핑 규칙</strong>을 적용해요. 단계 번호만 같게 쓰면 돼요.</div>
+    </div>
+
+    <!-- 전체 변수 목록 -->
+    <div class="card">
+      <div class="card-title">📋 만들어야 할 전체 Semantic 변수 목록 (20개)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- Danger -->
+        <div style="background:#FFF5F5;border-radius:12px;padding:16px;border-left:4px solid #EB0038;">
+          <div style="font-size:11px;font-weight:700;color:#EB0038;margin-bottom:12px;">🔴 DANGER</div>
+          <div style="font-size:11px;font-family:monospace;line-height:2.2;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">danger/bg</span><span style="color:#999;">→ color/danger/5</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">danger/border</span><span style="color:#999;">→ color/danger/20</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">danger/base</span><span style="color:#999;">→ color/danger/50</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">danger/text</span><span style="color:#999;">→ color/danger/60</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">danger/icon</span><span style="color:#999;">→ color/danger/50</span></div>
+          </div>
+        </div>
+
+        <!-- Warning -->
+        <div style="background:#FFFBF0;border-radius:12px;padding:16px;border-left:4px solid #FFB724;">
+          <div style="font-size:11px;font-weight:700;color:#D97706;margin-bottom:12px;">🟡 WARNING</div>
+          <div style="font-size:11px;font-family:monospace;line-height:2.2;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">warning/bg</span><span style="color:#999;">→ color/warning/5</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">warning/border</span><span style="color:#999;">→ color/warning/20</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">warning/base</span><span style="color:#999;">→ color/warning/50</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">warning/text</span><span style="color:#999;">→ color/warning/60</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">warning/icon</span><span style="color:#999;">→ color/warning/50</span></div>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div style="background:#F0FDF5;border-radius:12px;padding:16px;border-left:4px solid #00841E;">
+          <div style="font-size:11px;font-weight:700;color:#00841E;margin-bottom:12px;">🟢 SUCCESS</div>
+          <div style="font-size:11px;font-family:monospace;line-height:2.2;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">success/bg</span><span style="color:#999;">→ color/success/5</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">success/border</span><span style="color:#999;">→ color/success/20</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">success/base</span><span style="color:#999;">→ color/success/50</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">success/text</span><span style="color:#999;">→ color/success/60</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">success/icon</span><span style="color:#999;">→ color/success/50</span></div>
+          </div>
+        </div>
+
+        <!-- Information -->
+        <div style="background:#F0F5FF;border-radius:12px;padding:16px;border-left:4px solid #2768FF;">
+          <div style="font-size:11px;font-weight:700;color:#2768FF;margin-bottom:12px;">🔵 INFORMATION</div>
+          <div style="font-size:11px;font-family:monospace;line-height:2.2;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">information/bg</span><span style="color:#999;">→ color/information/5</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">information/border</span><span style="color:#999;">→ color/information/20</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">information/base</span><span style="color:#999;">→ color/information/50</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">information/text</span><span style="color:#999;">→ color/information/60</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#333;">information/icon</span><span style="color:#999;">→ color/information/50</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 어느 컬렉션에 넣을까 -->
+    <div class="card">
+      <div class="card-title">🗂️ 어느 컬렉션에 넣어야 해?</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#FFF0EE;border-radius:10px;">
+          <div style="font-size:20px;flex-shrink:0;">❌</div>
+          <div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Primitive 컬렉션에 넣기</div>
+            <div style="font-size:12px;color:var(--sub);">Primitive는 원재료 보관소예요. danger/bg 같은 역할 변수를 여기 넣으면 섞여서 나중에 찾기 힘들어요.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#E6F9F0;border-radius:10px;">
+          <div style="font-size:20px;flex-shrink:0;">✅</div>
+          <div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Semantic 컬렉션 새로 만들기 (권장)</div>
+            <div style="font-size:12px;color:var(--sub);">Variables 패널 → <strong>+ 컬렉션 추가</strong> → 이름: <code>Semantic</code><br>여기에 danger/bg, warning/border 등 역할 변수를 넣고 Primitive 값을 참조하게 해요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 실제 만드는 방법 -->
+    <div class="card">
+      <div class="card-title">🔧 Figma에서 실제로 만드는 방법</div>
+      <div class="steps">
+        <div class="step">
+          <div class="sn">1</div>
+          <div class="sb">
+            <div class="st">Semantic 컬렉션 생성</div>
+            <div class="sd">
+              Variables 패널 → Collections 옆 <strong>+</strong> 클릭<br>
+              이름: <code>Semantic</code> 입력 → 엔터
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">2</div>
+          <div class="sb">
+            <div class="st">첫 번째 변수 만들기 — danger/bg</div>
+            <div class="sd">
+              <strong>+ Create variable</strong> → 타입: <strong>Color</strong><br>
+              이름: <code>danger/bg</code> 입력<br>
+              Value 칸 클릭 → 색상 picker에서 오른쪽 위 <strong>Libraries 아이콘</strong> 클릭<br>
+              → Primitive → color/danger → <strong>5</strong> 선택
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">3</div>
+          <div class="sb">
+            <div class="st">나머지 19개도 동일하게 반복</div>
+            <div class="sd">
+              danger/border → color/danger/20<br>
+              danger/base → color/danger/50<br>
+              danger/text → color/danger/60<br>
+              danger/icon → color/danger/50<br>
+              <span style="color:var(--sub);">... warning, success, information도 동일하게</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="sn">4</div>
+          <div class="sb">
+            <div class="st">컴포넌트에 적용</div>
+            <div class="sd">
+              Alert 컴포넌트 배경 → <code>danger/bg</code><br>
+              Alert 테두리 → <code>danger/border</code><br>
+              타이틀 텍스트 → <code>danger/text</code><br>
+              아이콘 색 → <code>danger/icon</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert 컴포넌트 구조 시각화 -->
+    <div class="card">
+      <div class="card-title">🎨 Alert 컴포넌트에 Semantic 변수 연결 예시</div>
+      <div style="border:2px solid #FCD4DE;border-radius:12px;background:#FEECF0;padding:16px 18px;font-size:13px;position:relative;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:18px;height:18px;background:#EB0038;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;">
+            <span style="color:white;font-size:10px;font-weight:900;">!</span>
+          </div>
+          <div>
+            <div style="font-weight:700;color:#D50032;margin-bottom:4px;">메시지 타이틀</div>
+            <div style="font-size:12px;color:#666;line-height:1.6;">메시지 내용 최대 2줄 메시지 내용 최대 2줄 메시지 내용 최대 2줄</div>
+          </div>
+        </div>
+        <!-- 라벨 -->
+        <div style="position:absolute;top:-10px;left:16px;background:white;border:1px solid var(--border);border-radius:4px;padding:1px 8px;font-size:10px;font-family:monospace;color:#EF4444;">Fill: danger/bg</div>
+        <div style="position:absolute;top:8px;right:-100px;font-size:10px;font-family:monospace;color:var(--sub);">Stroke: danger/border</div>
+      </div>
+      <div style="margin-top:20px;font-size:12px;color:var(--sub);">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 10px;">배경 (Fill)</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--p);">danger/bg</td>
+            <td style="padding:7px 10px;">→</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--sub);">color/danger/5 (#FEECF0)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:#FAFAFA;">
+            <td style="padding:7px 10px;">테두리 (Stroke)</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--p);">danger/border</td>
+            <td style="padding:7px 10px;">→</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--sub);">color/danger/20 (#F79981)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 10px;">타이틀 텍스트</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--p);">danger/text</td>
+            <td style="padding:7px 10px;">→</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--sub);">color/danger/60 (#8D0023)</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 10px;">아이콘</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--p);">danger/icon</td>
+            <td style="padding:7px 10px;">→</td>
+            <td style="padding:7px 10px;font-family:monospace;color:var(--sub);">color/danger/50 (#EB0038)</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 왜 이렇게 하냐 -->
+    <div class="card" style="background:linear-gradient(135deg,#EEE9FF,#E8F5FF);border:none;">
+      <div class="card-title" style="color:var(--p);">💡 이렇게 하면 뭐가 좋아?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+        <div style="display:flex;gap:10px;">
+          <span style="color:var(--g);font-weight:900;flex-shrink:0;">✓</span>
+          <span><strong>브랜드 색이 바뀌어도</strong> Primitive의 danger/50 값만 바꾸면 → 연결된 모든 컴포넌트 자동 변경</span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <span style="color:var(--g);font-weight:900;flex-shrink:0;">✓</span>
+          <span><strong>협업 시</strong> 개발자에게 "danger/bg 써주세요" 라고 말하면 됨 → 코드에서도 같은 토큰명 사용 가능</span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <span style="color:var(--g);font-weight:900;flex-shrink:0;">✓</span>
+          <span><strong>다크모드</strong> 추가할 때 Semantic 변수에 Dark 모드만 추가하면 끝 → 컴포넌트 건드릴 필요 없음</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
