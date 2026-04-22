@@ -26,7 +26,7 @@
       --text-on-dark2: rgba(255,255,255,0.48);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--white);
@@ -35,6 +35,7 @@
       -webkit-font-smoothing: antialiased;
       word-break: keep-all;
       overflow-wrap: break-word;
+      overflow-x: hidden;
     }
 
     /* ──────────────────────────────
@@ -112,6 +113,136 @@
     }
     a.gnb-start:hover { opacity: 0.85; }
 
+    /* ── MOBILE MENU BUTTON (hidden on desktop) ── */
+    .gnb-mobile-btn {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .gnb-mobile-btn:hover { background: rgba(255,255,255,0.08); }
+    .gnb-mobile-btn span {
+      display: block; width: 20px; height: 2px;
+      background: #fff; border-radius: 2px;
+      position: relative;
+    }
+    .gnb-mobile-btn span::before,
+    .gnb-mobile-btn span::after {
+      content: ''; position: absolute; left: 0;
+      width: 20px; height: 2px; background: #fff;
+      border-radius: 2px;
+    }
+    .gnb-mobile-btn span::before { top: -6px; }
+    .gnb-mobile-btn span::after { top: 6px; }
+    .gnb-mobile-btn.open span { background: transparent; }
+    .gnb-mobile-btn.open span::before { top: 0; transform: rotate(45deg); }
+    .gnb-mobile-btn.open span::after { top: 0; transform: rotate(-45deg); }
+
+    /* ── MOBILE MENU PANEL ── */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: #fff;
+      z-index: 199; flex-direction: column;
+      padding: 0; overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-nav {
+      flex: 1; padding: 20px 24px 0;
+      display: flex; flex-direction: column;
+    }
+    .mobile-menu-nav a {
+      font-size: 17px; font-weight: 500; color: #6B7280;
+      text-decoration: none; padding: 16px 0;
+      transition: color 0.15s;
+    }
+    .mobile-menu-nav a:hover { color: #FF6D24; }
+    .mobile-menu-nav .mobile-menu-switch {
+      font-size: 14px; font-weight: 500;
+      color: #9CA3AF;
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid #EEEEEE;
+    }
+    .mobile-menu-nav .mobile-menu-switch:hover { color: #FF6D24; }
+    .mobile-menu-bottom {
+      padding: 16px 24px 32px;
+    }
+    .mobile-menu-bottom a {
+      display: block; width: 100%; text-align: center;
+      background: #FF6D24; color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px; border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .mobile-menu-bottom a:hover { opacity: 0.9; }
+    .switch-popup-overlay {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 400;
+      align-items: center; justify-content: center;
+    }
+    .switch-popup-overlay.show { display: flex; }
+    .switch-popup {
+      background: #1B1F26;
+      border-radius: 20px;
+      padding: 32px 24px 28px;
+      width: 100%; max-width: 300px;
+      text-align: center;
+      animation: popIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .switch-popup-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.3);
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .switch-popup-close:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .switch-popup-emoji {
+      font-size: 36px; margin-bottom: 16px;
+    }
+    .switch-popup h3 {
+      font-size: 17px; font-weight: 700;
+      color: #fff; margin-bottom: 8px;
+    }
+    .switch-popup p {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      line-height: 1.5; margin-bottom: 24px;
+    }
+    .switch-popup-go {
+      display: block; width: 100%;
+      padding: 14px 0;
+      background: #B5F23D; color: #111827;
+      font-size: 15px; font-weight: 700;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none; text-align: center;
+      transition: opacity 0.2s;
+      margin-bottom: 12px;
+    }
+    .switch-popup-go:hover { opacity: 0.9; }
+    .switch-popup-dismiss {
+      display: block; width: 100%;
+      background: none; border: none;
+      color: rgba(255,255,255,0.35); font-size: 12px;
+      cursor: pointer; font-family: inherit;
+      text-align: center; padding: 4px 0;
+      transition: color 0.15s;
+    }
+    .switch-popup-dismiss:hover { color: rgba(255,255,255,0.6); }
+
     /* ──────────────────────────────
        HERO
     ────────────────────────────── */
@@ -140,23 +271,17 @@
     .hero-tag {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      background: rgba(181,242,61,0.1);
-      border: 1px solid rgba(181,242,61,0.25);
-      color: var(--lime);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: rgba(255,255,255,0.92);
       font-size: 12px;
       font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 20px;
+      padding: 8px 16px;
+      border-radius: 50px;
       margin-bottom: 28px;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
-    .hero-tag::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--lime);
-    }
+    .hero-tag::before { display: none; }
     .hero h1 {
       font-size: 56px;
       font-weight: 800;
@@ -386,8 +511,6 @@
     }
     .pain-icon {
       width: 44px; height: 44px;
-      background: var(--off);
-      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 20px;
       flex-shrink: 0;
@@ -435,38 +558,36 @@
     .how-gc-meta h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
     .how-gc-meta p { font-size: 13px; color: var(--text2); line-height: 1.6; }
     .how-gc-body {
-      border-top: 1px solid var(--border);
-      background: var(--off);
+      border-top: none;
+      background: #1B1F26;
       padding: 20px 20px 0;
       max-height: 280px;
       overflow: hidden;
       position: relative;
+      border-radius: 0 0 20px 20px;
     }
     .how-gc-body::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 80px;
-      background: linear-gradient(to bottom, transparent, var(--white));
+      background: linear-gradient(to bottom, transparent, #1B1F26);
       pointer-events: none;
     }
     .how-gc { padding-bottom: 24px; }
     .how-card {
       background: var(--white);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
       display: flex;
       flex-direction: column;
     }
     .how-card-header {
-      background: var(--navy);
-      padding: 14px 18px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0;
+      display: none;
     }
-    .how-card-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .how-card-title { font-size: 13px; font-weight: 700; color: var(--text2); }
     .how-card-body { padding: 18px 18px 20px; flex: 1; }
     .debt-row {
       display: flex;
@@ -666,29 +787,24 @@
     .stats { background: var(--off); padding: 80px 48px; }
     .stats-inner {
       max-width: 1160px; margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .stat-card {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden;
       background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px 24px;
-      transition: box-shadow 0.2s;
     }
-    .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-    .stat-icon {
-      width: 40px; height: 40px;
-      background: var(--navy);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-      font-size: 18px;
+    .stat-cell {
+      padding: 44px 32px; text-align: center;
+      border-right: 1.5px solid var(--border);
+      transition: background 0.2s;
     }
-    .stat-num { font-size: 36px; font-weight: 800; color: var(--text); letter-spacing: -1px; line-height: 1; margin-bottom: 8px; }
-    .stat-num span { color: var(--lime-soft); font-size: 28px; }
-    .stat-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:hover { background: var(--off); }
+    .stat-num {
+      font-size: 48px; font-weight: 800; color: var(--text);
+      letter-spacing: -2px; line-height: 1; margin-bottom: 10px;
+    }
+    .stat-num span { color: var(--lime); font-size: 36px; margin-left: 2px; }
+    .stat-label { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .stat-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
 
     /* ──────────────────────────────
        PROCESS — left stepper
@@ -916,8 +1032,10 @@
        TABLET  ≤ 1024px
     ══════════════════════════════ */
     @media (max-width: 1024px) {
-      .gnb-inner { padding: 0 24px; }
-      .gnb-nav a:not(.gnb-cta) { display: none; }
+      .gnb-inner { padding: 0 20px; }
+      .gnb-nav, .gnb-actions, .biz-hint-wrap { display: none !important; }
+      .gnb-left { flex: none; }
+      .gnb-mobile-btn { display: flex; margin-left: auto; }
       .hero-inner { padding: 0 24px; }
       .hero h1 { font-size: 44px; letter-spacing: -1.5px; }
       .section { padding: 80px 24px; }
@@ -938,9 +1056,6 @@
       /* GNB */
       .gnb-inner { padding: 0 20px; }
       .toggle-pill { display: none; }
-      .gnb-nav { gap: 0; }
-      .gnb-nav a:not(.gnb-cta) { display: none; }
-      a.gnb-cta { font-size: 12px; padding: 7px 14px; }
 
       /* HERO */
       .hero { padding: 96px 0 0; }
@@ -958,29 +1073,38 @@
       .mock-table-header > *:last-child, .mock-table-row > *:last-child { display: none; }
 
       /* SECTIONS */
-      .section { padding: 64px 20px; }
+      .section { padding: 56px 20px; }
       .stats { padding: 48px 20px; }
       .section-inner { padding: 0; }
       .h2 { font-size: 28px; letter-spacing: -0.8px; }
 
       /* STATS */
-      .stats-inner { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .stat-card { padding: 20px 18px; }
-      .stat-num { font-size: 28px; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell {
+        padding: 32px 20px;
+        border-right: 1.5px solid var(--border);
+        border-bottom: 1.5px solid var(--border);
+      }
+      .stat-cell:nth-child(3),
+      .stat-cell:nth-child(4) { border-bottom: none; }
+      .stat-cell:nth-child(2n) { border-right: none; }
+      .stat-num { font-size: 32px; }
+      .stat-num span { font-size: 24px; }
+      .stat-label { font-size: 13px; }
 
       /* PAIN */
       .pain-split { grid-template-columns: 1fr; gap: 32px; }
       .pain-left { position: static; }
       .pain-left p { margin-bottom: 0; }
-      .pain-row { padding: 16px 18px; gap: 14px; }
+      .pain-row { padding: 24px 20px; gap: 14px; }
       .pain-row:hover { transform: none; }
       .pain-text h3 { font-size: 15px; margin-bottom: 4px; }
       .pain-text p { font-size: 13px; }
 
       /* HERO — mockup 가로형 compact */
       .hero { padding-bottom: 0; }
-      .hero-actions { flex-direction: row; gap: 8px; margin-bottom: 40px; }
-      .btn-lime, .btn-outline-white { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
+      .hero-actions { flex-direction: column; align-items: center; gap: 8px; margin-bottom: 40px; }
+      .btn-lime, .btn-outline-white { width: auto; max-width: none; justify-content: center; font-size: 14px; padding: 13px 32px; }
       /* mockup: 테이블 숨기고 stat 카드만 가로로 */
       .hero-mockup { padding: 12px 12px 0; }
       .mockup-topbar { margin-bottom: 12px; }
@@ -998,7 +1122,7 @@
       .how-subtitle { font-size: 14px; }
       .how-gc-body { display: none; }
       .how-gc { border-radius: 14px; padding-bottom: 0; }
-      .how-gc-meta { padding: 20px 18px; }
+      .how-gc-meta { padding: 24px 20px; }
 
       /* FEATURES */
       .feat-unified { grid-template-columns: 1fr; }
@@ -1006,13 +1130,13 @@
       .feat-panel-body { padding: 24px 20px 0; }
       .feat-panel-footer { padding: 16px 20px; }
       .feat-card-top { padding: 24px 20px 0; }
-      .feat-card-bottom { padding: 18px 20px; }
+      .feat-card-bottom { padding: 24px 20px; }
       .feat-card-top h3 { font-size: 18px; }
       /* features — 브라우저 창 mockup 숨김 */
       .feat-mockup { display: none; }
       /* feat-steps-list 간격 축소 */
       .feat-steps-list { gap: 6px; padding-bottom: 12px; }
-      .feat-step-row { padding: 10px 12px; }
+      .feat-step-row { padding: 12px 20px; }
       .feat-step-txt span { display: none; } /* 부연설명 숨김, 제목만 */
 
       /* PROCESS */
@@ -1022,7 +1146,7 @@
       }
       .process-left > p { margin-bottom: 24px; font-size: 15px; }
       .proc-steps { margin: 0; }
-      .proc-step { padding: 14px 12px; }
+      .proc-step { padding: 24px 20px; }
       .process-right { height: auto; }
       .proc-panel { position: static; display: none; }
       .proc-panel.active { display: block; }
@@ -1034,11 +1158,12 @@
       .cta-btns .btn-lime, .cta-btns .btn-outline-white { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
 
       /* FOOTER */
-      .footer-inner { padding: 36px 20px 24px; }
-      .footer-top { flex-direction: column; gap: 28px; padding-bottom: 24px; }
-      .footer-brand { max-width: 100%; }
-      .footer-links { flex-wrap: wrap; gap: 28px; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .footer-inner { padding: 0 20px; }
+      .footer-top { flex-direction: column; gap: 28px; padding: 32px 0 24px; }
+      .footer-brand { flex: none; max-width: 100%; }
+      .footer-links { gap: 24px; flex-wrap: wrap; padding-left: 0; }
+      .footer-col { min-width: 80px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
     }
 
     /* ══════════════════════════════
@@ -1047,6 +1172,8 @@
     @media (max-width: 400px) {
       .hero h1 { font-size: 28px; }
       .stats-inner { grid-template-columns: 1fr; }
+      .stat-cell { border-right: none; border-bottom: 1.5px solid var(--border); }
+      .stat-cell:last-child { border-bottom: none; }
       .how-gc-meta h4 { font-size: 14px; }
     }
   </style>
@@ -1059,11 +1186,11 @@
   <div class="gnb-left">
     <a href="#" class="gnb-logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 43 45" fill="none">
-        <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#6B7280"/>
-        <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#6B7280"/>
-        <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#6B7280"/>
-        <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#6B7280"/>
-        <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#6B7280"/>
+        <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#C7F64F"/>
+        <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#C7F64F"/>
+        <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#C7F64F"/>
+        <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#C7F64F"/>
+        <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#C7F64F"/>
       </svg>
       <svg xmlns="http://www.w3.org/2000/svg" width="88" height="27" viewBox="0 0 126 39" fill="none">
         <g clip-path="url(#clip0_gnb)">
@@ -1093,12 +1220,18 @@
     <a href="https://blog.naver.com/reboundkr">블로그</a>
     <a href="self-check.html" target="_blank" style="color:rgba(255,255,255,0.55);font-weight:600;">셀프 진단</a>
   </nav>
+  <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
   <div class="gnb-actions">
-    <a href="#" class="gnb-login">로그인</a>
+    <a href="login.html" class="gnb-login">로그인</a>
     <a href="#cta" class="gnb-start">리바운드 시작하기</a>
   </div>
 </div>
 </header>
+
+<!-- MOBILE MENU -->
+<div id="shared-mobile-menu"></div>
+<script src="mobile-menu.js?v=2"></script>
+<script src="auth-nav.js?v=1"></script>
 
 <!-- HERO -->
 <section class="hero">
@@ -1106,10 +1239,9 @@
   <div class="hero-inner">
     <div class="hero-tag reveal">기업 · 개인사업자 미수채권 전문</div>
     <h1 class="reveal">못 받은 돈,<br><span class="nowrap">이제 그냥 <em>쌓아두지 마세요</em></span></h1>
-    <p class="hero-desc reveal">채무자가 개인이든 기업이든 상관없어요. 리바운드가 관리부터 설득, 회수까지 대신 이어드려요.</p>
+    <p class="hero-desc reveal">채무자가 개인이든 기업이든 상관없어요.<br>리바운드가 관리부터 설득, 회수까지 대신 이어드려요.</p>
     <div class="hero-actions reveal">
       <a href="#cta" class="btn-lime">무료 상담 신청하기 →</a>
-      <a href="#how" class="btn-outline-white">서비스 살펴보기</a>
     </div>
 
     <!-- Dashboard Mockup -->
@@ -1186,32 +1318,31 @@
         <p class="eyebrow">이런 상황, 맞으시죠?</p>
         <h2 class="h2">받아야 할 돈인데<br>선뜻 나서기가<br>어렵죠</h2>
         <p>기업이든 개인사업자든 다 비슷해요. 돈 얘기 꺼내기가 왜 이렇게 어려운지, 저희는 잘 알아요.</p>
-        <a href="#how" class="btn-lime" style="display:inline-flex; font-size:14px; padding:12px 22px;">어떻게 받아내나요? →</a>
       </div>
       <div class="pain-right">
         <div class="pain-row reveal">
-          <div class="pain-icon">🤝</div>
+          <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5847_211)"><path d="M11.4063 6.15625C6.13126 5.50625 4.25001 8.15625 3.34376 9.37501C0.875013 13.0156 2.35939 17.0156 4.15626 18.9375C4.15626 18.9375 14.25 28.7656 14.5313 29.0312C14.8125 29.2969 15.4766 30.2031 17.0781 29.9453C18.4757 29.7203 18.875 28.0312 18.875 28.0312C18.875 28.0312 19.9073 28.8731 21.3906 28.0312C22.5469 27.375 22.5 26.0625 22.5 26.0625C22.5 26.0625 23.7383 26.6829 25.0625 25.5625C26.2553 24.5532 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.5856 22.9571 27.3438 22.125C28.3688 21 28.0156 19.5781 27.3438 18.9375L19.625 10.5L19.0313 7.375L11.4063 6.15625Z" fill="#FFD7C2"/><path d="M26.7074 22.5933L24.4809 20.3364C24.287 20.1398 23.9704 20.1376 23.7739 20.3315C23.5773 20.5255 23.5751 20.8421 23.769 21.0386L25.5334 22.8272C25.5223 22.7973 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.0977 22.8769 26.7074 22.5933Z" fill="#F1B99B"/><path d="M23.9779 26.1509L21.6684 23.5872C21.4835 23.382 21.1674 23.3656 20.9622 23.5504C20.757 23.7352 20.7406 24.0514 20.9254 24.2565L22.5845 26.0983C22.7836 26.1741 23.3157 26.3302 23.9779 26.1509Z" fill="#F1B99B"/><path d="M20.5759 28.351L18.7698 26.438C18.5802 26.2372 18.2638 26.2281 18.063 26.4177C17.8622 26.6073 17.8531 26.9237 18.0427 27.1245L18.9471 28.0824C19.1457 28.2124 19.7417 28.5326 20.5759 28.351Z" fill="#F1B99B"/><path d="M18.4033 29.0535C17.6442 29.2557 16.2359 29.3193 15.2656 28.2812L14.4899 28.9916C14.51 29.011 14.524 29.0244 14.5313 29.0312C14.5602 29.0586 14.5932 29.0927 14.6309 29.1317C14.9591 29.4711 15.6414 30.1766 17.0781 29.9453C17.6998 29.8452 18.124 29.4554 18.4033 29.0535Z" fill="#F1B99B"/><path d="M6.375 6.8125C4.6875 8.97916 2.0875 14.5875 6.6875 18.4375L5.24045 19.9931C4.5734 19.3437 4.15626 18.9375 4.15626 18.9375C2.35939 17.0156 0.875013 13.0156 3.34376 9.375C3.35716 9.35698 3.37078 9.33864 3.38461 9.32C3.90872 8.61416 4.74999 7.48117 6.33357 6.75266L6.375 6.8125Z" fill="#F1B99B"/><path d="M17.25 23.6875C18.4531 25.0781 16.9492 26.8496 16.25 27.5938L5.66868 16.5845C7.64313 14.5816 8.94702 14.3814 9.82813 15.25C10.7092 16.1186 10.2969 16.7344 10.2969 16.7344C10.2969 16.7344 11.4909 16.0557 12.75 17.2969C14.0091 18.5381 13.1406 19.4844 13.1406 19.4844C13.1406 19.4844 14.44 19.2504 15.3594 20.2812C16.3906 21.4375 15.7344 22.7812 15.7344 22.7812C15.7344 22.7812 16.5248 22.8493 17.25 23.6875Z" fill="#F1B99B"/><path d="M12.4375 8C15.6719 6.70313 20.5781 6.04688 22.8281 6.01562C24.3594 6.01562 26.3091 6.38659 28.375 8.8125C31.6748 12.6873 29.2031 17.1094 27.25 18.9062V17.5C27.25 17.5 19.7436 10.9644 19.5 10.7344C19.05 10.3094 17.1979 10.4375 17 10.5C16.3958 10.6875 15.35 11 14 11.5C12.9023 11.9066 12.0312 11.5781 11.6718 10.7344C11.3124 9.89062 10.8297 8.64466 12.4375 8Z" fill="#FFD7C2"/><path d="M28.3106 17.7099C27.9645 18.1804 27.599 18.5852 27.25 18.9063C24.4896 16.5 18.8719 11.5813 18.4219 11.1563C17.9719 10.7313 17.4479 10.75 17.25 10.8125C16.6458 11 15.1 11.5 13.75 12C12.6523 12.4066 11.5469 11.5781 11.1875 10.7344C10.8589 9.96292 10.8321 8.85521 12.0589 8.17831L12.69 7.90133C12.7068 7.89496 12.7235 7.8886 12.7403 7.88226C10.7869 9.34968 12.5116 11.1435 14.125 10.9375C14.6919 10.8651 15.625 10.6719 16.5313 10.4375C16.8909 10.3445 17.2439 10.1794 17.5771 10.0236C18.2021 9.73124 18.7575 9.47151 19.1563 9.78126C20.6561 10.9462 25.1333 14.7492 28.3106 17.7099Z" fill="#F1B99B"/><path d="M8.81945 16.8786C8.07602 15.9154 6.69251 15.7372 5.72929 16.4806L3.81252 18.1016C2.92972 18.836 2.70107 20.2103 3.34614 21.103C3.93006 21.9111 4.82674 22.2447 5.64863 22.0112C5.28362 22.846 5.31493 23.914 6.01567 24.5001C6.67051 25.0477 7.47952 25.423 8.29069 25.1697C8.21346 25.7052 8.3713 26.2914 8.92192 26.875C9.44191 27.4262 10.1973 27.7006 11.0083 27.5183C10.9011 28.0902 11.0818 28.7257 11.7507 29.3711C12.57 30.1616 13.8311 30.2288 15.0157 29.1407L15.7879 28.241C16.4082 27.461 17.2658 26.1055 15.9844 24.9532C15.5412 24.5547 15.0316 24.3341 14.5026 24.3327C14.7901 23.6321 14.7847 22.7748 13.9532 21.9532C13.4334 21.4396 12.7958 21.2165 12.0932 21.3852C12.473 20.5766 12.4644 19.7523 11.7032 19.0001C11.0118 18.3169 10.1604 17.9929 9.06004 18.6091C9.25414 18.0144 9.20803 17.3821 8.81945 16.8786Z" fill="#FFD7C2"/><path d="M9.03352 17.2422L4.31006 21.9066C4.72783 22.0935 5.1834 22.1356 5.61931 22.0191L9.08879 18.593C9.0792 18.5983 9.0696 18.6036 9.05998 18.609C9.20968 18.1502 9.2165 17.6692 9.03352 17.2422Z" fill="#F1B99B"/><path d="M12.2463 19.8263L6.95856 25.0846C7.38419 25.2563 7.83707 25.3112 8.29063 25.1696C8.29067 25.1693 8.29059 25.1698 8.29063 25.1696L12.0982 21.3838C12.0965 21.3842 12.0948 21.3846 12.0932 21.385C12.3378 20.8641 12.4213 20.3367 12.2463 19.8263Z" fill="#F1B99B"/><path d="M14.5732 22.8968L9.65496 27.3953C10.0587 27.5722 10.5196 27.6262 11.0004 27.5199L14.5129 24.3071C14.683 23.8795 14.7429 23.3951 14.5732 22.8968Z" fill="#F1B99B"/></g><defs><clipPath id="clip0_5847_211"><rect width="32" height="32" fill="white"/></clipPath></defs></svg></div>
           <div class="pain-text">
             <h3>거래처라서, 고객이라서 — 연락하기가 너무 조심스러워요</h3>
             <p>리바운드가 대신 나서면 귀사 이름은 뒤에 있어도 돼요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
-          <div class="pain-icon">🏢</div>
+          <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 30H6.0317L15.977 27.2248L25.9222 30H30V9.3C30 8.03 28.97 7 27.7 7H4.3C3.03 7 2 8.03 2 9.3V30Z" fill="#9B9B9B"/><path d="M27 14H26C25.45 14 25 13.55 25 13V12C25 11.45 25.45 11 26 11H27C27.55 11 28 11.45 28 12V13C28 13.56 27.55 14 27 14ZM28 18V17C28 16.45 27.55 16 27 16H26C25.45 16 25 16.45 25 17V18C25 18.55 25.45 19 26 19H27C27.55 19 28 18.56 28 18ZM28 23V22C28 21.45 27.55 21 27 21H26C25.45 21 25 21.45 25 22V23C25 23.55 25.45 24 26 24H27C27.55 24 28 23.56 28 23Z" fill="#83CBFF"/><path d="M7 22V23C7 23.55 6.55 24 6 24H5C4.45 24 4 23.55 4 23V22C4 21.45 4.45 21 5 21H6C6.55 21 7 21.45 7 22ZM6 11H5C4.45 11 4 11.45 4 12V13C4 13.55 4.45 14 5 14H6C6.55 14 7 13.55 7 13V12C7 11.45 6.55 11 6 11ZM6 16H5C4.45 16 4 16.45 4 17V18C4 18.55 4.45 19 5 19H6C6.55 19 7 18.55 7 18V17C7 16.45 6.55 16 6 16Z" fill="#83CBFF"/><path d="M26 30H18.9867L15.9711 28.2702L12.9556 30H6V4.46C6 3.1 7.1 2 8.46 2H23.54C24.9 2 26 3.1 26 4.46V30Z" fill="#D3D3D3"/><path d="M19 30H13V26.25C13 25.56 13.56 25 14.25 25H17.75C18.44 25 19.01 25.56 19.01 26.26V30H19Z" fill="#1C1C1C"/><path d="M14.5 18H11.5C11.23 18 11 17.78 11 17.5V15.49C11 15.22 11.22 14.99 11.5 14.99H14.51C14.78 14.99 15.01 15.21 15.01 15.49V17.5C15 17.78 14.78 18 14.5 18ZM21 17.51V15.5C21 15.23 20.78 15 20.5 15H17.5C17.23 15 17 15.22 17 15.5V17.51C17 17.78 17.22 18.01 17.5 18.01H20.51C20.78 18 21 17.78 21 17.51ZM15 22.51V20.5C15 20.23 14.78 20 14.5 20H11.5C11.23 20 11 20.22 11 20.5V22.51C11 22.78 11.22 23.01 11.5 23.01H14.51C14.78 23 15 22.78 15 22.51ZM21 22.51V20.5C21 20.23 20.78 20 20.5 20H17.5C17.23 20 17 20.22 17 20.5V22.51C17 22.78 17.22 23.01 17.5 23.01H20.51C20.78 23 21 22.78 21 22.51ZM15 7.50999V5.5C15 5.23 14.78 5 14.5 5H11.5C11.23 5 11 5.22 11 5.5V7.50999C11 7.77999 11.22 8.00999 11.5 8.00999H14.51C14.78 7.99999 15 7.77999 15 7.50999ZM21 7.50999V5.5C21 5.23 20.78 5 20.5 5H17.5C17.23 5 17 5.22 17 5.5V7.50999C17 7.77999 17.22 8.00999 17.5 8.00999H20.51C20.78 7.99999 21 7.77999 21 7.50999ZM15 12.51V10.5C15 10.23 14.78 10 14.5 10H11.5C11.23 10 11 10.22 11 10.5V12.51C11 12.78 11.22 13.01 11.5 13.01H14.51C14.78 13 15 12.78 15 12.51ZM21 12.51V10.5C21 10.23 20.78 10 20.5 10H17.5C17.23 10 17 10.22 17 10.5V12.51C17 12.78 17.22 13.01 17.5 13.01H20.51C20.78 13 21 12.78 21 12.51Z" fill="#83CBFF"/></svg></div>
           <div class="pain-text">
             <h3>상대가 기업인데 누구한테, 어떻게 얘기를 꺼내야 하죠?</h3>
             <p>B2B 채권은 접근이 달라야 해요. 채권추심 전문 변호사 노하우로 길을 찾아드려요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
-          <div class="pain-icon">📋</div>
+          <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 4.5C18 3.67157 18.6716 3 19.5 3H23.5C24.3284 3 25 3.67157 25 4.5V5L21.5 5.5L18 5V4.5Z" fill="#00D26A"/><path d="M2 8C2 6.34315 3.34315 5 5 5H27C28.6569 5 30 6.34315 30 8V12H2V8Z" fill="#FFB02E"/><path d="M13 8.5C13 7.67157 13.6716 7 14.5 7H18.5C19.3284 7 20 7.67157 20 8.5V9L16.5 10L13 9V8.5Z" fill="#00A6ED"/><path d="M2 12C2 10.3431 3.34315 9 5 9H27C28.6569 9 30 10.3431 30 12V17H2V12Z" fill="#F9C23C"/><path d="M7 12.5C7 11.6716 7.67157 11 8.5 11H12.5C13.3284 11 14 11.6716 14 12.5V13L10.5 14L7 13V12.5Z" fill="#F8312F"/><path d="M2 16C2 14.3431 3.34315 13 5 13H27C28.6569 13 30 14.3431 30 16V27C30 28.6569 28.6569 30 27 30H5C3.34315 30 2 28.6569 2 27V16Z" fill="#FCD53F"/></svg></div>
           <div class="pain-text">
             <h3>건수가 너무 많아서 그냥 상각처리할까 고민 중이에요</h3>
             <p>대량 채권도 시스템으로 관리하며 끝까지 추적해요. 상각 전에 한 번만 확인해보세요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
-          <div class="pain-icon">⏰</div>
+          <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.2066 24.5794C21 25.5 19.05 26 16.5 26C13.7116 26 12 25.5 9.297 24.1399L6.71138 26.3768C5.31666 27.5881 6.10934 30 7.90542 30H24.0901C25.8862 30 26.6889 27.5881 25.2842 26.3768L23.2066 24.5794Z" fill="#D3D3D3"/><path d="M16.5 27C22.299 27 27 22.299 27 16.5C27 10.701 22.299 6 16.5 6C10.701 6 6 10.701 6 16.5C6 22.299 10.701 27 16.5 27Z" fill="#F8312F"/><path d="M16.5 24C20.6421 24 24 20.6422 24 16.5C24 12.3579 20.6421 9 16.5 9C12.3579 9 9 12.3579 9 16.5C9 20.6422 12.3579 24 16.5 24Z" fill="white"/><path d="M4.27314 9.22796C3.53751 6.94375 4.31186 4.34482 6.30578 2.93369C8.2997 1.52256 10.8937 1.75607 12.6263 3.32963C13.1684 3.82708 13.1103 4.73059 12.5198 5.14682L5.91862 9.8066C5.31851 10.2228 4.50544 9.9386 4.27314 9.22796Z" fill="#F9C23C"/><path d="M28.7269 9.22796C29.4625 6.94375 28.6882 4.34482 26.6942 2.93369C24.7003 1.52256 22.1063 1.75607 20.3737 3.32963C19.8316 3.82708 19.8897 4.73059 20.4802 5.14682L27.0814 9.8066C27.6815 10.2228 28.4946 9.9386 28.7269 9.22796Z" fill="#F9C23C"/><path d="M15.1679 16.4454C15.4743 15.9859 16.0952 15.8617 16.5547 16.1681L19.5547 18.1681C20.0142 18.4744 20.1384 19.0953 19.832 19.5548C19.5257 20.0143 18.9048 20.1385 18.4453 19.8322L15.4453 17.8322C14.9858 17.5258 14.8616 16.9049 15.1679 16.4454Z" fill="#F8312F"/><path d="M16 11C16.5523 11 17 11.4477 17 12V17C17 17.5523 16.5523 18 16 18C15.4477 18 15 17.5523 15 17V12C15 11.4477 15.4477 11 16 11Z" fill="#212121"/></svg></div>
           <div class="pain-text">
             <h3>미수 관리하느라 정작 본업에 집중을 못 하고 있어요</h3>
             <p>맡기면 끝이에요. 귀사는 하던 일만 하면 돼요.</p>
@@ -1584,25 +1715,25 @@
 <!-- STATS -->
 <section class="stats">
   <div class="stats-inner">
-    <div class="stat-card reveal">
-      <div class="stat-icon">📊</div>
+    <div class="stat-cell reveal">
       <div class="stat-num">92<span>%</span></div>
-      <div class="stat-desc">착수 후 최초 회수<br>성공률</div>
+      <div class="stat-label">착수 후 첫 회수 성공률</div>
+      <div class="stat-desc">업계 평균 대비 월등히 높음</div>
     </div>
-    <div class="stat-card reveal">
-      <div class="stat-icon">📁</div>
+    <div class="stat-cell reveal">
       <div class="stat-num">1,200<span>+</span></div>
-      <div class="stat-desc">누적 처리<br>채권 건수</div>
+      <div class="stat-label">누적 처리 채권 건수</div>
+      <div class="stat-desc">다양한 업종의 기업 고객</div>
     </div>
-    <div class="stat-card reveal">
-      <div class="stat-icon">💰</div>
+    <div class="stat-cell reveal">
       <div class="stat-num">48<span>억+</span></div>
-      <div class="stat-desc">누적 회수<br>완료 금액</div>
+      <div class="stat-label">누적 회수 완료 금액</div>
+      <div class="stat-desc">현재까지 처리 규모</div>
     </div>
-    <div class="stat-card reveal">
-      <div class="stat-icon">⭐</div>
+    <div class="stat-cell reveal">
       <div class="stat-num">4.9<span>★</span></div>
-      <div class="stat-desc">기업 고객<br>만족도</div>
+      <div class="stat-label">기업 고객 만족도</div>
+      <div class="stat-desc">재이용 의향 95% 이상</div>
     </div>
   </div>
 </section>
@@ -1843,70 +1974,13 @@
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-<div class="footer-inner">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="footer-logo" style="display:flex;align-items:center;gap:8px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 43 45" fill="none">
-        <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#6B7280"/>
-        <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#6B7280"/>
-        <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#6B7280"/>
-        <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#6B7280"/>
-        <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#6B7280"/>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" width="72" height="22" viewBox="0 0 126 39" fill="none">
-        <g clip-path="url(#clip0_footer)">
-          <path d="M4.58608 22.4601H17.3408V7.71458H0.0634766V12.0492H12.7293V18.1254H0.0634766V32.8322H22.0794V38.4182H26.602V7.71458H22.0794V28.5363H4.58608V22.4601Z" fill="#6B7280"/>
-          <path d="M36.3087 7.71458H31.7861V32.7548H49.0635V7.71458H44.5409V16.3064H36.3087V7.71458ZM44.5282 20.6024V28.3815H36.296V20.6024H44.5282Z" fill="#6B7280"/>
-          <path d="M58.4894 7.71458H53.9668V38.4182H58.4894V17.0418H63.698V12.7587H58.4894V7.71458Z" fill="#6B7280"/>
-          <path d="M76.6303 31.4648H81.3434V24.937H92.7897V20.4734H64.5742V24.937H76.6303V31.4648Z" fill="#6B7280"/>
-          <path d="M69.0968 27.7107H64.5742V38.4182H92.7897V34.1352H69.0968V27.7107Z" fill="#6B7280"/>
-          <path d="M103.334 12.1395H124.524V7.71458H98.7607V26.5109H124.524V22.1763H103.334V12.1395Z" fill="#6B7280"/>
-          <path d="M125.808 33.9546H98.1133V38.4182H125.808V33.9546Z" fill="#6B7280"/>
-          <path d="M78.7013 17.7771C84.5451 17.7771 88.9661 13.9585 88.9661 8.90146C88.9661 3.84439 84.5451 0.0644836 78.7013 0.0644836C72.8575 0.0644836 68.4111 3.87019 68.4111 8.91436C68.4111 13.9585 72.8321 17.79 78.7013 17.79V17.7771ZM78.7013 4.0637C81.8519 4.0637 84.2402 6.15361 84.2402 8.91436C84.2402 11.6751 81.8646 13.8037 78.7013 13.8037C75.538 13.8037 73.137 11.7009 73.137 8.91436C73.137 6.12781 75.5253 4.0637 78.7013 4.0637Z" fill="#6B7280"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_footer"><rect width="125.871" height="38.4828" fill="white"/></clipPath>
-        </defs>
-      </svg>
-    </div>
-      <div class="footer-brand-title">법무법인 수륜아시아</div>
-      <p>
-        광고책임변호사 : 이준철<br>
-        대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
-        E-mail : master@srlaw.co.kr<br>
-        주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
-      </p>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h5>서비스</h5>
-        <a href="#">서비스 소개</a>
-        <a href="#">자주 묻는 질문</a>
-        <a href="team.html">리바운드 팀</a>
-      </div>
-      <div class="footer-col">
-        <h5>컨텐츠</h5>
-        <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
-        <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
-        <a href="blog.html">블로그</a>
-      </div>
-      <div class="footer-col">
-        <h5>이용약관</h5>
-        <a href="#">개인정보 처리 방침</a>
-        <a href="#">서비스 이용약관</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
-  </div>
-</div>
-</footer>
+<!-- SERVICE SWITCH POPUP (mobile) -->
+<footer id="shared-footer"></footer>
+<script src="footer.js?v=2"></script>
 
 <script>
+  // Mobile menu toggle은 mobile-menu.js에서 처리
+
   // Scroll reveal
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {

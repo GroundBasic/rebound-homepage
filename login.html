@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 — 리바운드</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6D24;
+      --orange-dim: rgba(255,109,36,0.08);
+      --orange-border: rgba(255,109,36,0.2);
+      --text: #302622;
+      --text2: #595959;
+      --text3: #888888;
+      --border: #EEEEEE;
+      --off: #F6F6F8;
+      --kakao: #FEE500;
+      --kakao-text: #181600;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: flex-start; align-items: center;
+      padding: 180px 20px 40px;
+    }
+
+    /* ── 상단 로고 ── */
+    .login-logo {
+      display: inline-flex; align-items: center; gap: 10px;
+      text-decoration: none; margin-bottom: 40px;
+    }
+
+    /* ── 로그인 컨테이너 (카드 없이 배경과 연결) ── */
+    .login-card {
+      width: 100%; max-width: 400px;
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+    }
+    .login-card h1 {
+      font-size: 24px; font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .login-card .subtitle {
+      font-size: 14px; color: var(--text3);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    /* ── 폼 ── */
+    .login-form { display: flex; flex-direction: column; gap: 12px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field label {
+      font-size: 13px; font-weight: 600; color: var(--text2);
+    }
+    .form-field input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-field input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px var(--orange-dim);
+    }
+    .form-field input::placeholder { color: #BDBDBD; }
+
+    /* ── 옵션 행 (자동로그인 / 비번찾기) ── */
+    .form-options {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 4px; margin-bottom: 4px;
+    }
+    .form-options label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text2);
+      cursor: pointer;
+    }
+    .form-options input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--orange);
+      cursor: pointer;
+    }
+    .form-options a {
+      font-size: 13px; color: var(--text3);
+      text-decoration: none;
+    }
+    .form-options a:hover { color: var(--orange); }
+
+    /* ── 버튼 ── */
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--orange);
+      color: #fff;
+      font-size: 15px; font-weight: 700; line-height: 1.6;
+      border: none; border-radius: 10px;
+      cursor: pointer; font-family: inherit;
+      margin-top: 8px;
+      transition: opacity 0.15s;
+    }
+    .btn-login:hover { opacity: 0.92; }
+
+    /* ── 구분선 ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 24px 0;
+      font-size: 12px; color: var(--text3);
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border);
+    }
+
+    /* ── 카카오 로그인 ── */
+    .btn-kakao {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: var(--kakao);
+      color: var(--kakao-text);
+      font-size: 15px; font-weight: 700; line-height: 1.6;
+      border: none; border-radius: 10px;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-kakao:hover { opacity: 0.92; }
+
+    /* ── 회원가입 링크 ── */
+    .signup-link {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 14px; color: var(--text3);
+    }
+    .signup-link a {
+      color: var(--orange); font-weight: 600;
+      text-decoration: none;
+      margin-left: 4px;
+    }
+    .signup-link a:hover { text-decoration: underline; }
+
+    /* ── 홈으로 돌아가기 ── */
+    .back-home {
+      margin-top: 20px;
+      font-size: 13px; color: var(--text3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .back-home:hover { color: var(--text); }
+
+    /* ── 모바일 ── */
+    @media (max-width: 480px) {
+      body { padding: 24px 16px; justify-content: flex-start; padding-top: 60px; }
+      .login-card { padding: 32px 24px; }
+      .login-card h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 로고 -->
+  <a href="rebound-personal.html" class="login-logo" aria-label="리바운드 홈">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 54 55" fill="none">
+      <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#FF6D24"/>
+      <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.3046 1.89892 43.6648 1.62155 44.025 1.34418C43.7072 1.62155 43.4106 1.94159 43.1351 2.30431C42.436 3.2431 42.0334 4.4166 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF6D24"/>
+      <path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1925 5.6356 23.1925H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#FF6D24"/>
+      <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#FF6D24"/>
+      <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C51.2506 10.0707 51.2082 10.1134 51.1658 10.1561C51.1658 10.1561 50.954 10.3267 50.8481 10.4121C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C43.4116 1.98427 43.7082 1.66423 44.0472 1.36552C44.2379 1.21617 44.4074 1.08815 44.598 0.938796C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#FF6D24"/>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="30" viewBox="0 0 145 44" fill="none">
+      <g clip-path="url(#ln-g)">
+        <path d="M5.28317 25.6802H19.9764V8.82065H0.0732422V13.7767H14.664V20.7241H0.0732422V37.5394H25.4351V43.9262H30.645V8.82065H25.4351V32.6276H5.28317V25.6802Z" fill="#1A1714"/>
+        <path d="M41.8261 8.82065H36.6162V37.4509H56.5193V8.82065H51.3094V18.6443H41.8261V8.82065ZM51.2948 23.5561V32.4506H41.8115V23.5561H51.2948Z" fill="#1A1714"/>
+        <path d="M67.3779 8.82065H62.168V43.9262H67.3779V19.4851H73.3781V14.588H67.3779V8.82065Z" fill="#1A1714"/>
+        <path d="M88.276 35.9759H93.7054V28.5122H106.891V23.4087H74.3877V28.5122H88.276V35.9759Z" fill="#1A1714"/>
+        <path d="M79.5976 31.6835H74.3877V43.9262H106.891V39.0292H79.5976V31.6835Z" fill="#1A1714"/>
+        <path d="M119.038 13.88H143.449V8.82065H113.77V30.3118H143.449V25.3557H119.038V13.88Z" fill="#1A1714"/>
+        <path d="M144.927 38.8227H113.023V43.9263H144.927V38.8227Z" fill="#1A1714"/>
+        <path d="M90.6617 20.3259C97.3936 20.3259 102.486 15.9598 102.486 10.1777C102.486 4.39558 97.3936 0.073761 90.6617 0.073761C83.9297 0.073761 78.8076 4.42508 78.8076 10.1924C78.8076 15.9598 83.9005 20.3406 90.6617 20.3406V20.3259ZM90.6617 4.64634C94.2911 4.64634 97.0424 7.03588 97.0424 10.1924C97.0424 13.349 94.3057 15.7828 90.6617 15.7828C87.0177 15.7828 84.2517 13.3785 84.2517 10.1924C84.2517 7.00638 87.003 4.64634 90.6617 4.64634Z" fill="#1A1714"/>
+      </g>
+      <defs><clipPath id="ln-g"><rect width="145" height="44" fill="white"/></clipPath></defs>
+    </svg>
+  </a>
+
+  <!-- 로그인 컨테이너 -->
+  <div class="login-card">
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <div class="form-field">
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" placeholder="example@email.com" autocomplete="email" required>
+      </div>
+      <div class="form-field">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password" required>
+      </div>
+
+      <div class="form-options">
+        <label>
+          <input type="checkbox" name="remember">
+          자동 로그인
+        </label>
+        <a href="#">비밀번호 찾기</a>
+      </div>
+
+      <button type="submit" class="btn-login">로그인</button>
+    </form>
+
+    <div class="divider">또는</div>
+
+    <a href="#" class="btn-kakao">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 1C4.58172 1 1 3.79086 1 7.24138C1 9.4138 2.43448 11.3 4.57931 12.3793L3.77241 15.6414C3.70345 15.8897 3.98966 16.0897 4.2 15.9517L8.07931 13.4207C8.38276 13.4621 8.69138 13.4828 9 13.4828C13.4183 13.4828 17 10.6919 17 7.24138C17 3.79086 13.4183 1 9 1Z" fill="#181600"/>
+      </svg>
+      카카오로 시작하기
+    </a>
+
+    <p class="signup-link">
+      아직 계정이 없으신가요?<a href="#">회원가입</a>
+    </p>
+  </div>
+
+  <a href="rebound-personal.html" class="back-home">← 홈으로 돌아가기</a>
+
+  <script>
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (email === 'hgu.ekgml312@gmail.com' && password === '1234') {
+        sessionStorage.setItem('rebound_logged_in', 'true');
+        sessionStorage.setItem('rebound_user_email', email);
+        window.location.href = 'rebound-personal.html';
+      } else {
+        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+      }
+    }
+  </script>
+</body>
+</html>

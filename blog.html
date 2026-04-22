@@ -76,7 +76,7 @@
     .biz-hint {
       position: absolute; top: calc(100% + 12px); left: auto; right: 0;
       background: #1B1F26; border-radius: 14px;
-      padding: 14px 40px 14px 16px; width: 272px;
+      padding: 14px 16px; width: 300px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
       opacity: 0; pointer-events: none;
       transform: translateY(-6px);
@@ -103,7 +103,7 @@
     }
     .biz-hint-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
     .biz-hint-link { text-decoration: none; display: block; }
-    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; padding-right: 24px; }
     .biz-hint-desc { display: block; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; white-space: nowrap; }
     .biz-hint-desc strong { font-weight: 700; color: #fff; }
 
@@ -297,22 +297,156 @@
       gap: 10px;
     }
 
+    /* ── MOBILE MENU BUTTON (hidden on desktop) ── */
+    .gnb-mobile-btn {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .gnb-mobile-btn:hover { background: #F1F5F7; }
+    .gnb-mobile-btn span {
+      display: block; width: 20px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      position: relative;
+    }
+    .gnb-mobile-btn span::before,
+    .gnb-mobile-btn span::after {
+      content: ''; position: absolute; left: 0;
+      width: 20px; height: 2px; background: var(--text);
+      border-radius: 2px;
+    }
+    .gnb-mobile-btn span::before { top: -6px; }
+    .gnb-mobile-btn span::after { top: 6px; }
+    .gnb-mobile-btn.open span { background: transparent; }
+    .gnb-mobile-btn.open span::before { top: 0; transform: rotate(45deg); }
+    .gnb-mobile-btn.open span::after { top: 0; transform: rotate(-45deg); }
+
+    /* ── MOBILE MENU PANEL ── */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: #fff;
+      z-index: 199; flex-direction: column;
+      padding: 0; overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-nav {
+      flex: 1; padding: 20px 24px 0;
+      display: flex; flex-direction: column;
+    }
+    .mobile-menu-nav a {
+      font-size: 17px; font-weight: 500; color: #6B7280;
+      text-decoration: none; padding: 16px 0;
+      transition: color 0.15s;
+    }
+    .mobile-menu-nav a:hover { color: var(--orange); }
+    .mobile-menu-nav .mobile-menu-switch {
+      font-size: 14px; font-weight: 500;
+      color: var(--text3);
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu-nav .mobile-menu-switch:hover { color: var(--orange); }
+    .mobile-menu-bottom {
+      padding: 16px 24px 32px;
+    }
+    .mobile-menu-bottom a {
+      display: block; width: 100%; text-align: center;
+      background: var(--orange); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px; border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .mobile-menu-bottom a:hover { opacity: 0.9; }
+    .switch-popup-overlay {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 400;
+      align-items: center; justify-content: center;
+    }
+    .switch-popup-overlay.show { display: flex; }
+    .switch-popup {
+      background: #1B1F26;
+      border-radius: 20px;
+      padding: 32px 24px 18px;
+      width: 100%; max-width: 300px;
+      text-align: center;
+      animation: popIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .switch-popup-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.3);
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .switch-popup-close:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .switch-popup-emoji {
+      font-size: 36px; margin-bottom: 16px;
+    }
+    .switch-popup h3 {
+      font-size: 17px; font-weight: 700;
+      color: #fff; margin-bottom: 8px;
+    }
+    .switch-popup p {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      line-height: 1.5; margin-bottom: 24px;
+    }
+    .switch-popup-go {
+      display: block; width: 100%;
+      padding: 14px 0;
+      background: #B5F23D; color: #111827;
+      font-size: 15px; font-weight: 700;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none; text-align: center;
+      transition: opacity 0.2s;
+      margin-bottom: 6px;
+    }
+    .switch-popup-go:hover { opacity: 0.9; }
+    .switch-popup-dismiss {
+      display: block; width: 100%;
+      background: none; border: none;
+      color: rgba(255,255,255,0.35); font-size: 11px;
+      cursor: pointer; font-family: inherit;
+      text-align: center; padding: 2px 0;
+      transition: color 0.15s;
+    }
+    .switch-popup-dismiss:hover { color: rgba(255,255,255,0.6); }
+
     @media (max-width: 1024px) {
       .blog-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .gnb-inner { padding: 0 20px; }
-      .gnb-nav a:not(.gnb-cta) { display: none; }
+      .gnb-nav, .gnb-actions, .biz-hint-wrap { display: none !important; }
+      .gnb-left { flex: none; }
+      .gnb-mobile-btn { display: flex; margin-left: auto; }
       .page-hero { padding: 48px 20px; }
       .page-hero-inner { flex-direction: column; }
-      .blog-section { padding: 40px 20px 64px; }
+      .blog-section { padding: 56px 20px; }
       .blog-featured { grid-template-columns: 1fr; }
       .blog-grid { grid-template-columns: 1fr; }
       .blog-cats-inner { padding: 0 20px; overflow-x: auto; }
-      .footer-inner { padding: 40px 20px 28px; }
-      .footer-top { flex-direction: column; gap: 28px; }
-      .footer-links { flex-wrap: wrap; gap: 28px; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .footer-inner { padding: 0 20px; }
+      .footer-top { flex-direction: column; gap: 28px; padding: 32px 0 24px; }
+      .footer-brand { flex: none; }
+      .footer-links { gap: 24px; flex-wrap: wrap; padding-left: 0; }
+      .footer-col { min-width: 80px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
     }
   </style>
 </head>
@@ -365,12 +499,18 @@
       <a href="blog.html" class="gnb-nav-active">블로그</a>
       <a href="self-check.html" target="_blank" >셀프 진단</a>
     </nav>
+    <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
     <div class="gnb-actions">
-      <a href="#" class="gnb-login">로그인</a>
+      <a href="login.html" class="gnb-login">로그인</a>
       <a href="#" class="gnb-start">리바운드 시작하기</a>
     </div>
   </div>
 </header>
+
+<!-- MOBILE MENU -->
+<div id="shared-mobile-menu"></div>
+<script src="mobile-menu.js?v=2"></script>
+<script src="auth-nav.js?v=1"></script>
 
 <!-- HERO -->
 <div class="page-hero">
@@ -563,56 +703,53 @@
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <a href="rebound-personal.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 54 55" fill="none">
-              <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#6B7280"/>
-              <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#6B7280"/>
-              <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#6B7280"/>
-            </svg>
-            <span style="font-size:15px;font-weight:800;color:#6B7280;">리바운드</span>
-          </a>
-        </div>
-        <div class="footer-brand-title">법무법인 수륜아시아</div>
-        <p>
-          광고책임변호사 : 이준철<br>
-          대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
-          E-mail : master@srlaw.co.kr<br>
-          주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
-        </p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h5>서비스</h5>
-          <a href="#">서비스 소개</a>
-          <a href="#">자주 묻는 질문</a>
-          <a href="team.html">리바운드 팀</a>
-        </div>
-        <div class="footer-col">
-          <h5>컨텐츠</h5>
-          <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
-          <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
-          <a href="blog.html">블로그</a>
-        </div>
-        <div class="footer-col">
-          <h5>이용약관</h5>
-          <a href="#">개인정보 처리 방침</a>
-          <a href="#">서비스 이용약관</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
-    </div>
+<!-- SERVICE SWITCH POPUP (mobile) -->
+<div class="switch-popup-overlay" id="switchPopup">
+  <div class="switch-popup">
+    <button class="switch-popup-close" id="switchClose" aria-label="닫기">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h3>사업자 회원이신가요?</h3>
+    <p>기업 전용 채권 관리 기능과<br>대량 회수 서비스를 확인해보세요.</p>
+    <a href="rebound-biz.html" class="switch-popup-go">기업 Biz 서비스 보기</a>
+    <button class="switch-popup-dismiss" id="switchDismiss">오늘 하루 안 보기</button>
   </div>
-</footer>
+</div>
+
+<footer id="shared-footer"></footer>
+<script src="footer.js?v=2"></script>
 
 <script>
+  // ── Service switch popup (mobile) ──
+  (function() {
+    const popup = document.getElementById('switchPopup');
+    const dismiss = document.getElementById('switchDismiss');
+    const closeX = document.getElementById('switchClose');
+    if (!popup) return;
+    const dismissed = localStorage.getItem('switchPopupDismissed');
+    if (dismissed) {
+      const dismissDate = new Date(parseInt(dismissed));
+      const now = new Date();
+      if (dismissDate.toDateString() === now.toDateString()) return;
+    }
+    if (window.innerWidth <= 960) {
+      setTimeout(() => popup.classList.add('show'), 800);
+    }
+    function closePopup() { popup.classList.remove('show'); }
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) closePopup();
+    });
+    if (closeX) closeX.addEventListener('click', closePopup);
+    if (dismiss) {
+      dismiss.addEventListener('click', () => {
+        localStorage.setItem('switchPopupDismissed', Date.now().toString());
+        closePopup();
+      });
+    }
+  })();
+
+  // Mobile menu toggle은 mobile-menu.js에서 처리
+
   // Scroll reveal
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });

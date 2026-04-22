@@ -147,7 +147,7 @@
     }
 
     .quiz-topbar {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center;
       padding: 18px 20px 14px;
     }
     .btn-back {
@@ -157,10 +157,6 @@
     }
     .btn-back:hover { background: var(--off); }
     .btn-back svg { width: 20px; height: 20px; }
-    .quiz-step-label {
-      font-size: 12px; font-weight: 600;
-      color: var(--orange); letter-spacing: 0.5px;
-    }
 
     /* Segment progress */
     .seg-progress {
@@ -190,10 +186,6 @@
       flex: 1; padding: 8px 24px 24px;
       display: flex; flex-direction: column;
     }
-    .q-icon {
-      font-size: 32px; margin-bottom: 12px;
-      animation: bounceIn 0.4s ease both;
-    }
     @keyframes bounceIn {
       0% { opacity: 0; transform: scale(0.5); }
       60% { transform: scale(1.1); }
@@ -203,8 +195,13 @@
       font-size: 22px; font-weight: 700;
       color: var(--text); line-height: 1.35;
       letter-spacing: -0.6px;
-      margin-bottom: 28px;
+      margin-bottom: 40px;
       animation: fadeUp 0.4s 0.05s ease both;
+    }
+    .q-sub {
+      font-size: 13px; color: var(--text3);
+      line-height: 1.6; letter-spacing: -0.2px;
+      margin: -28px 0 40px;
     }
 
     /* Options */
@@ -439,6 +436,21 @@
       transform: translateY(-1px);
       box-shadow: 0 8px 24px rgba(255,109,36,0.35);
     }
+    .result-bottom-retry {
+      padding: 40px 20px 48px;
+      text-align: center;
+    }
+    .btn-retry {
+      background: none; border: none;
+      color: var(--text3); font-size: 13px; font-weight: 400;
+      cursor: pointer; font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+    }
+    .btn-retry:hover {
+      color: var(--text2);
+    }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 420px) {
@@ -473,12 +485,11 @@
       <button class="btn-back" id="btnBack" onclick="prevStep()">
         <svg viewBox="0 0 24 24" fill="none" stroke="#302622" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <span class="quiz-step-label" id="stepLabel">1 / 6</span>
     </div>
     <div class="seg-progress" id="segProgress"></div>
     <div class="quiz-body">
-      <div class="q-icon" id="qIcon"></div>
       <h2 class="q-title" id="qTitle"></h2>
+      <p class="q-sub" id="qSub"></p>
       <div class="options" id="optionsArea"></div>
     </div>
   </div>
@@ -489,30 +500,48 @@
 </div>
 
 <script>
-const questions = [
+// Base questions
+const baseQuestions = [
   {
-    icon: '💰',
+    id: 'amount',
     title: '현재 받지 못한 금액은\n얼마인가요?',
+    sub: '',
     options: ['10만~300만 원', '300만 원~1,000만 원', '1,000만 원~3,000만 원', '3,000만 원 이상']
   },
   {
-    icon: '📋',
+    id: 'illegal',
     title: '아래와 관련된 이유로\n발생한 돈인가요?',
+    sub: '예) 양육비, 위자료, 교통사고 합의금, 폭행 합의금,\n도박으로 인한 빚, 불법 사채로 발생한 금액 등',
     options: ['예', '아니오']
   },
   {
-    icon: '👤',
+    id: 'type',
+    title: '어떤 종류의 돈인가요?',
+    sub: '',
+    options: [
+      '친구·가족 등 지인에게 빌려준 돈',
+      '거래처에게 못 받은 물건·서비스 대금',
+      '월세, 보증금 등 임대 관련한 금액',
+      '급여, 일당, 용역비 등 일한 대가'
+    ],
+    conditional: true  // only shown when q1 = '아니오'
+  },
+  {
+    id: 'who',
     title: '돈을 돌려주지 않는 상대는\n누구인가요?',
+    sub: '',
     options: ['친구 · 연인 · 가족', '직장 동료 · 지인', '가게 · 온라인 쇼핑몰 · 개인 자영업자', '법인']
   },
   {
-    icon: '📞',
+    id: 'contact',
     title: '상대방의 연락처를\n알고 계신가요?',
+    sub: '',
     options: ['알고 있고 연락이 닿아요', '연락처는 알고 있는데 응답이 없어요', '연락처를 몰라요']
   },
   {
-    icon: '💬',
+    id: 'reaction',
     title: '돈을 받기 위해 연락하면\n어떤 반응인가요?',
+    sub: '',
     options: [
       '기다려주면 갚을 수 있다며 계속 미루기만 해요',
       '조금씩 나눠서 갚겠다고 하는데 못믿겠어요',
@@ -521,16 +550,37 @@ const questions = [
     ]
   },
   {
-    icon: '⏰',
+    id: 'duration',
     title: '상대가 돈을 갚기로 한 날로부터\n얼마나 지났나요?',
+    sub: '',
     options: ['1년 미만', '1~3년', '3~5년', '5~10년', '10년 이상', '기억이 안나요']
   }
 ];
 
+let questions = [];
 let step = 0;
-const answers = new Array(questions.length).fill(-1);
+let answers = {};
+
+function buildQuestions() {
+  questions = [];
+  for (const q of baseQuestions) {
+    // 'type' only when illegal = '아니오'
+    if (q.id === 'type') {
+      if (answers['illegal'] === 1) questions.push(q);
+      continue;
+    }
+    // 'reaction' skipped when contact = '연락처를 몰라요' (index 2)
+    if (q.id === 'reaction') {
+      if (answers['contact'] !== 2) questions.push(q);
+      continue;
+    }
+    questions.push(q);
+  }
+}
 
 function startQuiz() {
+  answers = {};
+  buildQuestions();
   const intro = document.getElementById('screenIntro');
   intro.style.opacity = '0';
   intro.style.transform = 'scale(0.96)';
@@ -552,24 +602,13 @@ function renderStep(idx) {
   step = idx;
   const q = questions[idx];
 
-  // Step label
-  document.getElementById('stepLabel').textContent = (idx + 1) + ' / ' + questions.length;
-
-  // Progress with animated fill
+  // Progress
   const segHTML = questions.map((_, i) =>
     `<div class="seg-bar ${i <= idx ? 'filled' : ''}"><div class="seg-fill"></div></div>`
   ).join('');
   document.getElementById('segProgress').innerHTML = segHTML;
-  // Trigger animation
   requestAnimationFrame(() => {
     document.querySelectorAll('.seg-bar.filled .seg-fill').forEach(f => f.style.transform = 'scaleX(1)');
-  });
-
-  // Icon
-  document.getElementById('qIcon').textContent = q.icon;
-  document.getElementById('qIcon').style.animation = 'none';
-  requestAnimationFrame(() => {
-    document.getElementById('qIcon').style.animation = 'bounceIn 0.4s ease both';
   });
 
   // Title
@@ -580,9 +619,20 @@ function renderStep(idx) {
     titleEl.style.animation = 'fadeUp 0.4s 0.05s ease both';
   });
 
+  // Sub
+  const subEl = document.getElementById('qSub');
+  if (q.sub) {
+    subEl.innerHTML = q.sub.replace(/\n/g, '<br>');
+    subEl.style.display = '';
+  } else {
+    subEl.innerHTML = '';
+    subEl.style.display = 'none';
+  }
+
   // Options
+  const saved = answers[q.id];
   const optsHTML = q.options.map((opt, i) => `
-    <button class="opt-btn ${answers[idx] === i ? 'selected' : ''}" onclick="selectOpt(${idx}, ${i}, this, event)">
+    <button class="opt-btn ${saved === i ? 'selected' : ''}" onclick="selectOpt('${q.id}', ${i}, this, event)">
       <div class="opt-check">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
@@ -595,10 +645,10 @@ function renderStep(idx) {
   document.getElementById('btnBack').style.visibility = idx === 0 ? 'hidden' : 'visible';
 }
 
-function selectOpt(qIdx, optIdx, el, event) {
-  answers[qIdx] = optIdx;
+function selectOpt(qId, optIdx, el, event) {
+  answers[qId] = optIdx;
 
-  // Ripple effect
+  // Ripple
   const rect = el.getBoundingClientRect();
   const ripple = document.createElement('span');
   ripple.className = 'opt-ripple';
@@ -609,11 +659,15 @@ function selectOpt(qIdx, optIdx, el, event) {
   el.appendChild(ripple);
   setTimeout(() => ripple.remove(), 500);
 
-  // Update selection
   el.closest('.options').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
 
-  // Auto-advance with transition
+  // Rebuild when branching answers change
+  if (qId === 'illegal' || qId === 'contact') {
+    buildQuestions();
+  }
+
+  // Auto-advance
   setTimeout(() => {
     if (step < questions.length - 1) {
       renderStep(step + 1);
@@ -641,64 +695,173 @@ function showResult() {
       resultEl.style.opacity = '1';
     });
 
-    let reasons = [];
-    if (answers[3] === 0) reasons.push({ emoji: '📱', sub: '채무자(돈 갚을 분)와', main: '연락이 닿아요' });
-    if (answers[4] === 0 || answers[4] === 1) reasons.push({ emoji: '✊', sub: '채무자(돈 갚을 분)가', main: '갚으려는 의지가 있어요' });
-    if (answers[0] <= 1) reasons.push({ emoji: '💵', sub: '현실적으로', main: '나눠 갚을 수 있는 금액이에요' });
-    if (reasons.length === 0) {
-      reasons = [
-        { emoji: '🔍', sub: '상황에 맞는', main: '최적의 회수 방법을 찾아드려요' },
-        { emoji: '⚖️', sub: '전문가가', main: '법적 조치 전 대안을 제시해요' },
-        { emoji: '🎯', sub: '리바운드가', main: '체계적으로 회수를 도와드려요' }
-      ];
-    }
-    const reasonsHTML = reasons.map(r => `
-      <div class="reason-item">
-        <div class="reason-emoji">${r.emoji}</div>
-        <div class="reason-text">
-          <div class="sub">${r.sub}</div>
-          <div class="main">${r.main}</div>
-        </div>
-      </div>
-    `).join('');
+    // ── 결과 판정 ──
+    // 서비스 대상 아님 조건
+    const isNotTarget =
+      answers.illegal === 0 ||                        // 2번: 가사/형사/도박 관련 돈 = '예'
+      answers.contact === 2 ||                        // 4번: 연락처를 몰라요
+      (answers.reaction === 2) ||                     // 5번: 상대방이 없다고 해요 → 아 이건 변호사. 연락을 피해요(3)
+      answers.duration === 5;                         // 6번: 기억이 안나요
 
-    resultEl.innerHTML = `
-      <div class="result-hero">
-        <div class="result-confetti">🎉</div>
-        <h1 class="result-hero-title">리바운드를<br>시작해보세요!</h1>
-        <p class="result-hero-desc">
-          지금 상황에서는 소송·지급명령 같은 법적 절차보다<br>
-          리바운드를 먼저 시도해 보시는 게 좋아요!
-        </p>
-      </div>
-      <div class="result-body">
-        <h3 class="result-section-title">리바운드를 사용하면<br>어떤 점이 좋나요?</h3>
-        <div class="benefit-card">
-          <div class="benefit-item"><div class="benefit-num">1</div><div class="benefit-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div>
-          <div class="benefit-item"><div class="benefit-num">2</div><div class="benefit-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div>
-          <div class="benefit-item"><div class="benefit-num">3</div><div class="benefit-text"><div class="sub">복잡한 법적 절차보다</div><div class="main">시간과 비용 부담 감소</div></div></div>
-          <div class="benefit-item"><div class="benefit-num">4</div><div class="benefit-text"><div class="sub">현실적인 방식으로 조정해</div><div class="main">실제로 돈을 받을 가능성 증가</div></div></div>
+    // 변호사 상담 권유 조건
+    const isLawyer =
+      answers.amount === 3 ||                         // 1번: 3000만원 이상
+      answers.reaction === 2 ||                       // 5번: 받을 돈이 있는데 상대방은 없다고 해요
+      answers.duration === 4;                         // 6번: 10년 이상
+
+    // 서비스 대상 아님이 우선 (둘 다 해당 시 서비스 대상 아님)
+    let resultType = 'rebound';
+    if (isNotTarget) {
+      resultType = 'not-target';
+    } else if (isLawyer) {
+      resultType = 'lawyer';
+    }
+
+    let html = '';
+
+    if (resultType === 'not-target') {
+      // ── 서비스 대상이 아닌 경우 ──
+      html = `
+        <div class="result-hero" style="background: linear-gradient(180deg, #F5F5F5 0%, #FFFFFF 100%);">
+          <div class="result-confetti">😥</div>
+          <h1 class="result-hero-title">리바운드 서비스<br>대상이 아니에요</h1>
+          <p class="result-hero-desc">
+            안타깝지만 현재 상황에서는<br>
+            리바운드 서비스 이용이 어려워요.
+          </p>
         </div>
-        <h3 class="result-section-title">이런 이유로 추천해요!</h3>
-        <div class="reason-card">${reasonsHTML}</div>
-        <div style="text-align:center;">
-          <div class="guide-badge">함께 보면 좋은 가이드</div>
+        <div class="result-body">
+          <h3 class="result-section-title">왜 이용이 어려운가요?</h3>
+          <div class="benefit-card">
+            ${answers.illegal === 0 ? '<div class="benefit-item"><div class="benefit-num" style="background:#999;">!</div><div class="benefit-text"><div class="sub">양육비, 위자료, 합의금 등</div><div class="main">가사·형사·불법 관련 채권은 법적 절차가 필요해요</div></div></div>' : ''}
+            ${answers.contact === 2 ? '<div class="benefit-item"><div class="benefit-num" style="background:#999;">!</div><div class="benefit-text"><div class="sub">상대방 연락처를 모르면</div><div class="main">리바운드 회수 진행이 어려워요</div></div></div>' : ''}
+            ${answers.duration === 5 ? '<div class="benefit-item"><div class="benefit-num" style="background:#999;">!</div><div class="benefit-text"><div class="sub">갚기로 한 시점이 불분명하면</div><div class="main">정확한 채권 상태 판단이 어려워요</div></div></div>' : ''}
+          </div>
+          <h3 class="result-section-title">이런 방법을 추천해요</h3>
+          <div class="reason-card">
+            <div class="reason-item"><div class="reason-emoji">⚖️</div><div class="reason-text"><div class="sub">전문 변호사에게</div><div class="main">무료 법률 상담을 받아보세요</div></div></div>
+            <div class="reason-item"><div class="reason-emoji">🏛️</div><div class="reason-text"><div class="sub">대한법률구조공단 등</div><div class="main">공공 법률 서비스를 이용해보세요</div></div></div>
+          </div>
         </div>
-        <div class="guide-cards">
-          <a href="rebound-personal.html" target="_blank" class="guide-card guide-card-1">
-            <div class="guide-card-title">리바운드는 어떤 방식으로<br>진행되나요?</div>
-            <div class="guide-card-footer">리바운드 서비스 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </a>
-          <a href="rebound-personal.html#cost" target="_blank" class="guide-card guide-card-2">
-            <div class="guide-card-title">리바운드 서비스 비용은<br>어떻게 되나요?</div>
-            <div class="guide-card-footer">리바운드 비용 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </a>
+        <div class="result-cta">
+          <a href="rebound-personal.html" target="_blank" class="btn-cta" style="background:#666;">리바운드 홈으로</a>
         </div>
-      </div>
-      <div class="result-cta">
-        <a href="rebound-personal.html#cta" target="_blank" class="btn-cta">리바운드 시작하기</a>
-      </div>
-    `;
+        <div class="result-bottom-retry">
+          <button class="btn-retry" onclick="resetQuiz()">처음으로 돌아가기</button>
+        </div>
+      `;
+    } else if (resultType === 'lawyer') {
+      // ── 변호사 상담 권유 ──
+      html = `
+        <div class="result-hero" style="background: linear-gradient(180deg, #EBF0FF 0%, #FFFFFF 100%);">
+          <div class="result-confetti">⚖️</div>
+          <h1 class="result-hero-title">변호사 상담을<br>권유드려요</h1>
+          <p class="result-hero-desc">
+            현재 상황에서는 전문 변호사의<br>
+            법률 상담을 먼저 받아보시는 게 좋아요.
+          </p>
+        </div>
+        <div class="result-body">
+          <h3 class="result-section-title">왜 변호사 상담이<br>필요한가요?</h3>
+          <div class="benefit-card">
+            ${answers.amount === 3 ? '<div class="benefit-item"><div class="benefit-num" style="background:#4A6CF7;">!</div><div class="benefit-text"><div class="sub">채권 금액이 3,000만 원 이상으로</div><div class="main">법적 절차를 통한 회수가 효과적이에요</div></div></div>' : ''}
+            ${answers.reaction === 2 ? '<div class="benefit-item"><div class="benefit-num" style="background:#4A6CF7;">!</div><div class="benefit-text"><div class="sub">상대방이 채무를 부인하는 경우</div><div class="main">법적 증거 확보와 소송이 필요할 수 있어요</div></div></div>' : ''}
+            ${answers.duration === 4 ? '<div class="benefit-item"><div class="benefit-num" style="background:#4A6CF7;">!</div><div class="benefit-text"><div class="sub">10년 이상 경과하여</div><div class="main">소멸시효 확인이 반드시 필요해요</div></div></div>' : ''}
+          </div>
+          <h3 class="result-section-title">이렇게 진행해보세요</h3>
+          <div class="reason-card">
+            <div class="reason-item"><div class="reason-emoji">📞</div><div class="reason-text"><div class="sub">법무법인 수륜아시아</div><div class="main">무료 법률 상담 신청하기</div></div></div>
+            <div class="reason-item"><div class="reason-emoji">📋</div><div class="reason-text"><div class="sub">상담 전에</div><div class="main">관련 증거자료를 정리해두세요</div></div></div>
+          </div>
+        </div>
+        <div class="result-cta">
+          <a href="rebound-personal.html#cta" target="_blank" class="btn-cta" style="background:#4A6CF7;">변호사 상담 신청하기</a>
+        </div>
+        <div class="result-bottom-retry">
+          <button class="btn-retry" onclick="resetQuiz()">처음으로 돌아가기</button>
+        </div>
+      `;
+    } else {
+      // ── 리바운드 이용 가능 ──
+      let reasons = [];
+      if (answers.contact === 0) reasons.push({ emoji: '📱', sub: '채무자(돈 갚을 분)와', main: '연락이 닿아요' });
+      if (answers.reaction === 0 || answers.reaction === 1) reasons.push({ emoji: '✊', sub: '채무자(돈 갚을 분)가', main: '갚으려는 의지가 있어요' });
+      if (answers.amount <= 1) reasons.push({ emoji: '💵', sub: '현실적으로', main: '나눠 갚을 수 있는 금액이에요' });
+      if (reasons.length === 0) {
+        reasons = [
+          { emoji: '🔍', sub: '상황에 맞는', main: '최적의 회수 방법을 찾아드려요' },
+          { emoji: '⚖️', sub: '전문가가', main: '법적 조치 전 대안을 제시해요' },
+          { emoji: '🎯', sub: '리바운드가', main: '체계적으로 회수를 도와드려요' }
+        ];
+      }
+      const reasonsHTML = reasons.map(r => `
+        <div class="reason-item"><div class="reason-emoji">${r.emoji}</div><div class="reason-text"><div class="sub">${r.sub}</div><div class="main">${r.main}</div></div></div>
+      `).join('');
+
+      html = `
+        <div class="result-hero">
+          <div class="result-confetti">🎉</div>
+          <h1 class="result-hero-title">리바운드를<br>시작해보세요!</h1>
+          <p class="result-hero-desc">
+            지금 상황에서는 소송·지급명령 같은 법적 절차보다<br>
+            리바운드를 먼저 시도해 보시는 게 좋아요!
+          </p>
+        </div>
+        <div class="result-body">
+          <h3 class="result-section-title">리바운드를 사용하면<br>어떤 점이 좋나요?</h3>
+          <div class="benefit-card">
+            <div class="benefit-item"><div class="benefit-num">1</div><div class="benefit-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div>
+            <div class="benefit-item"><div class="benefit-num">2</div><div class="benefit-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div>
+            <div class="benefit-item"><div class="benefit-num">3</div><div class="benefit-text"><div class="sub">복잡한 법적 절차보다</div><div class="main">시간과 비용 부담 감소</div></div></div>
+            <div class="benefit-item"><div class="benefit-num">4</div><div class="benefit-text"><div class="sub">현실적인 방식으로 조정해</div><div class="main">실제로 돈을 받을 가능성 증가</div></div></div>
+          </div>
+          <h3 class="result-section-title">이런 이유로 추천해요!</h3>
+          <div class="reason-card">${reasonsHTML}</div>
+          <div style="text-align:center;">
+            <div class="guide-badge">함께 보면 좋은 가이드</div>
+          </div>
+          <div class="guide-cards">
+            <a href="rebound-personal.html" target="_blank" class="guide-card guide-card-1">
+              <div class="guide-card-title">리바운드는 어떤 방식으로<br>진행되나요?</div>
+              <div class="guide-card-footer">리바운드 서비스 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </a>
+            <a href="rebound-personal.html#cost" target="_blank" class="guide-card guide-card-2">
+              <div class="guide-card-title">리바운드 서비스 비용은<br>어떻게 되나요?</div>
+              <div class="guide-card-footer">리바운드 비용 안내 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </a>
+          </div>
+        </div>
+        <div class="result-cta">
+          <a href="rebound-personal.html#cta" target="_blank" class="btn-cta">리바운드 시작하기</a>
+        </div>
+        <div class="result-bottom-retry">
+          <button class="btn-retry" onclick="resetQuiz()">처음으로 돌아가기</button>
+        </div>
+      `;
+    }
+
+    resultEl.innerHTML = html;
+    window.scrollTo({ top: 0 });
+  }, 280);
+}
+
+function resetQuiz() {
+  step = 0;
+  answers = {};
+  const result = document.getElementById('screenResult');
+  result.style.opacity = '0';
+  result.style.transition = 'opacity 0.3s';
+  setTimeout(() => {
+    result.style.display = 'none';
+    result.innerHTML = '';
+    const intro = document.getElementById('screenIntro');
+    intro.style.display = 'flex';
+    intro.style.opacity = '0';
+    intro.style.transform = 'scale(1)';
+    requestAnimationFrame(() => {
+      intro.style.transition = 'opacity 0.3s';
+      intro.style.opacity = '1';
+    });
     window.scrollTo({ top: 0 });
   }, 280);
 }

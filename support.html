@@ -76,7 +76,7 @@
     .biz-hint {
       position: absolute; top: calc(100% + 12px); left: auto; right: 0;
       background: #1B1F26; border-radius: 14px;
-      padding: 14px 40px 14px 16px; width: 272px;
+      padding: 14px 16px; width: 300px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
       opacity: 0; pointer-events: none;
       transform: translateY(-6px);
@@ -103,7 +103,7 @@
     }
     .biz-hint-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
     .biz-hint-link { text-decoration: none; display: block; }
-    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; padding-right: 24px; }
     .biz-hint-desc { display: block; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; white-space: nowrap; }
     .biz-hint-desc strong { font-weight: 700; color: #fff; }
 
@@ -145,57 +145,147 @@
       font-size: 15px; color: var(--text3);
     }
 
-    /* ── FAQ LIST ── */
+    /* ── FAQ LAYOUT (Toss style) ── */
     .faq-section {
       padding: 48px 48px 80px;
       max-width: 1256px;
       margin: 0 auto;
     }
-    .faq-section h2 {
+    .faq-section > h2 {
       font-size: 22px;
       font-weight: 800;
       color: var(--text);
       margin-bottom: 32px;
     }
+    .faq-layout {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+    }
+    /* Left sidebar */
+    .faq-sidebar {
+      flex: 0 0 160px;
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 6px;
+    }
+    .faq-cat-btn {
+      padding: 9px 16px;
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text3);
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition: all 0.15s;
+      border-radius: 8px;
+    }
+    .faq-cat-btn:hover {
+      background: #F1F5F7;
+      color: var(--orange);
+    }
+    .faq-cat-btn.active {
+      background: none;
+      color: var(--orange);
+      font-weight: 700;
+    }
+    /* Right content */
+    .faq-content {
+      flex: 1;
+      padding-left: 48px;
+      min-height: 400px;
+    }
     .faq-item {
       border-bottom: 1px solid var(--border);
     }
+    .faq-item:first-child .faq-q { padding-top: 8px; }
+    .faq-item:last-child { border-bottom: none; }
     .faq-q {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 24px 0;
+      gap: 14px;
+      padding: 28px 0;
       cursor: pointer;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text);
       list-style: none;
+      transition: color 0.15s;
     }
+    .faq-q:hover { color: var(--text); }
+    .faq-q:hover .faq-chevron { color: var(--text3); }
     .faq-q::before {
       content: 'Q';
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--orange);
-      background: #FFF0E8;
-      width: 28px; height: 28px;
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .faq-q .faq-chevron {
-      margin-left: auto;
-      transition: transform 0.2s;
+      font-size: 14px;
+      font-weight: 700;
       color: var(--text3);
+      flex-shrink: 0;
+      transition: color 0.15s;
     }
-    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-q-text { flex: 1; }
+    .faq-badge { display: none; }
+    .faq-q .faq-chevron {
+      flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+      color: #D9D9D9;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--orange);
+    }
+    .faq-item.open .faq-q::before { color: var(--orange); }
     .faq-a {
       display: none;
-      padding: 0 0 24px 40px;
+      padding: 0 0 24px 28px;
       font-size: 15px;
       color: var(--text2);
       line-height: 1.8;
     }
     .faq-item.open .faq-a { display: block; }
+
+    /* Pagination */
+    .faq-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      margin-top: 32px;
+    }
+    .faq-page-btn {
+      width: 36px; height: 36px;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 500;
+      color: var(--text3);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .faq-page-btn:hover { background: #F5F5F5; color: var(--text); }
+    .faq-page-btn.active {
+      background: var(--orange);
+      color: #fff;
+      font-weight: 700;
+    }
+    .faq-page-arrow {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .faq-page-arrow:hover { border-color: var(--text3); }
+    .faq-page-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+    .faq-page-arrow svg { width: 16px; height: 16px; }
 
     /* ── CONTACT ── */
     .contact-section {
@@ -253,17 +343,185 @@
     .footer-bottom { padding:32px 0 48px; }
     .footer-copy { font-size:13px; color:#9CA3AF; }
 
+    /* ── MOBILE MENU BUTTON (hidden on desktop) ── */
+    .gnb-mobile-btn {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      border-radius: 8px; transition: background 0.15s;
+    }
+    .gnb-mobile-btn:hover { background: #F1F5F7; }
+    .gnb-mobile-btn span {
+      display: block; width: 20px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      position: relative;
+    }
+    .gnb-mobile-btn span::before,
+    .gnb-mobile-btn span::after {
+      content: ''; position: absolute; left: 0;
+      width: 20px; height: 2px; background: var(--text);
+      border-radius: 2px;
+    }
+    .gnb-mobile-btn span::before { top: -6px; }
+    .gnb-mobile-btn span::after { top: 6px; }
+    .gnb-mobile-btn.open span { background: transparent; }
+    .gnb-mobile-btn.open span::before { top: 0; transform: rotate(45deg); }
+    .gnb-mobile-btn.open span::after { top: 0; transform: rotate(-45deg); }
+
+    /* ── MOBILE MENU PANEL ── */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: #fff;
+      z-index: 199; flex-direction: column;
+      padding: 0; overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-nav {
+      flex: 1; padding: 20px 24px 0;
+      display: flex; flex-direction: column;
+    }
+    .mobile-menu-nav a {
+      font-size: 17px; font-weight: 500; color: #6B7280;
+      text-decoration: none; padding: 16px 0;
+      transition: color 0.15s;
+    }
+    .mobile-menu-nav a:hover { color: var(--orange); }
+    .mobile-menu-nav .mobile-menu-switch {
+      font-size: 14px; font-weight: 500;
+      color: var(--text3);
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu-nav .mobile-menu-switch:hover { color: var(--orange); }
+    .mobile-menu-bottom {
+      padding: 16px 24px 32px;
+    }
+    .mobile-menu-bottom a {
+      display: block; width: 100%; text-align: center;
+      background: var(--orange); color: #fff;
+      font-size: 15px; font-weight: 700;
+      padding: 14px; border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .mobile-menu-bottom a:hover { opacity: 0.9; }
+    .switch-popup-overlay {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 400;
+      align-items: center; justify-content: center;
+    }
+    .switch-popup-overlay.show { display: flex; }
+    .switch-popup {
+      background: #1B1F26;
+      border-radius: 20px;
+      padding: 32px 24px 18px;
+      width: 100%; max-width: 300px;
+      text-align: center;
+      animation: popIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .switch-popup-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.3);
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .switch-popup-close:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .switch-popup-emoji {
+      font-size: 36px; margin-bottom: 16px;
+    }
+    .switch-popup h3 {
+      font-size: 17px; font-weight: 700;
+      color: #fff; margin-bottom: 8px;
+    }
+    .switch-popup p {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      line-height: 1.5; margin-bottom: 24px;
+    }
+    .switch-popup-go {
+      display: block; width: 100%;
+      padding: 14px 0;
+      background: #B5F23D; color: #111827;
+      font-size: 15px; font-weight: 700;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none; text-align: center;
+      transition: opacity 0.2s;
+      margin-bottom: 6px;
+    }
+    .switch-popup-go:hover { opacity: 0.9; }
+    .switch-popup-dismiss {
+      display: block; width: 100%;
+      background: none; border: none;
+      color: rgba(255,255,255,0.35); font-size: 11px;
+      cursor: pointer; font-family: inherit;
+      text-align: center; padding: 2px 0;
+      transition: color 0.15s;
+    }
+    .switch-popup-dismiss:hover { color: rgba(255,255,255,0.6); }
+
     @media (max-width: 768px) {
       .gnb-inner { padding: 0 20px; }
-      .gnb-nav a:not(.gnb-cta) { display: none; }
+      .gnb-nav, .gnb-actions, .biz-hint-wrap { display: none !important; }
+      .gnb-left { flex: none; }
+      .gnb-mobile-btn { display: flex; margin-left: auto; }
       .support-header { padding: 40px 20px 0; }
       .support-header h1 { font-size: 28px; }
-      .faq-section, .contact-section { padding: 40px 20px; }
-      .contact-inner { flex-direction: column; }
-      .footer-inner { padding: 40px 20px 28px; }
-      .footer-top { flex-direction: column; gap: 28px; }
-      .footer-links { flex-wrap: wrap; gap: 28px; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .faq-section { padding: 56px 20px; }
+      .faq-section > h2 { margin-bottom: 12px; }
+      .faq-layout { gap: 0; }
+      .faq-layout { flex-direction: column; gap: 0; }
+      .faq-sidebar {
+        position: static;
+        flex: none !important;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 8px;
+        padding: 0 0 0 0 !important;
+        margin-bottom: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .faq-cat-btn {
+        padding: 8px 18px !important;
+        border-radius: 50px !important;
+        border: 1px solid var(--border) !important;
+        font-size: 14px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+        background: #fff;
+        color: var(--text3);
+        line-height: 1.2 !important;
+        height: auto !important;
+      }
+      .faq-cat-btn.active {
+        background: var(--orange);
+        color: #fff;
+        border-color: var(--orange);
+        font-weight: 600;
+      }
+      .faq-content { padding-left: 0; min-height: auto; }
+      .faq-q { padding: 18px 0; margin: 0; font-size: 15px; }
+      .footer-inner { padding: 0 20px; }
+      .footer-top { flex-direction: column; gap: 28px; padding: 32px 0 24px; }
+      .footer-brand { flex: none; }
+      .footer-links { gap: 24px; flex-wrap: wrap; padding-left: 0; }
+      .footer-col { min-width: 80px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
     }
   </style>
 </head>
@@ -316,12 +574,18 @@
       <a href="https://blog.naver.com/reboundkr">블로그</a>
       <a href="self-check.html" target="_blank" >셀프 진단</a>
     </nav>
+    <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
     <div class="gnb-actions">
-      <a href="#" class="gnb-login">로그인</a>
+      <a href="login.html" class="gnb-login">로그인</a>
       <a href="#" class="gnb-start">리바운드 시작하기</a>
     </div>
   </div>
 </header>
+
+<!-- MOBILE MENU -->
+<div id="shared-mobile-menu"></div>
+<script src="mobile-menu.js?v=2"></script>
+<script src="auth-nav.js?v=1"></script>
 
 <!-- HEADER -->
 <div class="support-header">
@@ -336,193 +600,216 @@
 <!-- FAQ -->
 <div class="faq-section" id="faq">
   <h2>자주 묻는 질문</h2>
+  <div class="faq-layout">
+    <div class="faq-sidebar">
+      <button class="faq-cat-btn active" onclick="filterCategory('all', this)">전체</button>
+      <button class="faq-cat-btn" onclick="filterCategory('general', this)">일반</button>
+      <button class="faq-cat-btn" onclick="filterCategory('personal', this)">개인 서비스</button>
+      <button class="faq-cat-btn" onclick="filterCategory('biz', this)">기업 Biz</button>
+    </div>
+    <div class="faq-content">
   <div class="search-no-result" id="noResult">검색 결과가 없습니다.</div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      리바운드는 어떤 서비스인가요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+  <div class="faq-item" data-cat="general">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">리바운드는 어떤 서비스인가요? <span class="faq-badge faq-badge-general">일반</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="faq-a">리바운드는 개인 및 기업의 미수채권(빌려준 돈, 용역 대금 등)을 법적 절차를 통해 회수해드리는 전문 플랫폼입니다. 법무법인 수륜아시아와 협력하여 안전하고 전문적인 서비스를 제공합니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      리바운드는 기존 채권추심 서비스와 무엇이 다른가요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">기존 채권추심은 강압적인 방식이 많아 채무자와의 관계가 악화되는 경우가 많습니다. 리바운드는 법률 전문가가 설계한 체계적이고 다정한 프로세스를 통해, 채무자가 스스로 상환 의지를 갖도록 안내합니다. 회수율도 높이고 관계도 지킵니다.</div>
+  <div class="faq-item" data-cat="general">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">리바운드는 기존 채권추심 서비스와 무엇이 다른가요? <span class="faq-badge faq-badge-general">일반</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">기존 채권추심은 강압적인 방식이 많아 채무자와의 관계가 악화되는 경우가 많습니다. 리바운드는 법률 전문가가 설계한 체계적이고 다정한 프로세스를 통해, 채무자가 스스로 상환 의지를 갖도록 안내합니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      리바운드로 판결문을 받을 수 있나요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">네, 리바운드는 법무법인 수륜아시아와 협력하여 필요 시 소송을 통해 판결문을 받을 수 있도록 지원합니다. 내용증명부터 소송, 강제집행까지 채권 회수의 전 과정을 원스톱으로 처리해드립니다.</div>
+  <div class="faq-item" data-cat="general">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">못 받은 돈, 무조건 받을 수 있나요? <span class="faq-badge faq-badge-general">일반</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">채무자의 재산 상태, 소재 파악 여부 등에 따라 회수 가능성은 달라질 수 있습니다. 리바운드는 상담 단계에서 회수 가능성을 사전에 검토하여, 성공 가능성이 높은 경우에만 서비스를 진행합니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      못 받은 돈, 리바운드는 어떻게 받나요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">리바운드는 채무자에게 내용증명을 발송한 후, 자체 개발한 상환 안내 시스템을 통해 채무자가 직접 상환 플랜을 선택하도록 유도합니다. 협의가 어려운 경우에는 법적 절차(소송, 강제집행)를 진행합니다.</div>
+  <div class="faq-item" data-cat="general">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">민감한 정보라서 채권 정보를 제공할 때 걱정돼요 <span class="faq-badge faq-badge-general">일반</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">고객의 모든 정보는 법무법인 수준의 보안 체계로 보호됩니다. 수집된 정보는 채권 회수 목적 외에는 사용되지 않으며, 법령에 따른 개인정보 처리 방침을 엄격히 준수합니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      왜 채무자가 상환 플랜을 선택하나요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">리바운드는 채무자에게 법적 절차의 부담과 자발적 상환의 이점을 명확히 안내합니다. 분할 상환, 일시 상환 등 유연한 플랜을 제공하여 채무자가 현실적으로 이행 가능한 방법을 스스로 선택할 수 있도록 돕습니다.</div>
+  <div class="faq-item" data-cat="general">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">리바운드 서비스 비용이 궁금해요 <span class="faq-badge faq-badge-general">일반</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">리바운드는 성공 보수 방식으로 운영됩니다. 초기 비용 없이 서비스를 시작하고, 채권 회수에 성공했을 때만 수수료를 받습니다. 상담은 무료이며, 정확한 수수료는 상담을 통해 안내받으실 수 있습니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      못 받은 돈, 무조건 받을 수 있나요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">채무자의 재산 상태, 소재 파악 여부 등에 따라 회수 가능성은 달라질 수 있습니다. 리바운드는 상담 단계에서 회수 가능성을 사전에 검토하여, 성공 가능성이 높은 경우에만 서비스를 진행합니다. 무리한 착수를 권유하지 않습니다.</div>
+  <div class="faq-item" data-cat="personal">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">못 받은 돈, 리바운드는 어떻게 받나요? <span class="faq-badge faq-badge-personal">개인</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">리바운드는 채무자에게 내용증명을 발송한 후, 자체 개발한 상환 안내 시스템을 통해 채무자가 직접 상환 플랜을 선택하도록 유도합니다. 협의가 어려운 경우에는 법적 절차를 진행합니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      민감한 정보라서 채권 정보를 제공할 때 걱정돼요
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">고객의 모든 정보는 법무법인 수준의 보안 체계로 보호됩니다. 수집된 정보는 채권 회수 목적 외에는 사용되지 않으며, 법령에 따른 개인정보 처리 방침을 엄격히 준수합니다. 안심하고 이용하세요.</div>
+  <div class="faq-item" data-cat="personal">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">리바운드로 판결문을 받을 수 있나요? <span class="faq-badge faq-badge-personal">개인</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">네, 법무법인 수륜아시아와 협력하여 필요 시 소송을 통해 판결문을 받을 수 있도록 지원합니다. 내용증명부터 소송, 강제집행까지 원스톱으로 처리해드립니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      리바운드 서비스 비용이 궁금해요
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">리바운드는 성공 보수 방식으로 운영됩니다. 초기 비용 없이 서비스를 시작하고, 채권 회수에 성공했을 때만 수수료를 받습니다. 상담은 무료이며, 정확한 수수료는 채권 규모와 종류에 따라 다르므로 상담을 통해 안내받으실 수 있습니다.</div>
+  <div class="faq-item" data-cat="personal">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">왜 채무자가 상환 플랜을 선택하나요? <span class="faq-badge faq-badge-personal">개인</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">리바운드는 채무자에게 법적 절차의 부담과 자발적 상환의 이점을 명확히 안내합니다. 분할 상환, 일시 상환 등 유연한 플랜을 제공하여 채무자가 현실적으로 이행 가능한 방법을 선택할 수 있도록 돕습니다.</div>
   </div>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">
-      채무자는 리바운드 서비스를 이용하면 무엇이 좋나요?
-      <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="faq-a">채무자도 리바운드를 통해 체계적인 상환 플랜을 안내받을 수 있습니다. 강압적인 추심 대신 합리적인 대화를 통해 부담을 줄이고, 분할 상환 등 현실적인 방법으로 채무를 정리할 수 있는 기회를 얻습니다.</div>
+  <div class="faq-item" data-cat="personal">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">채무자는 리바운드를 이용하면 무엇이 좋나요? <span class="faq-badge faq-badge-personal">개인</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">채무자도 체계적인 상환 플랜을 안내받을 수 있습니다. 강압적인 추심 대신 합리적인 대화를 통해 부담을 줄이고, 분할 상환 등 현실적인 방법으로 채무를 정리할 수 있습니다.</div>
+  </div>
+
+  <div class="faq-item" data-cat="biz">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">기업 Biz 서비스는 개인 서비스와 무엇이 다른가요? <span class="faq-badge faq-badge-biz">Biz</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">기업 Biz는 다수의 미수채권을 체계적으로 관리하는 데 최적화된 서비스입니다. 전용 관리자 대시보드, CMS 자동이체 연동, 채권별 맞춤 알림 발송 등 기업 환경에 맞는 기능을 제공합니다.</div>
+  </div>
+
+  <div class="faq-item" data-cat="biz">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">관리자 대시보드에서 어떤 것을 확인할 수 있나요? <span class="faq-badge faq-badge-biz">Biz</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">전체 채권 현황, 개별 채권 진행 상태, 상환 이행률, 알림 발송 내역, CMS 이체 현황 등을 실시간으로 확인할 수 있습니다.</div>
+  </div>
+
+  <div class="faq-item" data-cat="biz">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">CMS 자동이체 연동은 어떻게 진행되나요? <span class="faq-badge faq-badge-biz">Biz</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">채무자가 분할 상환에 동의하면, 리바운드가 CMS 자동이체를 설정합니다. 매월 지정일에 자동으로 이체가 진행되며, 이체 성공/실패 여부도 대시보드에서 실시간으로 확인할 수 있어요.</div>
+  </div>
+
+  <div class="faq-item" data-cat="biz">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">기업 Biz 서비스 요금 체계가 궁금해요 <span class="faq-badge faq-badge-biz">Biz</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">기업 Biz도 성공 보수 기반으로 운영됩니다. 채권 규모와 건수에 따라 맞춤 요금이 적용되며, 초기 셋업 비용 없이 시작할 수 있습니다.</div>
+  </div>
+
+  <div class="faq-item" data-cat="biz">
+    <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">여러 건의 채권을 한꺼번에 등록할 수 있나요? <span class="faq-badge faq-badge-biz">Biz</span></span><svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">네, 엑셀 파일을 통한 대량 등록이 가능합니다. 채권 정보를 정리한 엑셀 파일을 업로드하면 자동으로 채권이 등록되고, 각 채권별로 최적의 회수 전략이 자동 배정됩니다.</div>
+  </div>
+    <div class="faq-pagination" id="faqPagination"></div>
+    </div><!-- /faq-content -->
+  </div><!-- /faq-layout -->
+</div>
+
+<!-- SERVICE SWITCH POPUP (mobile) -->
+<div class="switch-popup-overlay" id="switchPopup">
+  <div class="switch-popup">
+    <button class="switch-popup-close" id="switchClose" aria-label="닫기">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h3>사업자 회원이신가요?</h3>
+    <p>기업 전용 채권 관리 기능과<br>대량 회수 서비스를 확인해보세요.</p>
+    <a href="rebound-biz.html" class="switch-popup-go">기업 Biz 서비스 보기</a>
+    <button class="switch-popup-dismiss" id="switchDismiss">오늘 하루 안 보기</button>
   </div>
 </div>
 
-<!-- CONTACT -->
-<div class="contact-section" id="contact">
-  <div class="contact-inner">
-    <div class="contact-info">
-      <h2>문의하기</h2>
-      <p>아직 궁금한 점이 있으신가요?<br>아래 채널을 통해 언제든지 문의해 주세요.</p>
-      <div class="contact-method">
-        <div class="contact-method-item">
-          <div class="contact-method-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="#FF6D24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="contact-method-text">
-            <strong>이메일 문의</strong>
-            <span>help@rebound.kr · 24시간 접수, 1영업일 이내 답변</span>
-          </div>
-        </div>
-        <div class="contact-method-item">
-          <div class="contact-method-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M22 16.92V19.92C22.0011 20.4853 21.7591 21.0263 21.3299 21.4062C20.9008 21.786 20.3244 21.9714 19.74 21.92C16.5569 21.5857 13.5003 20.5342 10.79 18.85C8.26814 17.3147 6.12266 15.1692 4.58 12.65C2.88867 9.9274 1.83666 6.85617 1.51 3.65998C1.45954 3.07793 1.64316 2.50379 2.02011 2.07518C2.39705 1.64656 2.93498 1.40286 3.5 1.39998H6.5C7.53478 1.38938 8.41424 2.1174 8.56 3.13998C8.68041 3.98469 8.89611 4.8135 9.2 5.60998C9.4688 6.29633 9.27409 7.07141 8.72 7.55998L7.45 8.82998C8.90021 11.4368 11.0532 13.5898 13.66 15.04L14.93 13.77C15.4186 13.2159 16.1937 13.0212 16.88 13.29C17.6765 13.5939 18.5053 13.8096 19.35 13.93C20.3888 14.0781 21.1236 14.9773 21.09 16.02C21.09 16.34 21.09 16.63 21.09 16.92H22Z" stroke="#FF6D24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="contact-method-text">
-            <strong>전화 상담</strong>
-            <span>평일 09:00 – 18:00 (점심 12:00–13:00 제외)</span>
-          </div>
-        </div>
-        <div class="contact-method-item">
-          <div class="contact-method-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="#FF6D24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="contact-method-text">
-            <strong>카카오톡 채널</strong>
-            <span>@리바운드 · 채팅으로 빠르게 문의</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <a href="rebound-personal.html" style="display:flex;align-items:center;text-decoration:none;">
-            <img src="rebound-logo.svg" alt="리바운드" style="height:22px; width:auto; filter:grayscale(1) opacity(0.5);">
-          </a>
-        </div>
-        <div class="footer-brand-title">법무법인 수륜아시아</div>
-        <p>
-          광고책임변호사 : 이준철<br>
-          대표 변호사 : 이준철 | 사업자등록번호 : 837-88-01127<br>
-          E-mail : master@srlaw.co.kr<br>
-          주소: 서울특별시 송파구 양재대로 932 가락몰 업무동 1220호
-        </p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h5>서비스</h5>
-          <a href="#">서비스 소개</a>
-          <a href="#">자주 묻는 질문</a>
-          <a href="team.html">리바운드 팀</a>
-        </div>
-        <div class="footer-col">
-          <h5>컨텐츠</h5>
-          <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
-          <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
-          <a href="blog.html">블로그</a>
-        </div>
-        <div class="footer-col">
-          <h5>이용약관</h5>
-          <a href="#">개인정보 처리 방침</a>
-          <a href="#">서비스 이용약관</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-copy">&copy; 2025. Suryun Asia, All rights reserved.</div>
-    </div>
-  </div>
-</footer>
+<footer id="shared-footer"></footer>
+<script src="footer.js?v=2"></script>
 
 <script>
+  // ── Service switch popup (mobile) ──
+  (function() {
+    const popup = document.getElementById('switchPopup');
+    const dismiss = document.getElementById('switchDismiss');
+    const closeX = document.getElementById('switchClose');
+    if (!popup) return;
+    const dismissed = localStorage.getItem('switchPopupDismissed');
+    if (dismissed) {
+      const dismissDate = new Date(parseInt(dismissed));
+      const now = new Date();
+      if (dismissDate.toDateString() === now.toDateString()) return;
+    }
+    if (window.innerWidth <= 960) {
+      setTimeout(() => popup.classList.add('show'), 800);
+    }
+    function closePopup() { popup.classList.remove('show'); }
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) closePopup();
+    });
+    if (closeX) closeX.addEventListener('click', closePopup);
+    if (dismiss) {
+      dismiss.addEventListener('click', () => {
+        localStorage.setItem('switchPopupDismissed', Date.now().toString());
+        closePopup();
+      });
+    }
+  })();
+
+  // Mobile menu toggle은 mobile-menu.js에서 처리
+
+  let activeCat = 'all';
+  let currentPage = 1;
+  const ITEMS_PER_PAGE = 10;
+
   function toggleFaq(el) {
     const item = el.closest('.faq-item');
     item.classList.toggle('open');
   }
 
+  function filterCategory(cat, btn) {
+    activeCat = cat;
+    currentPage = 1;
+    document.querySelectorAll('.faq-cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('faqSearch').value = '';
+    render();
+  }
+
   function filterFaq(query) {
-    const items = document.querySelectorAll('.faq-item');
-    const noResult = document.getElementById('noResult');
-    const q = query.trim().toLowerCase();
-    let visibleCount = 0;
-    items.forEach(item => {
+    currentPage = 1;
+    render(query);
+  }
+
+  function getFilteredItems(query) {
+    const items = Array.from(document.querySelectorAll('.faq-item'));
+    const q = (query || document.getElementById('faqSearch').value || '').trim().toLowerCase();
+    return items.filter(item => {
+      const cat = item.dataset.cat;
       const text = item.querySelector('.faq-q').textContent.toLowerCase();
       const answer = item.querySelector('.faq-a').textContent.toLowerCase();
-      if (!q || text.includes(q) || answer.includes(q)) {
-        item.style.display = '';
-        visibleCount++;
-      } else {
-        item.style.display = 'none';
-      }
+      const catMatch = activeCat === 'all' || cat === activeCat;
+      const searchMatch = !q || text.includes(q) || answer.includes(q);
+      return catMatch && searchMatch;
     });
-    noResult.style.display = visibleCount === 0 ? 'block' : 'none';
   }
+
+  function render(query) {
+    const allItems = document.querySelectorAll('.faq-item');
+    const filtered = getFilteredItems(query);
+    const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
+
+    // Hide all, show page items
+    allItems.forEach(item => { item.style.display = 'none'; item.classList.remove('open'); });
+    pageItems.forEach(item => { item.style.display = ''; });
+
+    // No result
+    document.getElementById('noResult').style.display = filtered.length === 0 ? 'block' : 'none';
+
+    // Pagination
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    const wrap = document.getElementById('faqPagination');
+    if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+
+    let html = '';
+    html += `<button class="faq-page-arrow" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>`;
+    for (let i = 1; i <= totalPages; i++) {
+      html += `<button class="faq-page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    html += `<button class="faq-page-arrow" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg></button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goPage(p) {
+    const filtered = getFilteredItems();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    render();
+  }
+
+  // Initial render
+  render();
 
   // Scroll reveal
   const io = new IntersectionObserver((entries) => {
