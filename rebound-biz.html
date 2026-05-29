@@ -1,12 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="shortcut icon" href="favicon.svg" />
   <title>Rebound Biz – 기업 미수채권 회수 서비스</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,6 +25,9 @@
       --text: #111827;
       --text2: #4B5563;
       --text3: #9CA3AF;
+      --eyebrow-color: #344054;
+      --eyebrow-bg: #F2F4F7;
+      --eyebrow-border: #E4E7EC;
       --text-on-dark: rgba(255,255,255,0.88);
       --text-on-dark2: rgba(255,255,255,0.48);
     }
@@ -100,14 +106,14 @@
     }
     .gnb-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
     .gnb-nav-active { background: rgba(255,255,255,0.12) !important; color: #fff !important; font-weight: 600; }
-    .gnb-actions { display: flex; align-items: center; gap: 4px; }
-    .gnb-login { font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 7px 13px; border-radius: 8px; font-weight: 600; transition: background 0.15s, color 0.15s; }
-    .gnb-login:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .gnb-actions { display: flex; align-items: center; gap: 8px; }
+    .gnb-login { font-size: 14px; color: rgba(255,255,255,0.75); text-decoration: none; padding: 7px 16px; border-radius: 10px; font-weight: 600; background: rgba(255,255,255,0.1); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .gnb-login:hover { background: rgba(255,255,255,0.16); color: #fff; }
     a.gnb-start {
       background: var(--lime);
       color: var(--navy) !important;
-      font-size: 14px; font-weight: 600;
-      padding: 7px 13px; border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      padding: 7px 16px; border-radius: 10px;
       text-decoration: none; transition: opacity 0.2s;
       white-space: nowrap;
     }
@@ -178,86 +184,33 @@
       transition: opacity 0.2s;
     }
     .mobile-menu-bottom a:hover { opacity: 0.9; }
-    .switch-popup-overlay {
-      display: none; position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 400;
-      align-items: center; justify-content: center;
-    }
-    .switch-popup-overlay.show { display: flex; }
-    .switch-popup {
-      background: #1B1F26;
-      border-radius: 20px;
-      padding: 32px 24px 28px;
-      width: 100%; max-width: 300px;
-      text-align: center;
-      animation: popIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      position: relative;
-    }
-    .switch-popup-close {
-      position: absolute; top: 12px; right: 12px;
-      background: none; border: none;
-      color: rgba(255,255,255,0.3);
-      width: 28px; height: 28px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .switch-popup-close:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .switch-popup-emoji {
-      font-size: 36px; margin-bottom: 16px;
-    }
-    .switch-popup h3 {
-      font-size: 17px; font-weight: 700;
-      color: #fff; margin-bottom: 8px;
-    }
-    .switch-popup p {
-      font-size: 13px; color: rgba(255,255,255,0.5);
-      line-height: 1.5; margin-bottom: 24px;
-    }
-    .switch-popup-go {
-      display: block; width: 100%;
-      padding: 14px 0;
-      background: #B5F23D; color: #111827;
-      font-size: 15px; font-weight: 700;
-      border: none; border-radius: 12px;
-      cursor: pointer; font-family: inherit;
-      text-decoration: none; text-align: center;
-      transition: opacity 0.2s;
-      margin-bottom: 12px;
-    }
-    .switch-popup-go:hover { opacity: 0.9; }
-    .switch-popup-dismiss {
-      display: block; width: 100%;
-      background: none; border: none;
-      color: rgba(255,255,255,0.35); font-size: 12px;
-      cursor: pointer; font-family: inherit;
-      text-align: center; padding: 4px 0;
-      transition: color 0.15s;
-    }
-    .switch-popup-dismiss:hover { color: rgba(255,255,255,0.6); }
 
     /* ──────────────────────────────
        HERO
     ────────────────────────────── */
     .hero {
       background: var(--navy);
-      padding: 160px 0 0;
+      padding: 220px 0 0;
       overflow: hidden;
       position: relative;
     }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(181,242,61,0.11) 0%, rgba(181,242,61,0.05) 30%, rgba(11,28,44,0) 64%);
+      pointer-events: none;
+    }
     .hero-glow {
       position: absolute;
-      top: -40%; left: 50%;
+      top: -320px; left: 50%;
       transform: translateX(-50%);
-      width: 900px; height: 600px;
-      background: radial-gradient(ellipse at center, rgba(181,242,61,0.12) 0%, transparent 65%);
+      z-index: 0;
+      width: 980px; height: 620px;
+      background: radial-gradient(ellipse at center, rgba(181,242,61,0.13) 0%, rgba(181,242,61,0.05) 38%, rgba(11,28,44,0) 70%);
+      filter: blur(4px);
       pointer-events: none;
     }
     .hero-inner {
@@ -330,143 +283,807 @@
     .btn-outline-white:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
 
     /* hero dashboard mockup */
-    .hero-mockup {
-      max-width: 900px;
+    .hero-visual {
+      max-width: 1120px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-bottom: none;
-      border-radius: 16px 16px 0 0;
-      padding: 28px 28px 0;
       position: relative;
     }
+    .hero-mockup {
+      width: 100%;
+      height: 604px;
+      margin: 0 auto;
+      background: #F7F8FA;
+      border: 0;
+      border-bottom: none;
+      border-radius: 18px 18px 0 0;
+      overflow: hidden;
+      position: relative;
+      text-align: left;
+      box-shadow:
+        0 36px 100px rgba(0,0,0,0.42),
+        0 0 0 1px rgba(148,163,184,0.16),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      word-break: normal;
+      overflow-wrap: normal;
+    }
+    .hero-mockup * { font-family: inherit; }
+    .hero-float {
+      position: absolute;
+      z-index: 5;
+      width: 236px;
+      padding: 16px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(226,232,240,0.86);
+      border-radius: 16px;
+      box-shadow:
+        0 22px 60px rgba(0,0,0,0.22),
+        0 1px 0 rgba(255,255,255,0.86) inset;
+      backdrop-filter: blur(14px);
+      color: #101828;
+      text-align: left;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(14px);
+      transform-origin: center;
+    }
+    .hero-float.notice {
+      top: 56px;
+      right: -190px;
+      animation:
+        heroFloatReveal 0.6s ease-out 0.55s both,
+        heroFloatA 5.8s ease-in-out 1.25s infinite;
+    }
+    .hero-float.recovery {
+      top: 182px;
+      left: -172px;
+      animation:
+        heroFloatReveal 0.6s ease-out 0.9s both,
+        heroFloatB 6.7s ease-in-out 1.6s infinite;
+    }
+    .hero-float.deposit {
+      right: -128px;
+      bottom: 108px;
+      width: 218px;
+      animation:
+        heroFloatReveal 0.6s ease-out 1.25s both,
+        heroFloatC 5.3s ease-in-out 1.95s infinite;
+    }
+    .hero-float-kicker {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 900;
+      color: #667085;
+      margin-bottom: 10px;
+      letter-spacing: 0;
+    }
+    .hero-float-kicker::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 4px rgba(181,242,61,0.18);
+      flex-shrink: 0;
+    }
+    .hero-float-title {
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 900;
+      color: #101828;
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+    .hero-float-copy {
+      font-size: 11px;
+      line-height: 1.55;
+      color: #667085;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .hero-float-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #EEF2F6;
+      font-size: 11px;
+      color: #98A2B3;
+      font-weight: 800;
+    }
+    .hero-float-row strong {
+      color: #101828;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .hero-float-mini {
+      display: grid;
+      gap: 8px;
+    }
+    .hero-float-mini span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 9px;
+      background: #F6F8FB;
+      font-size: 11px;
+      color: #667085;
+      font-weight: 800;
+    }
+    .hero-float-mini b {
+      color: #101828;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .hero-float-progress {
+      height: 8px;
+      border-radius: 999px;
+      background: #EAECF0;
+      overflow: hidden;
+      margin: 12px 0 10px;
+    }
+    .hero-float-progress span {
+      display: block;
+      width: 68%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--lime) 0%, #7BA7FF 100%);
+    }
+    .hero-float-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #EEF4FF;
+      color: #2768FF;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .hero-float-pill-wrap { margin-top: 12px; }
+    @keyframes heroFloatReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes heroFloatA {
+      0%, 100% { transform: translateY(0); }
+      45% { transform: translateY(-9px); }
+      74% { transform: translateY(3px); }
+    }
+    @keyframes heroFloatB {
+      0%, 100% { transform: translateY(0); }
+      38% { transform: translateY(7px); }
+      70% { transform: translateY(-4px); }
+    }
+    @keyframes heroFloatC {
+      0%, 100% { transform: translateY(0); }
+      52% { transform: translateY(-6px); }
+      82% { transform: translateY(2px); }
+    }
     .mockup-topbar {
+      height: 44px;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      padding: 0 18px;
+      background: linear-gradient(180deg, #F7F9FC 0%, #EEF3F8 100%);
+      border-bottom: 1px solid #DDE5EF;
     }
-    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .mockup-dot.r { background: #FF6059; }
-    .mockup-dot.y { background: #FFBD2E; }
-    .mockup-dot.g { background: #28C840; }
-    .mockup-url {
-      flex: 1;
-      background: rgba(255,255,255,0.06);
-      border-radius: 5px;
-      height: 24px;
-      margin-left: 8px;
-    }
-    .mockup-body {
-      background: #0F2236;
-      border-radius: 10px 10px 0 0;
-      padding: 24px;
-      min-height: 320px;
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 16px;
-    }
-    .mock-sidebar {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 8px;
-      padding: 16px 14px;
-    }
-    .mock-sidebar-title {
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-    .mock-nav-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      margin-bottom: 2px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.45);
-    }
-    .mock-nav-item.active {
-      background: rgba(181,242,61,0.12);
-      color: var(--lime);
-      font-weight: 600;
-    }
-    .mock-nav-dot {
-      width: 6px; height: 6px;
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: currentColor;
       flex-shrink: 0;
     }
-    .mock-main { display: flex; flex-direction: column; gap: 14px; }
-    .mock-header-row {
-      display: flex; justify-content: space-between; align-items: center;
+    .mockup-dot.r { background: #FF6B5F; }
+    .mockup-dot.y { background: #FFBD4A; }
+    .mockup-dot.g { background: #32C759; }
+    .mockup-url {
+      height: 24px;
+      flex: 1;
+      margin-left: 8px;
+      border-radius: 7px;
+      background: #DDE6F0;
+      box-shadow: inset 0 1px 1px rgba(15,23,42,0.04);
+      position: relative;
+      max-width: 820px;
     }
-    .mock-title { font-size: 14px; font-weight: 700; color: #fff; }
-    .mock-badge {
-      font-size: 11px; font-weight: 600;
-      background: rgba(181,242,61,0.15);
-      color: var(--lime);
-      padding: 3px 10px; border-radius: 10px;
-    }
-    .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .mock-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 8px;
-      padding: 14px;
-    }
-    .mock-card-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
-    .mock-card-value { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-    .mock-card-value.lime { color: var(--lime); }
-    .mock-card-sub { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 4px; }
-    .mock-table-header {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 8px;
-      padding: 8px 10px;
+    .mockup-url::after {
+      content: 'app.rebound.co.kr/dashboard';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       font-size: 10px;
-      color: rgba(255,255,255,0.3);
-      font-weight: 600;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-weight: 700;
+      color: #7B8796;
+      letter-spacing: 0;
+      white-space: nowrap;
     }
-    .mock-table-row {
+    .mockup-body {
+      min-height: 560px;
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 8px;
-      padding: 9px 10px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.6);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      grid-template-columns: 178px 1fr;
+      background: #F7F8FA;
+    }
+    .mock-sidebar {
+      background: #0B1C2C;
+      padding: 18px 12px;
+      color: rgba(255,255,255,0.58);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mock-sidebar-logo {
+      display: flex;
       align-items: center;
+      gap: 9px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0;
+      height: 52px;
+      padding: 0 6px;
+      margin-bottom: 10px;
     }
-    .mock-status {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600;
-      padding: 2px 8px; border-radius: 8px;
+    .mock-logo-mark {
+      width: 24px;
+      height: 25px;
+      flex-shrink: 0;
+      display: block;
     }
-    .mock-status.ing { background: rgba(181,242,61,0.12); color: var(--lime); }
-    .mock-status.wait { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.45); }
-    .mock-status.done { background: rgba(100,200,255,0.1); color: #7DD3FC; }
+    .mock-logo-word {
+      width: 82px;
+      height: auto;
+      display: block;
+      flex-shrink: 0;
+    }
+    .mock-sidebar-title {
+      font-size: 9px;
+      color: rgba(255,255,255,0.34);
+      font-weight: 700;
+      margin: 14px 12px 4px;
+    }
+    .mock-sidebar-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 10px 0 4px;
+    }
+    .mock-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      border-radius: 8px;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.58);
+    }
+    .mock-nav-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      color: #98A2B3;
+      opacity: 0.58;
+    }
+    .mock-nav-icon svg {
+      display: block;
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.62;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mock-nav-icon svg * { vector-effect: non-scaling-stroke; }
+    .mock-nav-item.active {
+      color: #0B1C2C;
+      background: var(--lime);
+      font-weight: 800;
+    }
+    .mock-nav-item.active .mock-nav-icon { color: #0B1C2C; opacity: 1; }
+    .mock-nav-badge {
+      margin-left: auto;
+      min-width: 20px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--lime);
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .mock-nav-item.active .mock-nav-badge {
+      background: #0B1C2C;
+      color: #fff;
+    }
+    .mock-main {
+      padding: 16px 24px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      color: #111827;
+    }
+    .mock-app-top {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      min-height: 34px;
+    }
+    .mock-bell {
+      width: 28px;
+      height: 28px;
+      position: relative;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #667085;
+    }
+    .mock-bell svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mock-bell-badge {
+      position: absolute;
+      right: 1px;
+      top: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 900;
+    }
+    .mock-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #111827;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 2px;
+    }
+    .mock-profile-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #EAECF0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #98A2B3;
+    }
+    .mock-profile-avatar svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mock-profile-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      line-height: 1.15;
+    }
+    .mock-profile-text strong {
+      font-size: 12px;
+      color: #101828;
+    }
+    .mock-profile-text span {
+      font-size: 10px;
+      color: #98A2B3;
+      font-weight: 700;
+    }
+    .mock-greeting h3 {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 0;
+      color: #111827;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .mock-greeting p {
+      font-size: 12px;
+      color: #6B7280;
+      font-weight: 600;
+    }
+    .mock-alert {
+      width: min(520px, 100%);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0B1C2C;
+      color: rgba(255,255,255,0.88);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(11,28,44,0.16);
+    }
+    .mock-alert strong {
+      background: var(--lime);
+      color: var(--navy);
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .mock-alert span:last-child {
+      margin-left: auto;
+      color: rgba(255,255,255,0.62);
+      white-space: nowrap;
+    }
+    .mock-alert-action,
+    .mock-panel-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .mock-link-chevron {
+      width: 13px;
+      height: 13px;
+      display: inline-block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .mock-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .mock-card {
+      background: #fff;
+      border: 1px solid #EEF1F5;
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 -2px 8px -2px rgba(16,24,40,0.02), 0 6px 20px -6px rgba(16,24,40,0.08), 0 2px 8px -2px rgba(16,24,40,0.02);
+    }
+    .mock-card-label {
+      font-size: 11px;
+      color: #697386;
+      font-weight: 800;
+      margin-bottom: 14px;
+      white-space: nowrap;
+    }
+    .mock-card-value {
+      font-size: 28px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+    .mock-card-value small {
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+    .mock-card-value.lime { color: #111827; }
+    .mock-card-sub {
+      font-size: 11px;
+      color: #6B7280;
+      font-weight: 600;
+      margin-top: 14px;
+      white-space: nowrap;
+    }
+    .mock-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.02fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .mock-panel {
+      background: #fff;
+      border: 1px solid #EEF1F5;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 -2px 8px -2px rgba(16,24,40,0.02), 0 6px 20px -6px rgba(16,24,40,0.08), 0 2px 8px -2px rgba(16,24,40,0.02);
+    }
+    .mock-panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .mock-panel-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .mock-panel-link {
+      font-size: 11px;
+      color: #9CA3AF;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .mock-panel-copy {
+      font-size: 11px;
+      line-height: 1.7;
+      color: #6B7280;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .mock-progress {
+      height: 9px;
+      display: grid;
+      grid-template-columns: 18% 34% 9% 26% 13%;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #E5E7EB;
+      margin-bottom: 14px;
+    }
+    .mock-progress span:nth-child(1) { background: #D8DEE8; }
+    .mock-progress span:nth-child(2) { background: #89A8FF; }
+    .mock-progress span:nth-child(3) { background: #3D6DF6; }
+    .mock-progress span:nth-child(4) { background: #F26A2E; }
+    .mock-progress span:nth-child(5) { background: #4B5563; }
+    .mock-state-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .mock-state {
+      border: 1px solid #EEF1F5;
+      border-radius: 10px;
+      padding: 12px 9px;
+      min-height: 74px;
+    }
+    .mock-state-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: #697386;
+      font-weight: 800;
+      margin-bottom: 12px;
+      white-space: nowrap;
+    }
+    .mock-state-label::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #D8DEE8;
+      flex-shrink: 0;
+    }
+    .mock-state:nth-child(2) .mock-state-label::before { background: #89A8FF; }
+    .mock-state:nth-child(3) .mock-state-label::before { background: #3D6DF6; }
+    .mock-state:nth-child(4) .mock-state-label::before { background: #F26A2E; }
+    .mock-state:nth-child(5) .mock-state-label::before { background: #4B5563; }
+    .mock-state-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: 0;
+    }
+    .mock-state-value small {
+      font-size: 11px;
+      font-weight: 800;
+      color: #6B7280;
+    }
+    .mock-calendar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mock-calendar-meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #6B7280;
+    }
+    .mock-calendar-meta span { white-space: nowrap; }
+    .mock-calendar-meta em {
+      font-style: normal;
+      color: #45A66B;
+    }
+    .mock-calendar-month {
+      font-size: 12px;
+      font-weight: 900;
+      color: #111827;
+      white-space: nowrap;
+    }
+    .mock-calendar-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mock-cal-btn {
+      width: 26px;
+      height: 26px;
+      border: 1px solid #EAECF0;
+      border-radius: 8px;
+      color: #98A2B3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mock-cal-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mock-weekdays,
+    .mock-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .mock-weekdays span {
+      text-align: center;
+      font-size: 10px;
+      color: #9CA3AF;
+      font-weight: 800;
+      padding: 8px 0;
+    }
+    .mock-weekdays span:first-child { color: #F07A74; }
+    .mock-weekdays span:last-child { color: #4F7BFF; }
+    .mock-day {
+      min-height: 46px;
+      border-top: 1px solid #EEF1F5;
+      border-left: 1px solid #EEF1F5;
+      padding: 6px 5px;
+      font-size: 10px;
+      color: #B6BFCC;
+      font-weight: 800;
+      position: relative;
+    }
+    .mock-day:nth-child(7n) { border-right: 1px solid #EEF1F5; }
+    .mock-day:nth-last-child(-n+7) { border-bottom: 1px solid #EEF1F5; }
+    .mock-day.empty { background: rgba(247,248,250,0.55); }
+    .mock-day.hot { background: #ECFFF5; color: #12B76A; }
+    .mock-day.warn { background: #FFF8EC; color: #F97316; }
+    .mock-day.future { background: #E9F0FF; color: #2768FF; }
+    .mock-day.today {
+      outline: 2px solid #3D6DF6;
+      outline-offset: -2px;
+      background: #F4F7FF;
+    }
+    .mock-day.today::after {
+      content: '18';
+      position: absolute;
+      left: 8px;
+      bottom: 7px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #3D6DF6;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .mock-day-note {
+      display: block;
+      margin-top: 6px;
+      font-size: 9px;
+      line-height: 1.25;
+      color: currentColor;
+      white-space: nowrap;
+    }
+    .mock-day-note + .mock-day-note { margin-top: 2px; }
+    .mock-day-note.expected { color: #98A2B3; }
+    .mock-day-note.paid { color: currentColor; font-weight: 900; }
+    .mock-day-count {
+      position: absolute;
+      right: 5px;
+      top: 6px;
+      border-radius: 999px;
+      padding: 2px 5px;
+      background: rgba(18,183,106,0.14);
+      color: currentColor;
+      font-size: 9px;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .mock-day.warn .mock-day-count { background: rgba(249,115,22,0.14); }
+    .mock-day.future .mock-day-count { background: rgba(39,104,255,0.14); }
+    .mock-calendar-legend {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 9px;
+      color: #98A2B3;
+      font-weight: 800;
+    }
+    .mock-calendar-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .mock-calendar-legend i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .mock-mobile-tabbar { display: none; }
 
     /* ──────────────────────────────
        SECTION UTIL
     ────────────────────────────── */
-    .section { padding: 100px 48px; }
+    .section { padding: 128px 48px; }
+    .section.off { padding-bottom: 224px; }
     .section-inner { max-width: 1160px; margin: 0 auto; }
     .eyebrow {
+      display: inline-block;
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: #4CAF24;
-      margin-bottom: 14px;
+      color: var(--eyebrow-color);
+      background: var(--eyebrow-bg);
+      border: 1px solid var(--eyebrow-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+      margin-bottom: 16px;
     }
-    .eyebrow.center { text-align: center; }
+    .eyebrow.center {
+      display: table;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
     .h2 {
       font-size: 40px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.35;
       letter-spacing: -1.2px;
       color: var(--text);
     }
@@ -489,8 +1106,13 @@
       align-items: start;
       padding-top: 8px;
     }
-    .pain-left { position: sticky; top: 100px; }
-    .pain-left .h2 { margin-bottom: 20px; }
+    .pain-left {
+      position: sticky;
+      top: 100px;
+      text-align: left;
+      justify-self: start;
+    }
+    .pain-left .h2 { margin-bottom: 26px; }
     .pain-left p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 32px; }
     .pain-right { display: flex; flex-direction: column; gap: 14px; padding-top: 4px; }
     .pain-row {
@@ -505,9 +1127,7 @@
       cursor: default;
     }
     .pain-row:hover {
-      border-color: #B5F23D50;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
     .pain-icon {
       width: 44px; height: 44px;
@@ -516,113 +1136,149 @@
       flex-shrink: 0;
     }
     .pain-text h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .pain-title-break { display: none; }
+    .pain-desc-break { display: none; }
     .pain-text p { font-size: 14px; color: var(--text2); line-height: 1.6; }
 
     /* ──────────────────────────────
        HOW IT WORKS — 2×2 grid
     ────────────────────────────── */
-    .how { background: var(--off); }
+    .how { background: #fff; }
     .how-head { text-align: center; margin-bottom: 52px; }
-    .how-head .h2 { margin-bottom: 14px; }
+    .how-head .h2 { margin-bottom: 20px; }
+    .how-head .h2.mob-only { display: none; }
+    .how-subtitle .br-mob { display: none; }
     .how-subtitle { font-size: 16px; color: var(--text2); line-height: 1.75; }
     .how-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 24px;
     }
     .how-gc {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 20px;
+      min-height: 476px;
+      background: #F5F7FA;
+      border: 1px solid #EAECF0;
+      border-radius: 26px;
       overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.8),
+        0 18px 44px rgba(11,28,44,0.04);
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     .how-gc-meta {
-      padding: 24px 24px 20px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
+      padding: 36px 38px 22px;
+      display: block;
+      position: relative;
+      z-index: 1;
     }
     .how-gc-num {
-      width: 30px; height: 30px;
-      border-radius: 8px;
-      background: var(--lime);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800;
-      color: var(--navy);
-      flex-shrink: 0;
-      margin-top: 2px;
+      display: block;
+      width: fit-content;
+      height: auto;
+      border-radius: 0;
+      background: transparent;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 900;
+      color: #4C63C7;
+      margin: 0 0 12px;
+      letter-spacing: 0;
     }
-    .how-gc-meta h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
-    .how-gc-meta p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .how-gc-meta h4 {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.24;
+      letter-spacing: -0.6px;
+    }
+    .how-gc-meta p {
+      max-width: 460px;
+      font-size: 14px;
+      color: #667085;
+      line-height: 1.65;
+      font-weight: 600;
+    }
     .how-gc-body {
       border-top: none;
-      background: #1B1F26;
-      padding: 20px 20px 0;
-      max-height: 280px;
+      background: transparent;
+      padding: 18px 32px 0;
+      max-height: 286px;
       overflow: hidden;
       position: relative;
-      border-radius: 0 0 20px 20px;
+      z-index: 1;
+      border-radius: 0;
+      margin-top: auto;
     }
     .how-gc-body::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 80px;
-      background: linear-gradient(to bottom, transparent, #1B1F26);
+      height: 92px;
+      background: linear-gradient(to bottom, rgba(245,247,250,0), #F5F7FA 86%);
       pointer-events: none;
     }
-    .how-gc { padding-bottom: 24px; }
+    .how-gc { padding-bottom: 0; }
     .how-card {
       background: var(--white);
-      border: none;
-      border-radius: 14px;
+      border: 0;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 18px 46px rgba(11,28,44,0.10);
       display: flex;
       flex-direction: column;
+      width: min(100%, 500px);
+      margin: 0 auto;
     }
-    .how-card-header {
-      display: none;
-    }
-    .how-card-title { font-size: 13px; font-weight: 700; color: var(--text2); }
-    .how-card-body { padding: 18px 18px 20px; flex: 1; }
+    .how-card-header { display: none; }
+    .how-card-title { font-size: 13px; font-weight: 800; color: #344054; }
+    .how-card-body { padding: 24px 20px 26px; flex: 1; }
     .debt-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #EAECF0;
     }
     .debt-row:last-child { border-bottom: none; }
-    .debt-company { font-size: 14px; font-weight: 600; color: var(--text); }
-    .debt-amount { font-size: 14px; font-weight: 700; color: var(--text); }
-    .debt-right { display: flex; align-items: center; gap: 12px; }
+    .debt-company { font-size: 13px; font-weight: 800; color: var(--text); }
+    .debt-sub { font-size: 11px; color: #98A2B3; margin-top: 4px; }
+    .debt-amount { width: 54px; text-align: right; font-size: 14px; font-weight: 800; color: var(--text); }
+    .debt-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .progress-pill {
-      width: 80px;
+      width: 74px;
       height: 6px;
-      background: #E8ECE8;
+      background: #EAECF0;
       border-radius: 3px;
       overflow: hidden;
     }
-    .progress-fill { height: 100%; background: var(--lime); border-radius: 3px; }
+    .progress-fill { height: 100%; background: #667085; border-radius: 3px; }
+    .progress-fill.p20 { width: 20%; background: #D0D5DD; }
+    .progress-fill.p40 { width: 40%; background: #A7B7EA; }
+    .progress-fill.p75 { width: 75%; background: #6479D6; }
+    .progress-fill.p100 { width: 100%; }
     .tag {
       font-size: 11px; font-weight: 600;
       padding: 3px 9px; border-radius: 8px;
+      white-space: nowrap;
     }
-    .tag.green { background: #DCFCE7; color: #16A34A; }
-    .tag.blue { background: #DBEAFE; color: #2563EB; }
-    .tag.gray { background: #F3F4F6; color: #6B7280; }
-    .tag.lime-bg { background: rgba(181,242,61,0.15); color: #3a7a00; }
+    .tag.green { background: #F2F4F7; color: #667085; }
+    .tag.blue { background: #F2F4F7; color: #667085; }
+    .tag.gray { background: #F2F4F7; color: #98A2B3; }
+    .tag.lime-bg { background: #F3F8E8; color: #5F7C2E; }
+    .tag.status-progress { background: #EEF4FF; color: #4C63C7; }
+    .tag.status-running { background: #EAF7F1; color: #2D7A59; }
+    .tag.status-waiting { background: #F2F4F7; color: #98A2B3; }
 
     /* ──────────────────────────────
        FEATURES — 2-col big cards
     ────────────────────────────── */
     .features { background: var(--white); }
     .features-head { text-align: center; margin-bottom: 40px; }
-    .features-head .h2 { margin-bottom: 12px; }
+    .features-head .h2 { margin-bottom: 18px; }
     .features-head p { font-size: 16px; color: var(--text2); margin-bottom: 0; }
 
     /* unified 2-col cards */
@@ -784,56 +1440,141 @@
     /* ──────────────────────────────
        STATS
     ────────────────────────────── */
-    .stats { background: var(--off); padding: 80px 48px; }
+    .stats { background: #fff; padding: 128px 48px; }
     .stats-inner {
       max-width: 1160px; margin: 0 auto;
       display: grid; grid-template-columns: repeat(4, 1fr);
-      border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden;
-      background: var(--white);
+      background: var(--navy);
+      border-radius: 24px; overflow: hidden;
+      position: relative;
+      box-shadow: 0 24px 60px -20px rgba(11,28,44,0.35);
+    }
+    .stats-inner::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(120% 120% at 100% 0%, rgba(181,242,61,0.10), transparent 55%);
+      pointer-events: none;
     }
     .stat-cell {
-      padding: 44px 32px; text-align: center;
-      border-right: 1.5px solid var(--border);
+      padding: 56px 32px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
       transition: background 0.2s;
+      position: relative;
     }
     .stat-cell:last-child { border-right: none; }
-    .stat-cell:hover { background: var(--off); }
+    .stat-cell:hover { background: rgba(255,255,255,0.04); }
     .stat-num {
-      font-size: 48px; font-weight: 800; color: var(--text);
-      letter-spacing: -2px; line-height: 1; margin-bottom: 10px;
+      font-size: 64px; font-weight: 900; color: var(--lime);
+      letter-spacing: -3px; line-height: 1; margin-bottom: 14px;
     }
-    .stat-num span { color: var(--lime); font-size: 36px; margin-left: 2px; }
-    .stat-label { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .stat-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
+    .stat-num span { color: #fff; font-size: 30px; font-weight: 700; margin-left: 4px; letter-spacing: -1px; }
+    .stat-label { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.2px; }
+    .stat-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
 
     /* ──────────────────────────────
        PROCESS — left stepper
     ────────────────────────────── */
-    .process { background: var(--white); }
+    .process { background: #fff; }
+
+    /* ── COST BENTO ── */
+    .cost-bento { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:48px; }
+    .cost-card { border-radius:20px; padding:48px 40px; position:relative; overflow:hidden; border:1px solid var(--border); background:var(--white); box-shadow:0 2px 12px rgba(0,0,0,0.04); transition:box-shadow 0.2s,transform 0.2s; }
+    .cost-card:hover { box-shadow:0 10px 36px rgba(0,0,0,0.08); transform:translateY(-2px); }
+    .cost-card-icon { width:48px; height:48px; border-radius:12px; background:var(--navy); display:inline-flex; align-items:center; justify-content:center; margin-bottom:18px; }
+    .cost-card-lbl { font-size:18px; font-weight:700; color:var(--text); margin-bottom:10px; line-height:1.35; }
+    .cost-card p { font-size:14px; line-height:1.6; color:var(--text2); }
+
+    /* ── TRUST ── */
+    .trust-deco { display:none; }
+    .trust-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:48px; }
+    .trust-right-stack { display:flex; flex-direction:column; gap:16px; }
+    .trust-card { border-radius:20px; padding:32px 36px; border:1.5px solid var(--border); position:relative; overflow:hidden; }
+    .trust-card.law { background:var(--white); display:flex; flex-direction:column; justify-content:space-between; padding:32px 36px; }
+    .trust-card.law .trust-icon { margin-bottom:20px; }
+    .trust-card.law .trust-icon svg { width:48px; height:48px; }
+    .trust-card.light,.trust-card.soft { background:var(--white); }
+    .trust-law-name { font-size:26px; font-weight:800; color:var(--text); letter-spacing:-0.5px; margin-bottom:6px; }
+    .trust-law-sub { font-size:14px; color:var(--text3); margin-bottom:20px; }
+    .trust-card.law p { font-size:14px; color:var(--text2); line-height:1.75; }
+    .trust-law-footer { margin-top:auto; padding-top:16px; }
+    .trust-law-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .trust-law-link:hover {
+      color: #374151;
+      border-color: #D1D5DB;
+      background: #F9FAFB;
+    }
+    .trust-icon { width:auto; height:auto; background:none; border:none; display:flex; align-items:center; justify-content:flex-start; margin-bottom:14px; padding:0; }
+    .trust-card h3 { font-size:18px; font-weight:800; margin-bottom:10px; color:var(--text); }
+    .trust-card p { font-size:14px; color:var(--text2); line-height:1.75; }
+    @media(max-width:640px) {
+      .cost-bento,.trust-grid { grid-template-columns:1fr; }
+      .cost-card { padding:28px 20px; }
+      .trust-card { padding:24px 20px; }
+      .trust-card.law { padding:28px 20px; }
+      .cost-card-lbl { font-size:15px; }
+    }
+    .process .section-inner { max-width: 1160px; }
+    .process-head { text-align: left; margin-bottom: 48px; max-width: 560px; margin-left: 0; margin-right: 0; }
+    .process-head .eyebrow.center {
+      display: inline-block;
+      margin-left: 0;
+      margin-right: 0;
+      text-align: left;
+    }
+    .process-head .h2 { margin-bottom: 20px; }
+    .process-head .h2.center { text-align: left; }
+    .process-sub { font-size: 16px; color: var(--text2); line-height: 1.75; }
     .process-split {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      grid-template-columns: minmax(320px, 0.8fr) minmax(580px, 1.2fr);
+      gap: 48px;
       align-items: center;
     }
-    .process-left .h2 { margin-bottom: 14px; }
-    .process-left > p { font-size: 16px; color: var(--text2); line-height: 1.75; margin-bottom: 40px; }
-    .proc-steps { display: flex; flex-direction: column; gap: 0; margin: 0 -16px; }
+    .process-left { align-self: center; }
+    .proc-steps { display: flex; flex-direction: column; gap: 0; max-width: 500px; }
     .proc-step {
       display: flex; gap: 16px;
-      padding: 16px 16px;
-      border-radius: 12px;
+      padding: 16px 18px;
+      border-radius: 16px;
       cursor: pointer;
       align-items: flex-start;
-      transition: background 0.2s;
-      border-bottom: 1px solid transparent;
+      position: relative;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      border: 0;
     }
-    .proc-step + .proc-step { border-top: 1px solid var(--border); border-radius: 0; }
-    .proc-step:first-child { border-radius: 12px 12px 0 0; }
-    .proc-step:last-child { border-radius: 0 0 12px 12px; border-bottom: none; }
+    .proc-step + .proc-step::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -1px;
+      height: 1px;
+      background: var(--border);
+      pointer-events: none;
+    }
+    .proc-step.active::before,
+    .proc-step.active + .proc-step::before {
+      opacity: 0;
+    }
     .proc-step:hover:not(.active) { background: rgba(0,0,0,0.02); }
-    .proc-step.active { background: var(--navy); border-color: transparent !important; border-radius: 12px !important; }
-    .proc-step.active + .proc-step { border-top-color: transparent; }
+    .proc-step.active {
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: 0 16px 28px rgba(16,24,40,0.10);
+    }
     .proc-num {
       width: 30px; height: 30px;
       border-radius: 8px;
@@ -846,34 +1587,44 @@
       transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
     .proc-step.active .proc-num { background: var(--lime); border-color: var(--lime); color: var(--navy); }
-    .proc-body h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; transition: color 0.2s; }
+    .proc-body h4 { font-size: 15px; font-weight: 750; color: var(--text); margin-bottom: 5px; transition: color 0.2s; }
     .proc-step.active .proc-body h4 { color: #fff; }
     .proc-body p { font-size: 13px; color: var(--text2); line-height: 1.6; transition: color 0.2s; }
-    .proc-step.active .proc-body p { color: rgba(255,255,255,0.5); }
-    .process-right { position: relative; height: 440px; }
+    .proc-step.active .proc-body p { color: rgba(255,255,255,0.56); }
+    .process-right {
+      position: relative;
+      min-height: 560px;
+      background: #fff;
+      border: 1px solid #EAECF0;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(16,24,40,0.10);
+    }
+    .proc-topbar { display: none; }
     .proc-panel {
       position: absolute;
       inset: 0;
       display: none;
       animation: fadeIn 0.25s ease;
+      overflow: hidden;
     }
     .proc-panel.active { display: flex; flex-direction: column; }
-    .proc-panel .proc-card { flex: 1; overflow-y: auto; }
+    .proc-panel .proc-card { flex: 1; overflow: hidden; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .proc-card {
-      background: var(--navy);
-      border-radius: 20px;
-      padding: 28px;
-      color: #fff;
+      padding: 28px 32px 32px;
+      color: var(--text);
+      background: #F7F8FA;
     }
     .proc-card-top {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 20px;
     }
-    .proc-card-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.5); }
+    .proc-card-title { font-size: 13px; font-weight: 700; color: var(--text2); }
     .proc-items { display: flex; flex-direction: column; gap: 10px; }
     .proc-item {
-      background: rgba(255,255,255,0.05);
+      background: #fff;
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px 16px;
       display: flex; align-items: center; gap: 12px;
@@ -883,42 +1634,582 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .proc-item-dot.lime { background: var(--lime); }
-    .proc-item-dot.blue { background: #60A5FA; }
-    .proc-item-dot.gray { background: rgba(255,255,255,0.2); }
-    .proc-item-label { font-size: 13px; color: rgba(255,255,255,0.65); flex: 1; }
-    .proc-item-val { font-size: 13px; font-weight: 700; color: #fff; }
+    .proc-item-dot.lime { background: #4CAF24; }
+    .proc-item-dot.blue { background: #3B82F6; }
+    .proc-item-dot.gray { background: rgba(0,0,0,0.2); }
+    .proc-item-label { font-size: 13px; color: var(--text2); flex: 1; }
+    .proc-item-val { font-size: 13px; font-weight: 700; color: var(--text); }
     .proc-total {
-      background: rgba(181,242,61,0.1);
-      border: 1px solid rgba(181,242,61,0.2);
+      background: rgba(76,175,36,0.1);
+      border: 1px solid rgba(76,175,36,0.25);
       border-radius: 10px;
       padding: 16px;
       margin-top: 12px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .proc-total-label { font-size: 13px; color: var(--lime); font-weight: 600; }
-    .proc-total-val { font-size: 20px; font-weight: 800; color: var(--lime); letter-spacing: -0.5px; }
+    .proc-total-label { font-size: 13px; color: #4CAF24; font-weight: 600; }
+    .proc-total-val { font-size: 20px; font-weight: 800; color: #4CAF24; letter-spacing: -0.5px; }
+
+    /* process mockup — /delegations service request */
+    .delegation-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .delegation-title {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: #101828;
+      letter-spacing: 0;
+    }
+    .delegation-sub {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #667085;
+      font-weight: 600;
+    }
+    .delegation-stepper {
+      display: none;
+    }
+    .delegation-step {
+      display: flex;
+      align-items: flex-start;
+      flex: 1;
+    }
+    .delegation-step:last-child { flex: 0; }
+    .delegation-step-mark {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #EAECF0;
+      color: #98A2B3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      margin: 0 auto;
+    }
+    .delegation-step.done .delegation-step-mark {
+      background: #475467;
+      border-color: #475467;
+      color: #fff;
+    }
+    .delegation-step.active .delegation-step-mark {
+      background: #2768FF;
+      border-color: #2768FF;
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(39,104,255,0.12);
+    }
+    .delegation-step-label {
+      display: block;
+      margin-top: 7px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #98A2B3;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .delegation-step.active .delegation-step-label { color: #2768FF; }
+    .delegation-step.done .delegation-step-label { color: #475467; }
+    .delegation-step-line {
+      flex: 1;
+      height: 2px;
+      margin: 12px 8px 0;
+      border-radius: 999px;
+      background: #EAECF0;
+      min-width: 70px;
+    }
+    .delegation-step.done .delegation-step-line { background: rgba(71,84,103,0.36); }
+    .delegation-card {
+      background: #fff;
+      border: 1px solid #EAECF0;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 -2px 8px -2px rgba(16,24,40,0.02), 0 6px 20px -6px rgba(16,24,40,0.06), 0 2px 8px -2px rgba(16,24,40,0.02);
+    }
+    .delegation-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.45fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .delegation-box {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      background: rgba(247,248,250,0.72);
+      padding: 16px;
+    }
+    .delegation-box h4,
+    .delegation-form h4 {
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .delegation-help {
+      padding-left: 16px;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+    .delegation-field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .delegation-field { margin-bottom: 10px; }
+    .delegation-field label {
+      display: block;
+      color: #475467;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .delegation-input {
+      min-height: 36px;
+      border: 1px solid #EAECF0;
+      border-radius: 9px;
+      background: #fff;
+      color: #101828;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .delegation-input.muted { color: #98A2B3; font-weight: 600; }
+    .delegation-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #E9F0FF;
+      color: #1F53CC;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .delegation-row-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .delegation-row-title strong {
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+    }
+    .delegation-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #1F53CC;
+      background: #E9F0FF;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .delegation-upload {
+      border: 1px dashed #D0D5DD;
+      border-radius: 12px;
+      background: #F7F8FA;
+      padding: 14px;
+      text-align: center;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .delegation-bottom {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #EAECF0;
+    }
+    .delegation-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #101828;
+      color: #fff;
+      padding: 9px 14px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .delegation-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid #EAECF0;
+      color: #667085;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 900;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .delegation-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .delegation-acc-item {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .delegation-acc-head {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff;
+    }
+    .delegation-acc-head h4 {
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+      margin: 0;
+    }
+    .delegation-acc-head p {
+      font-size: 11px;
+      color: #98A2B3;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .delegation-acc-body {
+      border-top: 1px solid #EAECF0;
+      padding: 16px;
+      background: #fff;
+    }
+    .delegation-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .delegation-choice {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .delegation-choice.active {
+      border-color: #2768FF;
+      background: #F6F9FF;
+    }
+    .delegation-choice strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #101828;
+      margin-bottom: 5px;
+    }
+    .delegation-choice p {
+      font-size: 11px;
+      line-height: 1.55;
+      color: #667085;
+      font-weight: 600;
+    }
+    .delegation-discount-input {
+      width: 100%;
+      border: 1px solid #EAECF0;
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .delegation-discount-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #98A2B3;
+    }
+    .delegation-discount-value {
+      font-size: 16px;
+      font-weight: 900;
+      color: #101828;
+      letter-spacing: -0.3px;
+    }
+    .delegation-discount-value em {
+      font-style: normal;
+      font-size: 13px;
+      font-weight: 700;
+      color: #667085;
+      margin-left: 2px;
+    }
+    .delegation-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .delegation-plan {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      background: #fff;
+      padding: 16px;
+      min-height: 156px;
+      display: flex;
+      flex-direction: column;
+    }
+    .delegation-plan .label {
+      color: #667085;
+      font-size: 10px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .delegation-plan h4 {
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .delegation-plan .amount {
+      margin-top: auto;
+      color: #101828;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .delegation-plan .receive {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #EAECF0;
+      color: #173E99;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .delegation-account-list {
+      display: grid;
+      gap: 10px;
+    }
+    .delegation-account {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .delegation-account.active {
+      border-color: #2768FF;
+      background: #F6F9FF;
+    }
+    .delegation-account strong {
+      display: block;
+      font-size: 13px;
+      color: #101828;
+      font-weight: 900;
+    }
+    .delegation-account span {
+      display: block;
+      margin-top: 3px;
+      color: #667085;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .delegation-cert {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .delegation-cert-box {
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      background: #fff;
+      padding: 18px;
+    }
+    .delegation-cert-box h4 {
+      font-size: 13px;
+      color: #101828;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .delegation-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #F2F4F7;
+      color: #667085;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .delegation-summary-row:last-child { border-bottom: 0; }
+    .delegation-summary-row strong {
+      color: #101828;
+      font-weight: 900;
+    }
+    .delegation-dispatch-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .delegation-dispatch-box h4 { margin-bottom: 0; }
+    .dispatch-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: #F7F8FA;
+      border: 1px solid #EAECF0;
+    }
+    .dispatch-check {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--navy);
+      color: var(--lime);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .dispatch-status strong {
+      display: block;
+      color: #101828;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .dispatch-status span:last-child {
+      display: block;
+      margin-top: 2px;
+      color: #667085;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .dispatch-message {
+      padding: 14px;
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 8px 22px rgba(16,24,40,0.05);
+    }
+    .dispatch-message-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .dispatch-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #EAECF0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .dispatch-logo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .dispatch-message-head strong {
+      color: #101828;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .dispatch-time {
+      margin-left: auto;
+      color: #98A2B3;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .dispatch-message p {
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+    .dispatch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .dispatch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      background: #F8FAFC;
+      color: #667085;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .dispatch-row strong {
+      color: #475467;
+      font-weight: 900;
+    }
 
     /* ──────────────────────────────
        CTA
     ────────────────────────────── */
     .cta-section {
-      background: var(--navy);
-      padding: 100px 48px;
+      background: #111827;
+      padding: 84px 48px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      isolation: isolate;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: #111827;
     }
     .cta-bg {
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(181,242,61,0.1) 0%, transparent 60%);
+      z-index: 1;
+      background:
+        radial-gradient(circle 540px at 50% -22%, rgba(181,242,61,0.3) 0%, rgba(181,242,61,0.15) 38%, rgba(17,24,39,0) 72%);
       pointer-events: none;
     }
-    .cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
-    .cta-inner .eyebrow { margin-bottom: 16px; color: var(--lime); }
+    .cta-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
+    .cta-inner .eyebrow {
+      margin-bottom: 16px;
+      color: #E5E7EB;
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.16);
+      font-size: 12px;
+      line-height: 1.6;
+    }
     .cta-inner .h2 { margin-bottom: 18px; }
     .cta-inner .h2.white em { font-style: normal; color: var(--lime); }
-    .cta-inner p { font-size: 16px; color: var(--text-on-dark2); line-height: 1.75; margin-bottom: 36px; }
+    .cta-inner p { font-size: 16px; color: var(--text-on-dark2); line-height: 1.7; margin-bottom: 30px; }
+    .cta-inner p .cta-break { display: none; }
     .cta-btns { display: flex; justify-content: center; gap: 12px; }
 
     /* ──────────────────────────────
@@ -960,63 +2251,181 @@
        HOW — per-step mockup styles
     ────────────────────────────── */
     /* mock 01: 알림 */
-    .notif-header { font-size:11px; color:var(--text3); font-weight:600; letter-spacing:0.3px; margin-bottom:10px; }
+    .notif-header { font-size:12px; color:#667085; font-weight:800; margin-bottom:10px; }
     .notif-bubble {
-      background: var(--off); border-radius: 12px 12px 12px 4px;
-      padding: 12px 14px; margin-bottom: 8px;
+      background: #F8FAFC;
+      border: 1px solid #EAECF0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
     }
-    .notif-sender { font-size:11px; font-weight:700; color:#4CAF24; margin-bottom:4px; }
-    .notif-text { font-size:13px; color:var(--text); line-height:1.55; }
-    .notif-time { font-size:11px; color:var(--text3); margin-top:5px; }
-    .notif-stats {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      background: rgba(181,242,61,0.06);
-      border: 1px solid rgba(181,242,61,0.15);
-      border-radius: 10px; padding: 14px; text-align:center; margin-top:12px;
+    .notif-bubble-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
     }
-    .notif-stat-num { font-size:19px; font-weight:800; color:var(--text); letter-spacing:-0.5px; }
-    .notif-stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+    .notif-brand-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      background: var(--navy);
+      border: 1px solid rgba(11,28,44,0.08);
+      color: var(--lime);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 4px;
+    }
+    .notif-brand-mark svg {
+      display: block;
+      width: 12px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .notif-brand-mark svg path { fill: currentColor; }
+    .notif-sender { font-size:12px; font-weight:800; color:#344054; }
+    .notif-time { margin-left:auto; font-size:11px; color:#98A2B3; }
+    .notif-text { margin-top:9px; font-size:13px; color:#344054; line-height:1.55; }
+    .notif-action {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 14px;
+      border: 1px solid #EAECF0;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .notif-action span { display:block; font-size:11px; font-weight:800; color:#98A2B3; margin-bottom:3px; }
+    .notif-action strong { display:block; font-size:13px; color:var(--text); }
+    .notif-action em {
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 800;
+      color: #344054;
+      padding: 5px 9px;
+      background: #F2F4F7;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
 
     /* mock 02: CMS */
     .cms-bank-row {
       display:flex; align-items:center; gap:12px;
-      padding:14px; background:var(--off); border-radius:10px; margin-bottom:10px;
+      padding:15px; background:#F8FAFC; border:1px solid #EAECF0; border-radius:14px; margin-bottom:10px;
     }
     .cms-bank-icon {
-      width:38px; height:38px; border-radius:9px;
-      background:var(--navy); display:flex; align-items:center; justify-content:center;
-      font-size:17px; flex-shrink:0;
+      width:38px; height:38px; border-radius:11px;
+      background:#F2F4F7; border:1px solid #EAECF0; display:flex; align-items:center; justify-content:center;
+      color:#475467; font-size:11px; font-weight:900; flex-shrink:0;
     }
-    .cms-bank-name { font-size:13px; font-weight:700; color:var(--text); }
+    .cms-bank-name { font-size:13px; font-weight:800; color:var(--text); }
     .cms-bank-acct { font-size:12px; color:var(--text3); margin-top:2px; }
     .cms-schedule { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
-    .cms-sched-item { background:var(--off); border-radius:8px; padding:12px; }
+    .cms-sched-item { background:#F8FAFC; border:1px solid #EAECF0; border-radius:12px; padding:12px; }
     .cms-sched-label { font-size:11px; color:var(--text3); margin-bottom:4px; }
-    .cms-sched-val { font-size:15px; font-weight:700; color:var(--text); }
+    .cms-sched-val { font-size:15px; font-weight:800; color:var(--text); }
     .cms-confirmed {
-      background:#DCFCE7; border-radius:10px; padding:12px 16px;
+      background:#EEF4FF; border-radius:12px; padding:12px 14px;
       display:flex; justify-content:space-between; align-items:center;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-    .cms-confirmed span:first-child { font-size:13px; color:#16A34A; font-weight:700; }
-    .cms-confirmed span:last-child { font-size:12px; color:#16A34A; }
+    .cms-confirmed span:first-child { font-size:13px; color:#4C63C7; font-weight:800; }
+    .cms-confirmed span:last-child { font-size:12px; color:#7892EA; white-space:nowrap; }
+    .flow-label { font-size:12px; font-weight:800; color:#667085; margin: 2px 0 8px; }
+    .flow-list { display:flex; flex-direction:column; gap:7px; }
+    .flow-row {
+      display:grid;
+      grid-template-columns: 46px 1fr auto auto;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      background:#F8FAFC;
+      border:1px solid #EAECF0;
+      border-radius:10px;
+    }
+    .flow-row span { font-size:12px; color:#667085; }
+    .flow-row strong { font-size:13px; color:var(--text); }
+    .flow-row .tag { justify-self:end; }
 
     /* mock 03: 분할 */
     .install-summary {
-      display:flex; justify-content:space-between;
-      padding:12px 0; border-bottom:1px solid var(--border); margin-bottom:12px;
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:8px; margin-bottom:12px;
     }
-    .install-summary-item { text-align:center; }
-    .install-summary-val { font-size:18px; font-weight:800; color:var(--text); letter-spacing:-0.5px; }
+    .install-summary-item {
+      text-align:center;
+      background:#F8FAFC;
+      border:1px solid #EAECF0;
+      border-radius:12px;
+      padding:14px 8px;
+    }
+    .install-summary-val { font-size:18px; font-weight:900; color:var(--text); }
     .install-summary-label { font-size:11px; color:var(--text3); margin-top:2px; }
     .install-row {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:11px 0; border-bottom:1px solid var(--border);
+      display:grid;
+      grid-template-columns: 48px 1fr auto auto;
+      align-items:center;
+      gap:10px;
+      padding:11px 0;
+      border-bottom:1px solid #EAECF0;
       font-size:13px;
     }
     .install-row:last-child { border-bottom:none; }
-    .install-round { font-weight:700; color:var(--text3); width:40px; }
+    .install-round { font-weight:800; color:var(--text3); }
     .install-date { color:var(--text2); }
-    .install-amount { font-weight:700; color:var(--text); }
+    .install-amount { font-weight:800; color:var(--text); }
+    .install-progress-card {
+      margin-top:14px;
+      padding:14px 16px;
+      background:#F8FAFC;
+      border:1px solid #EAECF0;
+      border-radius:12px;
+    }
+    .install-progress-head,
+    .install-progress-foot {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+    }
+    .install-progress-head { margin-bottom:10px; }
+    .install-progress-head span,
+    .install-progress-foot span { font-size:12px; color:#667085; font-weight:700; }
+    .install-progress-head strong { font-size:12px; color:#475467; }
+    .install-progress-foot { margin-top:10px; }
+    .install-progress-foot strong { font-size:13px; color:var(--text); }
+    .install-progress-bar {
+      height:6px;
+      background:#EAECF0;
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .install-progress-bar span {
+      display:block;
+      width:0;
+      height:100%;
+      background:#667085;
+      border-radius:inherit;
+    }
+    .how-total {
+      margin-top:14px;
+      padding:14px 16px;
+      background:#F8FAFC;
+      border:1px solid #EAECF0;
+      border-radius:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+    }
+    .how-total span { font-size:13px; color:#667085; font-weight:700; }
+    .how-total strong { font-size:20px; font-weight:900; color:var(--text); }
+    .amount-unit { font-size:14px; font-weight:800; color:#98A2B3; }
 
     /* ──────────────────────────────
        ANIMATION
@@ -1038,15 +2447,96 @@
       .gnb-mobile-btn { display: flex; margin-left: auto; }
       .hero-inner { padding: 0 24px; }
       .hero h1 { font-size: 44px; letter-spacing: -1.5px; }
-      .section { padding: 80px 24px; }
-      .stats { padding: 60px 24px; }
-      .pain-split { grid-template-columns: 1fr; gap: 40px; }
+      .hero-float { display: none; }
+      .section { padding: 96px 24px; }
+      .section.off { padding-bottom: 160px; }
+      .stats { padding: 80px 24px; }
+      .pain-split { grid-template-columns: 1fr; gap: 48px; }
       .pain-left { position: static; }
       .how-grid { grid-template-columns: 1fr 1fr; }
       .feat-unified { grid-template-columns: 1fr; }
       .features-grid { grid-template-columns: 1fr; }
-      .process-split { gap: 48px; }
+      .process-split {
+        grid-template-columns: 1fr;
+        gap: 44px;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .process-head,
+      .proc-steps { max-width: 100%; }
       .footer-inner { padding: 40px 24px 28px; }
+    }
+
+    @media (min-width: 1025px) and (max-width: 1280px) {
+      .process-split {
+        grid-template-columns: minmax(300px, 0.78fr) minmax(540px, 1.22fr);
+        gap: 36px;
+      }
+      .process-head { margin-bottom: 40px; }
+      .process-head .h2 { font-size: 36px; }
+    }
+
+    @media (min-width: 1025px) and (max-width: 1800px) {
+      .hero {
+        padding-top: 168px;
+      }
+      .hero h1 {
+        font-size: 50px;
+        line-height: 1.16;
+      }
+      .hero-desc {
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+      .hero-visual {
+        max-width: 900px;
+      }
+      .hero-mockup {
+        height: 486px;
+      }
+      .hero-actions {
+        margin-bottom: 46px;
+      }
+      .hero-float {
+        width: 198px;
+        padding: 14px;
+        border-radius: 14px;
+      }
+      .hero-float.notice {
+        right: -104px;
+        top: 48px;
+      }
+      .hero-float.recovery {
+        left: -96px;
+        top: 160px;
+      }
+      .hero-float.deposit {
+        right: -72px;
+        bottom: 82px;
+        width: 188px;
+      }
+      .hero-float-title {
+        font-size: 13px;
+      }
+      .hero-float-row strong {
+        font-size: 15px;
+      }
+      .cta-section { padding: 58px 48px; }
+      .cta-inner { max-width: 1160px; }
+      .cta-inner .eyebrow { margin-bottom: 14px; }
+      .cta-inner .h2 {
+        margin-bottom: 16px;
+        font-size: 36px;
+        line-height: 1.28;
+      }
+      .cta-break { display: none; }
+      .cta-break-laptop { display: block; }
+      .cta-inner p {
+        margin-bottom: 26px;
+        line-height: 1.6;
+      }
+      .cta-inner p .cta-break { display: none; }
+      .cta-inner p .cta-break-laptop { display: none; }
     }
 
     /* ══════════════════════════════
@@ -1058,38 +2548,41 @@
       .toggle-pill { display: none; }
 
       /* HERO */
-      .hero { padding: 96px 0 0; }
+      .hero { padding: 128px 0 0; }
       .hero-inner { padding: 0 20px; }
       .hero h1 { font-size: 32px; letter-spacing: -1px; }
       .hero-desc { font-size: 15px; }
-      .hero-actions { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 48px; }
+      .hero-actions { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 42px; }
       .btn-lime, .btn-outline-white { width: 100%; max-width: 320px; justify-content: center; font-size: 14px; padding: 13px 20px; }
-      /* hero mockup: hide sidebar, single col */
-      .hero-mockup { padding: 16px 16px 0; border-radius: 10px 10px 0 0; }
-      .mockup-body { grid-template-columns: 1fr; min-height: auto; padding: 16px; }
+      /* hero mockup */
+      .hero-mockup { height: 430px; border-radius: 14px 14px 0 0; }
+      .mockup-topbar { display: none; }
+      .mockup-body { grid-template-columns: 1fr; min-height: 430px; }
       .mock-sidebar { display: none; }
       .mock-cards { grid-template-columns: repeat(2, 1fr); }
-      .mock-table-header, .mock-table-row { grid-template-columns: 2fr 1fr 1fr; }
-      .mock-table-header > *:last-child, .mock-table-row > *:last-child { display: none; }
+      .mock-content-grid { grid-template-columns: 1fr; }
+      .mock-calendar-panel { display: none; }
+      .mock-state-grid { grid-template-columns: repeat(5, minmax(72px, 1fr)); overflow-x: auto; }
 
       /* SECTIONS */
-      .section { padding: 56px 20px; }
-      .stats { padding: 48px 20px; }
+      .section { padding: 72px 20px; }
+      .stats { padding: 64px 20px; }
       .section-inner { padding: 0; }
+      .eyebrow { font-size: 11px; padding: 3px 10px; }
       .h2 { font-size: 28px; letter-spacing: -0.8px; }
 
       /* STATS */
       .stats-inner { grid-template-columns: repeat(2, 1fr); }
       .stat-cell {
-        padding: 32px 20px;
-        border-right: 1.5px solid var(--border);
-        border-bottom: 1.5px solid var(--border);
+        padding: 36px 20px;
+        border-right: 1px solid rgba(255,255,255,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
       }
       .stat-cell:nth-child(3),
       .stat-cell:nth-child(4) { border-bottom: none; }
       .stat-cell:nth-child(2n) { border-right: none; }
-      .stat-num { font-size: 32px; }
-      .stat-num span { font-size: 24px; }
+      .stat-num { font-size: 42px; letter-spacing: -2px; }
+      .stat-num span { font-size: 22px; }
       .stat-label { font-size: 13px; }
 
       /* PAIN */
@@ -1098,31 +2591,204 @@
       .pain-left p { margin-bottom: 0; }
       .pain-row { padding: 24px 20px; gap: 14px; }
       .pain-row:hover { transform: none; }
+      .pain-title-break { display: block; }
+      .pain-desc-break { display: block; }
       .pain-text h3 { font-size: 15px; margin-bottom: 4px; }
       .pain-text p { font-size: 13px; }
 
-      /* HERO — mockup 가로형 compact */
+      /* HERO — mockup compact */
       .hero { padding-bottom: 0; }
-      .hero-actions { flex-direction: column; align-items: center; gap: 8px; margin-bottom: 40px; }
+      .hero-actions { flex-direction: column; align-items: center; gap: 8px; margin-bottom: 34px; }
       .btn-lime, .btn-outline-white { width: auto; max-width: none; justify-content: center; font-size: 14px; padding: 13px 32px; }
-      /* mockup: 테이블 숨기고 stat 카드만 가로로 */
-      .hero-mockup { padding: 12px 12px 0; }
-      .mockup-topbar { margin-bottom: 12px; }
-      .mockup-body { padding: 12px; gap: 0; }
-      .mock-header-row { margin-bottom: 8px; }
-      .mock-title { font-size: 12px; }
-      .mock-cards { gap: 6px; grid-template-columns: repeat(3, 1fr); }
-      .mock-card { padding: 10px; }
-      .mock-card-value { font-size: 14px; }
-      .mock-card-sub { font-size: 10px; }
-      .mock-table-header, .mock-table-row { display: none; }
+      .hero-visual {
+        width: min(360px, calc(100vw - 48px));
+        max-width: none;
+        margin: 0 auto;
+      }
+      .hero-mockup {
+        height: 380px;
+        border: 1px solid rgba(226,232,240,0.9);
+        border-bottom: 0;
+        border-radius: 24px 24px 0 0;
+        background: #F7F8FA;
+        box-shadow:
+          0 22px 58px rgba(0,0,0,0.24),
+          0 0 0 6px rgba(255,255,255,0.04);
+      }
+      .mockup-body {
+        min-height: 380px;
+        display: block;
+        background: #F7F8FA;
+      }
+      .mock-main {
+        height: 100%;
+        padding: 26px 20px 0;
+        gap: 12px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .mock-main::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 80px;
+        background: linear-gradient(to bottom, rgba(247,248,250,0) 0%, #F7F8FA 70%);
+        pointer-events: none;
+      }
+      .mock-mobile-tabbar { display: none !important; }
+      .mock-app-top { display: none; }
+      .mock-greeting h3 {
+        font-size: 22px;
+        line-height: 1.16;
+        letter-spacing: -0.4px;
+        margin-bottom: 7px;
+      }
+      .mock-greeting p {
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .mock-alert {
+        width: 100%;
+        min-height: 48px;
+        padding: 9px 10px;
+        gap: 8px;
+        border-radius: 14px;
+        font-size: 11px;
+      }
+      .mock-alert strong {
+        padding: 7px 9px;
+        border-radius: 9px;
+        font-size: 10px;
+      }
+      .mock-alert span:nth-child(2) {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mock-alert span:last-child {
+        display: inline-flex;
+        margin-left: 0;
+        flex-shrink: 0;
+      }
+      .mock-alert-action {
+        font-size: 11px;
+      }
+      .mock-cards {
+        gap: 10px;
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .mock-card {
+        min-height: 104px;
+        padding: 15px 13px;
+        border-radius: 16px;
+      }
+      .mock-card-label {
+        font-size: 10px;
+        line-height: 1.35;
+        margin-bottom: 12px;
+      }
+      .mock-card-value { font-size: 22px; }
+      .mock-card-value small { font-size: 11px; }
+      .mock-card-sub {
+        font-size: 10px;
+        margin-top: 11px;
+        line-height: 1.35;
+      }
+      .mock-content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      .mock-panel {
+        border-radius: 16px;
+        padding: 14px 12px;
+      }
+      .mock-panel-title { font-size: 12px; }
+      .mock-panel-copy {
+        font-size: 10px;
+        line-height: 1.55;
+        margin-bottom: 10px;
+      }
+      .mock-progress {
+        height: 7px;
+        margin-bottom: 10px;
+      }
+      .mock-state-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+      }
+      .mock-state {
+        min-height: 60px;
+        padding: 8px 4px;
+        min-width: 0;
+        text-align: center;
+      }
+      .mock-state-label {
+        flex-direction: column;
+        gap: 3px;
+        font-size: 9px;
+        letter-spacing: -0.2px;
+        margin-bottom: 6px;
+        white-space: normal;
+        justify-content: center;
+      }
+      .mock-state-label::before { width: 6px; height: 6px; }
+      .mock-state-value { font-size: 16px; }
+      .mock-state-value small { font-size: 9px; }
+      .mock-mobile-tabbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        height: 56px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        align-items: center;
+        background: rgba(255,255,255,0.97);
+        border-top: 1px solid #EAECF0;
+        box-shadow: 0 -10px 24px rgba(16,24,40,0.05);
+      }
+      .mock-mobile-tabbar span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 9px;
+        font-weight: 800;
+        color: #98A2B3;
+        line-height: 1.2;
+      }
+      .mock-mobile-tabbar span::before {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border-radius: 5px;
+        background: #98A2B3;
+        opacity: 0.75;
+      }
+      .mock-mobile-tabbar span:first-child {
+        color: #667085;
+      }
+      .mock-mobile-tabbar span:first-child::before {
+        background: var(--lime);
+        opacity: 1;
+      }
 
       /* HOW — 모형 카드 숨김, 번호+제목+설명만 */
       .how-grid { grid-template-columns: 1fr; gap: 12px; }
       .how-subtitle { font-size: 14px; }
       .how-gc-body { display: none; }
-      .how-gc { border-radius: 14px; padding-bottom: 0; }
+      .how-gc { min-height: auto; border-radius: 18px; padding-bottom: 0; }
       .how-gc-meta { padding: 24px 20px; }
+      .how-gc-num { font-size: 13px; margin-bottom: 8px; }
+      .how-gc-meta h4 { font-size: 22px; letter-spacing: -0.4px; }
+      .how-gc-meta p { font-size: 13px; }
 
       /* FEATURES */
       .feat-unified { grid-template-columns: 1fr; }
@@ -1140,22 +2806,229 @@
       .feat-step-txt span { display: none; } /* 부연설명 숨김, 제목만 */
 
       /* PROCESS */
+      .process-head { margin-bottom: 40px; }
+      .process-sub { font-size: 15px; }
       .process-split {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 0;
       }
-      .process-left > p { margin-bottom: 24px; font-size: 15px; }
-      .proc-steps { margin: 0; }
-      .proc-step { padding: 24px 20px; }
-      .process-right { height: auto; }
-      .proc-panel { position: static; display: none; }
-      .proc-panel.active { display: block; }
+      .process-right { display: none; }
+      .process-left,
+      .proc-steps,
+      .proc-step,
+      .proc-body { min-width: 0; }
+      .proc-step {
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 0;
+        align-items: flex-start;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 24px 20px;
+        overflow: hidden;
+      }
+      .proc-num {
+        width: 30px;
+        height: 30px;
+        margin-top: 1px;
+      }
+      .proc-body {
+        padding-top: 0;
+      }
+      .proc-body h4 {
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.35;
+        margin-bottom: 8px;
+      }
+      .proc-body p {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .proc-step.active {
+        padding: 22px 20px 20px;
+        box-shadow: 0 18px 34px rgba(16,24,40,0.14);
+      }
+      .proc-panel {
+        grid-column: 1 / -1;
+        position: static;
+        display: none;
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+      }
+      .proc-step.active .proc-panel {
+        display: block;
+        flex: 0 0 100%;
+        margin-top: 14px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        animation: fadeIn 0.25s ease;
+      }
+      .proc-step.active .proc-card {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 24px 16px 16px;
+        overflow: hidden;
+        background: #fff;
+        border-radius: 16px;
+      }
+      .proc-step.active .delegation-head {
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .proc-step.active .delegation-title { font-size: 18px; }
+      .proc-step.active .delegation-sub {
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .proc-step.active .delegation-stepper {
+        display: none;
+      }
+      .proc-step.active .delegation-step,
+      .proc-step.active .delegation-step > div {
+        min-width: 0;
+      }
+      .proc-step.active .delegation-step-line {
+        min-width: 0;
+        margin-left: 8px;
+        margin-right: 8px;
+      }
+      .proc-step.active .delegation-step-label {
+        display: none;
+      }
+      .proc-step.active .delegation-card,
+      .proc-step.active .delegation-box,
+      .proc-step.active .delegation-acc-item,
+      .proc-step.active .delegation-account,
+      .proc-step.active .delegation-cert-box,
+      .proc-step.active .dispatch-message,
+      .proc-step.active .dispatch-row {
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .proc-step.active .delegation-card {
+        padding: 12px;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .proc-step.active .delegation-grid,
+      .proc-step.active .delegation-field-grid,
+      .proc-step.active .delegation-choice-grid,
+      .proc-step.active .delegation-plan-grid,
+      .proc-step.active .delegation-cert {
+        grid-template-columns: 1fr;
+      }
+      .proc-step.active .delegation-acc-head,
+      .proc-step.active .delegation-row-title,
+      .proc-step.active .delegation-account,
+      .proc-step.active .delegation-bottom,
+      .proc-step.active .dispatch-row {
+        flex-wrap: wrap;
+      }
+      .proc-step.active .delegation-plan {
+        min-height: auto;
+      }
+      .proc-step.active .delegation-input {
+        height: auto;
+        min-height: 32px;
+        padding: 7px 10px;
+        white-space: normal;
+        line-height: 1.35;
+      }
+      .proc-step.active .delegation-chip,
+      .proc-step.active .delegation-primary,
+      .proc-step.active .delegation-outline,
+      .proc-step.active .delegation-account strong,
+      .proc-step.active .delegation-account span,
+      .proc-step.active .delegation-summary-row strong,
+      .proc-step.active .delegation-choice strong,
+      .proc-step.active .delegation-choice p,
+      .proc-step.active .delegation-plan h4,
+      .proc-step.active .delegation-plan .amount,
+      .proc-step.active .delegation-plan .receive,
+      .proc-step.active .dispatch-message p {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      .proc-step.active .delegation-chip {
+        font-size: 9px;
+        padding: 4px 7px;
+      }
+      .proc-step.active .delegation-row-title {
+        margin-bottom: 10px;
+      }
+      .proc-step.active .delegation-row-title strong,
+      .proc-step.active .delegation-box h4,
+      .proc-step.active .delegation-form h4,
+      .proc-step.active .delegation-acc-head h4,
+      .proc-step.active .delegation-account strong,
+      .proc-step.active .dispatch-status strong {
+        font-size: 13px;
+      }
+      .proc-step.active .delegation-field {
+        margin-bottom: 8px;
+      }
+      .proc-step.active .delegation-box {
+        padding: 12px;
+        border-radius: 12px;
+      }
+      .proc-step.active .delegation-bottom {
+        display: none;
+      }
+      .proc-step.active .delegation-step-mark {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+      .proc-step.active #proc-panel-1 .delegation-grid > .delegation-box,
+      .proc-step.active #proc-panel-1 .delegation-upload,
+      .proc-step.active #proc-panel-1 .delegation-form .delegation-box h4:nth-of-type(n+2),
+      .proc-step.active #proc-panel-1 .delegation-field-grid .delegation-field:nth-child(n+3),
+      .proc-step.active #proc-panel-3 .delegation-account-list .delegation-account:nth-child(n+2),
+      .proc-step.active #proc-panel-3 .delegation-card > .delegation-box,
+      .proc-step.active #proc-panel-4 .delegation-cert-box:first-child,
+      .proc-step.active #proc-panel-4 .dispatch-list {
+        display: none;
+      }
+      .proc-step.active #proc-panel-2 .delegation-choice-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .proc-step.active #proc-panel-2 .delegation-accordion {
+        gap: 8px;
+      }
+      .proc-step.active #proc-panel-2 .delegation-acc-head {
+        padding: 12px;
+      }
+      .proc-step.active #proc-panel-3 .delegation-card {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+      }
+      .proc-step.active #proc-panel-3 .delegation-account,
+      .proc-step.active #proc-panel-4 .dispatch-status,
+      .proc-step.active #proc-panel-4 .dispatch-message {
+        padding: 12px;
+      }
+      .proc-step.active #proc-panel-4 .delegation-cert-box {
+        padding: 12px;
+      }
 
       /* CTA */
       .cta-section { padding: 72px 20px; }
+      .section.off { padding-bottom: 128px; }
       .cta-inner .h2 { font-size: 26px; }
-      .cta-btns { flex-direction: row; gap: 8px; }
-      .cta-btns .btn-lime, .cta-btns .btn-outline-white { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
+      .cta-inner p .cta-break { display: block; }
+      .cta-btns { flex-direction: column; align-items: center; gap: 8px; }
+      .cta-btns .btn-lime, .cta-btns .btn-outline-white { width: auto; max-width: none; flex: none; justify-content: center; font-size: 14px; padding: 13px 32px; }
 
       /* FOOTER */
       .footer-inner { padding: 0 20px; }
@@ -1164,6 +3037,15 @@
       .footer-links { gap: 24px; flex-wrap: wrap; padding-left: 0; }
       .footer-col { min-width: 80px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
+
+      /* 모바일에서 어색하게 끊기는 hard line breaks 제거 */
+      .hero h1 .nowrap { white-space: normal; }
+      .cost-card p br { display: none; }
+      /* desktop-only/mobile-only swap */
+      .how-head .h2.desk-only { display: none; }
+      .how-head .h2.mob-only { display: block; }
+      .how-subtitle .br-desk { display: none; }
+      .how-subtitle .br-mob { display: inline; }
     }
 
     /* ══════════════════════════════
@@ -1174,7 +3056,7 @@
       .stats-inner { grid-template-columns: 1fr; }
       .stat-cell { border-right: none; border-bottom: 1.5px solid var(--border); }
       .stat-cell:last-child { border-bottom: none; }
-      .how-gc-meta h4 { font-size: 14px; }
+      .how-gc-meta h4 { font-size: 20px; }
     }
   </style>
 </head>
@@ -1184,7 +3066,7 @@
 <header class="gnb">
 <div class="gnb-inner">
   <div class="gnb-left">
-    <a href="#" class="gnb-logo">
+    <a href="rebound-biz.html" class="gnb-logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 43 45" fill="none">
         <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#C7F64F"/>
         <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#C7F64F"/>
@@ -1209,8 +3091,8 @@
       </svg>
     </a>
     <div class="toggle-pill">
-      <a href="rebound-personal.html">개인</a>
-      <a href="#" class="on">기업 Biz</a>
+      <a href="rebound-biz.html" class="on">기업 Biz</a>
+      <a href="#" onclick="event.preventDefault();document.getElementById('readyPopupOverlay').classList.add('open');">개인</a>
     </div>
   </div>
   <nav class="gnb-nav">
@@ -1218,93 +3100,229 @@
     <a href="team.html">팀 리바운드</a>
     <a href="support.html">고객센터</a>
     <a href="https://blog.naver.com/reboundkr">블로그</a>
-    <a href="self-check.html" target="_blank" style="color:rgba(255,255,255,0.55);font-weight:600;">셀프 진단</a>
+    <a href="self-check.html" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,0.55);">셀프 진단</a>
   </nav>
   <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
   <div class="gnb-actions">
     <a href="login.html" class="gnb-login">로그인</a>
-    <a href="#cta" class="gnb-start">리바운드 시작하기</a>
+    <a href="#cta" class="gnb-start">신청하기</a>
   </div>
 </div>
 </header>
 
 <!-- MOBILE MENU -->
 <div id="shared-mobile-menu"></div>
-<script src="mobile-menu.js?v=2"></script>
+<script src="mobile-menu.js?v=4"></script>
 <script src="auth-nav.js?v=1"></script>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="hero-inner">
-    <div class="hero-tag reveal">기업 · 개인사업자 미수채권 전문</div>
     <h1 class="reveal">못 받은 돈,<br><span class="nowrap">이제 그냥 <em>쌓아두지 마세요</em></span></h1>
-    <p class="hero-desc reveal">채무자가 개인이든 기업이든 상관없어요.<br>리바운드가 관리부터 설득, 회수까지 대신 이어드려요.</p>
+    <p class="hero-desc reveal">채무자가 개인이든 기업이든 상관없어요.<br>리바운드가 설득부터 회수, 관리까지 대신 이어드려요.</p>
     <div class="hero-actions reveal">
-      <a href="#cta" class="btn-lime">무료 상담 신청하기 →</a>
+      <a href="#cta" class="btn-lime">서비스 신청하기</a>
     </div>
 
     <!-- Dashboard Mockup -->
-    <div class="hero-mockup reveal">
-      <div class="mockup-topbar">
-        <div class="mockup-dot r"></div>
-        <div class="mockup-dot y"></div>
-        <div class="mockup-dot g"></div>
-        <div class="mockup-url"></div>
-      </div>
-      <div class="mockup-body">
-        <div class="mock-sidebar">
-          <div class="mock-sidebar-title">채권 관리</div>
-          <div class="mock-nav-item active"><span class="mock-nav-dot"></span>전체 채권</div>
-          <div class="mock-nav-item"><span class="mock-nav-dot"></span>진행 중</div>
-          <div class="mock-nav-item"><span class="mock-nav-dot"></span>협의 완료</div>
-          <div class="mock-nav-item"><span class="mock-nav-dot"></span>회수 완료</div>
-          <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
-            <div class="mock-sidebar-title">보고서</div>
-            <div class="mock-nav-item"><span class="mock-nav-dot"></span>월별 현황</div>
-            <div class="mock-nav-item"><span class="mock-nav-dot"></span>채무자 분석</div>
-          </div>
+    <div class="hero-visual reveal">
+      <div class="hero-mockup">
+        <div class="mockup-topbar" aria-hidden="true">
+          <span class="mockup-dot r"></span>
+          <span class="mockup-dot y"></span>
+          <span class="mockup-dot g"></span>
+          <span class="mockup-url"></span>
         </div>
+        <div class="mockup-body">
+        <aside class="mock-sidebar">
+          <div class="mock-sidebar-logo">
+            <svg class="mock-logo-mark" viewBox="0 0 43 45" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#B5F23D"/>
+              <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#B5F23D"/>
+              <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#B5F23D"/>
+              <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#B5F23D"/>
+              <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#B5F23D"/>
+            </svg>
+            <svg class="mock-logo-word" viewBox="0 0 126 39" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="리바운드">
+              <g clip-path="url(#mock_wordmark_clip)">
+                <path d="M4.58608 22.4601H17.3408V7.71458H0.0634766V12.0492H12.7293V18.1254H0.0634766V32.8322H22.0794V38.4182H26.602V7.71458H22.0794V28.5363H4.58608V22.4601Z" fill="white"/>
+                <path d="M36.3087 7.71458H31.7861V32.7548H49.0635V7.71458H44.5409V16.3064H36.3087V7.71458ZM44.5282 20.6024V28.3815H36.296V20.6024H44.5282Z" fill="white"/>
+                <path d="M58.4894 7.71458H53.9668V38.4182H58.4894V17.0418H63.698V12.7587H58.4894V7.71458Z" fill="white"/>
+                <path d="M76.6303 31.4648H81.3434V24.937H92.7897V20.4734H64.5742V24.937H76.6303V31.4648Z" fill="white"/>
+                <path d="M69.0968 27.7107H64.5742V38.4182H92.7897V34.1352H69.0968V27.7107Z" fill="white"/>
+                <path d="M103.334 12.1395H124.524V7.71458H98.7607V26.5109H124.524V22.1763H103.334V12.1395Z" fill="white"/>
+                <path d="M125.808 33.9546H98.1133V38.4182H125.808V33.9546Z" fill="white"/>
+                <path d="M78.7013 17.7771C84.5451 17.7771 88.9661 13.9585 88.9661 8.90146C88.9661 3.84439 84.5451 0.0644836 78.7013 0.0644836C72.8575 0.0644836 68.4111 3.87019 68.4111 8.91436C68.4111 13.9585 72.8321 17.79 78.7013 17.79V17.7771ZM78.7013 4.0637C81.8519 4.0637 84.2402 6.15361 84.2402 8.91436C84.2402 11.6751 81.8646 13.8037 78.7013 13.8037C75.538 13.8037 73.137 11.7009 73.137 8.91436C73.137 6.12781 75.5253 4.0637 78.7013 4.0637Z" fill="white"/>
+              </g>
+              <defs><clipPath id="mock_wordmark_clip"><rect width="125.871" height="38.4828" fill="white"/></clipPath></defs>
+            </svg>
+          </div>
+          <div class="mock-sidebar-title">현황</div>
+          <div class="mock-nav-item active"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1.5"></rect><rect width="7" height="5" x="14" y="3" rx="1.5"></rect><rect width="7" height="9" x="14" y="12" rx="1.5"></rect><rect width="7" height="5" x="3" y="16" rx="1.5"></rect></svg></span>대시보드</div>
+          <div class="mock-nav-item"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>상환 현황 <span class="mock-nav-badge">1</span></div>
+          <div class="mock-nav-item"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span>상환 이력</div>
+          <div class="mock-sidebar-divider"></div>
+          <div class="mock-sidebar-title">관리</div>
+          <div class="mock-nav-item"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3v2a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5"></path><path d="M18 12h.01"></path></svg></span>계좌 관리</div>
+          <div class="mock-sidebar-divider"></div>
+          <div class="mock-sidebar-title">설정</div>
+          <div class="mock-nav-item"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="21" x2="14" y1="4" y2="4"></line><line x1="10" x2="3" y1="4" y2="4"></line><line x1="21" x2="12" y1="12" y2="12"></line><line x1="8" x2="3" y1="12" y2="12"></line><line x1="21" x2="16" y1="20" y2="20"></line><line x1="12" x2="3" y1="20" y2="20"></line><line x1="14" x2="14" y1="2" y2="6"></line><line x1="8" x2="8" y1="10" y2="14"></line><line x1="16" x2="16" y1="18" y2="22"></line></svg></span>설정</div>
+          <div class="mock-nav-item"><span class="mock-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg></span>문의하기</div>
+        </aside>
         <div class="mock-main">
-          <div class="mock-header-row">
-            <span class="mock-title">전체 채권 현황</span>
-            <span class="mock-badge">실시간 업데이트</span>
+          <div class="mock-app-top">
+            <span class="mock-bell"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"></path><path d="M13.7 19a2 2 0 0 1-3.4 0"></path></svg><span class="mock-bell-badge">1</span></span>
+            <div class="mock-profile">
+              <span class="mock-profile-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+              <span class="mock-profile-text"><strong>홍길동</strong><span>홍길동 · 채권자</span></span>
+            </div>
+          </div>
+          <div class="mock-greeting">
+            <h3>안녕하세요, 홍길동님</h3>
+            <p>2026년 5월 18일 월 · 위임 채권의 전체 현황을 확인하세요</p>
+          </div>
+          <div class="mock-alert">
+            <strong>동의 필요</strong>
+            <span>(주)한걸음이 채권 회수 서비스를 신청했습니다</span>
+            <span class="mock-alert-action">확인하기 <svg class="mock-link-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
           </div>
           <div class="mock-cards">
             <div class="mock-card">
-              <div class="mock-card-label">총 채권 금액</div>
-              <div class="mock-card-value">₩ 84,200만</div>
-              <div class="mock-card-sub">23건 관리 중</div>
+              <div class="mock-card-label">위임 채권금액</div>
+              <div class="mock-card-value">8.5억<small>원</small></div>
+              <div class="mock-card-sub">총 68건</div>
             </div>
             <div class="mock-card">
-              <div class="mock-card-label">회수 진행 중</div>
-              <div class="mock-card-value lime">₩ 31,500만</div>
-              <div class="mock-card-sub">착수율 92%</div>
+              <div class="mock-card-label">회수율 (금액 기준)</div>
+              <div class="mock-card-value">34.2<small>%</small></div>
+              <div class="mock-card-sub">위임 금액 대비</div>
             </div>
             <div class="mock-card">
-              <div class="mock-card-label">회수 완료</div>
-              <div class="mock-card-value">₩ 18,300만</div>
-              <div class="mock-card-sub">이번 달 기준</div>
+              <div class="mock-card-label">건수 회수율</div>
+              <div class="mock-card-value">42.1<small>%</small></div>
+              <div class="mock-card-sub">상환 1회 이상 기준</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-label">당월 회수</div>
+              <div class="mock-card-value">2,850만<small>원</small></div>
+              <div class="mock-card-sub">5월 CMS 성공</div>
             </div>
           </div>
-          <div>
-            <div class="mock-table-header">
-              <span>채무자</span><span>채권금액</span><span>진행 단계</span><span>상태</span>
+          <div class="mock-content-grid">
+            <div class="mock-panel">
+              <div class="mock-panel-head">
+                <div class="mock-panel-title">상태별 현황</div>
+                <div class="mock-panel-link">전체 현황 보기 <svg class="mock-link-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></div>
+              </div>
+              <p class="mock-panel-copy">총 68건의 위임 채권 중 18건이 상환 이행 중이며, 당월 회수금액은 2,850만원입니다.</p>
+              <div class="mock-progress"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="mock-state-grid">
+                <div class="mock-state">
+                  <div class="mock-state-label">접수</div>
+                  <div class="mock-state-value">12<small>건</small></div>
+                </div>
+                <div class="mock-state">
+                  <div class="mock-state-label">협의 중</div>
+                  <div class="mock-state-value">23<small>건</small></div>
+                </div>
+                <div class="mock-state">
+                  <div class="mock-state-label">합의 완료</div>
+                  <div class="mock-state-value">6<small>건</small></div>
+                </div>
+                <div class="mock-state">
+                  <div class="mock-state-label">이행 중</div>
+                  <div class="mock-state-value">18<small>건</small></div>
+                </div>
+                <div class="mock-state">
+                  <div class="mock-state-label">상환 완료</div>
+                  <div class="mock-state-value">9<small>건</small></div>
+                </div>
+              </div>
             </div>
-            <div class="mock-table-row">
-              <span>㈜ 테크웍스</span><span>3,200만원</span><span>상환 협의 중</span>
-              <span class="mock-status ing">● 진행 중</span>
+            <div class="mock-panel mock-calendar-panel">
+              <div class="mock-calendar-head">
+                <div class="mock-panel-title">월별 일정</div>
+                <div class="mock-calendar-meta"><span>총 11건</span><span>예정 855만</span><span>입금 <em>540만</em></span></div>
+                <div class="mock-calendar-controls">
+                  <span class="mock-cal-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></span>
+                  <div class="mock-calendar-month">2026년 5월</div>
+                  <span class="mock-cal-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
+                </div>
+              </div>
+              <div class="mock-weekdays"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+              <div class="mock-days">
+                <div class="mock-day empty"></div>
+                <div class="mock-day empty"></div>
+                <div class="mock-day empty"></div>
+                <div class="mock-day empty"></div>
+                <div class="mock-day">1</div>
+                <div class="mock-day">2</div>
+                <div class="mock-day">3</div>
+                <div class="mock-day">4</div>
+                <div class="mock-day hot">5<span class="mock-day-count">2건</span><span class="mock-day-note expected">예정 170만</span><span class="mock-day-note paid">입금 170만</span></div>
+                <div class="mock-day">6</div>
+                <div class="mock-day">7</div>
+                <div class="mock-day">8</div>
+                <div class="mock-day">9</div>
+                <div class="mock-day hot">10<span class="mock-day-count">1건</span><span class="mock-day-note expected">예정 85만</span><span class="mock-day-note paid">입금 85만</span></div>
+                <div class="mock-day">11</div>
+                <div class="mock-day warn">12<span class="mock-day-count">1건</span><span class="mock-day-note expected">예정 50만</span><span class="mock-day-note paid">입금 30만</span></div>
+                <div class="mock-day">13</div>
+                <div class="mock-day">14</div>
+                <div class="mock-day hot">15<span class="mock-day-count">3건</span><span class="mock-day-note expected">예정 255만</span><span class="mock-day-note paid">입금 255만</span></div>
+                <div class="mock-day">16</div>
+                <div class="mock-day warn">17<span class="mock-day-count">1건</span><span class="mock-day-note expected">예정 85만</span></div>
+                <div class="mock-day today">18</div>
+                <div class="mock-day">19</div>
+                <div class="mock-day future">20<span class="mock-day-count">2건</span><span class="mock-day-note expected">예정 135만</span></div>
+                <div class="mock-day">21</div>
+                <div class="mock-day">22</div>
+                <div class="mock-day">23</div>
+                <div class="mock-day">24</div>
+              </div>
+              <div class="mock-calendar-legend">
+                <span><i style="background:#12B76A;"></i>전액 입금</span>
+                <span><i style="background:#F97316;"></i>일부 입금</span>
+                <span><i style="background:#2768FF;"></i>예정</span>
+              </div>
             </div>
-            <div class="mock-table-row">
-              <span>박○○ (개인)</span><span>850만원</span><span>분할 이행 중</span>
-              <span class="mock-status done">● 이행 중</span>
-            </div>
-            <div class="mock-table-row">
-              <span>㈜ 미래건설</span><span>12,000만원</span><span>알림 발송 완료</span>
-              <span class="mock-status wait">○ 응답 대기</span>
-            </div>
+          </div>
+          <div class="mock-mobile-tabbar" aria-hidden="true">
+            <span>홈</span>
+            <span>상환 현황</span>
+            <span>상환 이력</span>
+            <span>계좌</span>
           </div>
         </div>
+      </div>
+    </div>
+      <div class="hero-float notice" aria-hidden="true">
+        <div class="hero-float-kicker">알림 자동화</div>
+        <div class="hero-float-title">채무자에게 안내가 발송됐어요</div>
+        <p class="hero-float-copy">부담스럽지 않은 톤으로 상환 방법을 먼저 안내합니다.</p>
+        <div class="hero-float-row">
+          <span>오늘 발송</span>
+          <strong>18건</strong>
+        </div>
+      </div>
+      <div class="hero-float recovery" aria-hidden="true">
+        <div class="hero-float-kicker">회수 진행</div>
+        <div class="hero-float-title">협의 중인 채권을 한눈에</div>
+        <div class="hero-float-progress"><span></span></div>
+        <div class="hero-float-mini">
+          <span>상환 협의 중 <b>23건</b></span>
+          <span>이행 진행 중 <b>18건</b></span>
+        </div>
+      </div>
+      <div class="hero-float deposit" aria-hidden="true">
+        <div class="hero-float-kicker">입금 확인</div>
+        <div class="hero-float-title">이번 달 회수금</div>
+        <div class="hero-float-row">
+          <span>CMS 성공</span>
+          <strong>540만</strong>
+        </div>
+        <div class="hero-float-pill-wrap"><span class="hero-float-pill">자동 반영 완료</span></div>
       </div>
     </div>
   </div>
@@ -1315,37 +3333,36 @@
   <div class="section-inner">
     <div class="pain-split">
       <div class="pain-left reveal">
-        <p class="eyebrow">이런 상황, 맞으시죠?</p>
         <h2 class="h2">받아야 할 돈인데<br>선뜻 나서기가<br>어렵죠</h2>
-        <p>기업이든 개인사업자든 다 비슷해요. 돈 얘기 꺼내기가 왜 이렇게 어려운지, 저희는 잘 알아요.</p>
+        <p>기업이든 개인사업자든 다 비슷해요.<br>돈 얘기 꺼내기가 왜 이렇게 어려운지, 저희는 잘 알아요.</p>
       </div>
       <div class="pain-right">
         <div class="pain-row reveal">
           <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_5847_211)"><path d="M11.4063 6.15625C6.13126 5.50625 4.25001 8.15625 3.34376 9.37501C0.875013 13.0156 2.35939 17.0156 4.15626 18.9375C4.15626 18.9375 14.25 28.7656 14.5313 29.0312C14.8125 29.2969 15.4766 30.2031 17.0781 29.9453C18.4757 29.7203 18.875 28.0312 18.875 28.0312C18.875 28.0312 19.9073 28.8731 21.3906 28.0312C22.5469 27.375 22.5 26.0625 22.5 26.0625C22.5 26.0625 23.7383 26.6829 25.0625 25.5625C26.2553 24.5532 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.5856 22.9571 27.3438 22.125C28.3688 21 28.0156 19.5781 27.3438 18.9375L19.625 10.5L19.0313 7.375L11.4063 6.15625Z" fill="#FFD7C2"/><path d="M26.7074 22.5933L24.4809 20.3364C24.287 20.1398 23.9704 20.1376 23.7739 20.3315C23.5773 20.5255 23.5751 20.8421 23.769 21.0386L25.5334 22.8272C25.5223 22.7973 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.0977 22.8769 26.7074 22.5933Z" fill="#F1B99B"/><path d="M23.9779 26.1509L21.6684 23.5872C21.4835 23.382 21.1674 23.3656 20.9622 23.5504C20.757 23.7352 20.7406 24.0514 20.9254 24.2565L22.5845 26.0983C22.7836 26.1741 23.3157 26.3302 23.9779 26.1509Z" fill="#F1B99B"/><path d="M20.5759 28.351L18.7698 26.438C18.5802 26.2372 18.2638 26.2281 18.063 26.4177C17.8622 26.6073 17.8531 26.9237 18.0427 27.1245L18.9471 28.0824C19.1457 28.2124 19.7417 28.5326 20.5759 28.351Z" fill="#F1B99B"/><path d="M18.4033 29.0535C17.6442 29.2557 16.2359 29.3193 15.2656 28.2812L14.4899 28.9916C14.51 29.011 14.524 29.0244 14.5313 29.0312C14.5602 29.0586 14.5932 29.0927 14.6309 29.1317C14.9591 29.4711 15.6414 30.1766 17.0781 29.9453C17.6998 29.8452 18.124 29.4554 18.4033 29.0535Z" fill="#F1B99B"/><path d="M6.375 6.8125C4.6875 8.97916 2.0875 14.5875 6.6875 18.4375L5.24045 19.9931C4.5734 19.3437 4.15626 18.9375 4.15626 18.9375C2.35939 17.0156 0.875013 13.0156 3.34376 9.375C3.35716 9.35698 3.37078 9.33864 3.38461 9.32C3.90872 8.61416 4.74999 7.48117 6.33357 6.75266L6.375 6.8125Z" fill="#F1B99B"/><path d="M17.25 23.6875C18.4531 25.0781 16.9492 26.8496 16.25 27.5938L5.66868 16.5845C7.64313 14.5816 8.94702 14.3814 9.82813 15.25C10.7092 16.1186 10.2969 16.7344 10.2969 16.7344C10.2969 16.7344 11.4909 16.0557 12.75 17.2969C14.0091 18.5381 13.1406 19.4844 13.1406 19.4844C13.1406 19.4844 14.44 19.2504 15.3594 20.2812C16.3906 21.4375 15.7344 22.7812 15.7344 22.7812C15.7344 22.7812 16.5248 22.8493 17.25 23.6875Z" fill="#F1B99B"/><path d="M12.4375 8C15.6719 6.70313 20.5781 6.04688 22.8281 6.01562C24.3594 6.01562 26.3091 6.38659 28.375 8.8125C31.6748 12.6873 29.2031 17.1094 27.25 18.9062V17.5C27.25 17.5 19.7436 10.9644 19.5 10.7344C19.05 10.3094 17.1979 10.4375 17 10.5C16.3958 10.6875 15.35 11 14 11.5C12.9023 11.9066 12.0312 11.5781 11.6718 10.7344C11.3124 9.89062 10.8297 8.64466 12.4375 8Z" fill="#FFD7C2"/><path d="M28.3106 17.7099C27.9645 18.1804 27.599 18.5852 27.25 18.9063C24.4896 16.5 18.8719 11.5813 18.4219 11.1563C17.9719 10.7313 17.4479 10.75 17.25 10.8125C16.6458 11 15.1 11.5 13.75 12C12.6523 12.4066 11.5469 11.5781 11.1875 10.7344C10.8589 9.96292 10.8321 8.85521 12.0589 8.17831L12.69 7.90133C12.7068 7.89496 12.7235 7.8886 12.7403 7.88226C10.7869 9.34968 12.5116 11.1435 14.125 10.9375C14.6919 10.8651 15.625 10.6719 16.5313 10.4375C16.8909 10.3445 17.2439 10.1794 17.5771 10.0236C18.2021 9.73124 18.7575 9.47151 19.1563 9.78126C20.6561 10.9462 25.1333 14.7492 28.3106 17.7099Z" fill="#F1B99B"/><path d="M8.81945 16.8786C8.07602 15.9154 6.69251 15.7372 5.72929 16.4806L3.81252 18.1016C2.92972 18.836 2.70107 20.2103 3.34614 21.103C3.93006 21.9111 4.82674 22.2447 5.64863 22.0112C5.28362 22.846 5.31493 23.914 6.01567 24.5001C6.67051 25.0477 7.47952 25.423 8.29069 25.1697C8.21346 25.7052 8.3713 26.2914 8.92192 26.875C9.44191 27.4262 10.1973 27.7006 11.0083 27.5183C10.9011 28.0902 11.0818 28.7257 11.7507 29.3711C12.57 30.1616 13.8311 30.2288 15.0157 29.1407L15.7879 28.241C16.4082 27.461 17.2658 26.1055 15.9844 24.9532C15.5412 24.5547 15.0316 24.3341 14.5026 24.3327C14.7901 23.6321 14.7847 22.7748 13.9532 21.9532C13.4334 21.4396 12.7958 21.2165 12.0932 21.3852C12.473 20.5766 12.4644 19.7523 11.7032 19.0001C11.0118 18.3169 10.1604 17.9929 9.06004 18.6091C9.25414 18.0144 9.20803 17.3821 8.81945 16.8786Z" fill="#FFD7C2"/><path d="M9.03352 17.2422L4.31006 21.9066C4.72783 22.0935 5.1834 22.1356 5.61931 22.0191L9.08879 18.593C9.0792 18.5983 9.0696 18.6036 9.05998 18.609C9.20968 18.1502 9.2165 17.6692 9.03352 17.2422Z" fill="#F1B99B"/><path d="M12.2463 19.8263L6.95856 25.0846C7.38419 25.2563 7.83707 25.3112 8.29063 25.1696C8.29067 25.1693 8.29059 25.1698 8.29063 25.1696L12.0982 21.3838C12.0965 21.3842 12.0948 21.3846 12.0932 21.385C12.3378 20.8641 12.4213 20.3367 12.2463 19.8263Z" fill="#F1B99B"/><path d="M14.5732 22.8968L9.65496 27.3953C10.0587 27.5722 10.5196 27.6262 11.0004 27.5199L14.5129 24.3071C14.683 23.8795 14.7429 23.3951 14.5732 22.8968Z" fill="#F1B99B"/></g><defs><clipPath id="clip0_5847_211"><rect width="32" height="32" fill="white"/></clipPath></defs></svg></div>
           <div class="pain-text">
-            <h3>거래처라서, 고객이라서 — 연락하기가 너무 조심스러워요</h3>
-            <p>리바운드가 대신 나서면 귀사 이름은 뒤에 있어도 돼요.</p>
+            <h3>거래처라서, 고객이라서<br class="pain-title-break"> 연락하기가 너무 조심스러워요</h3>
+            <p>리바운드를 통해 관계를 지키면서 회수할 수 있어요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
           <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 30H6.0317L15.977 27.2248L25.9222 30H30V9.3C30 8.03 28.97 7 27.7 7H4.3C3.03 7 2 8.03 2 9.3V30Z" fill="#9B9B9B"/><path d="M27 14H26C25.45 14 25 13.55 25 13V12C25 11.45 25.45 11 26 11H27C27.55 11 28 11.45 28 12V13C28 13.56 27.55 14 27 14ZM28 18V17C28 16.45 27.55 16 27 16H26C25.45 16 25 16.45 25 17V18C25 18.55 25.45 19 26 19H27C27.55 19 28 18.56 28 18ZM28 23V22C28 21.45 27.55 21 27 21H26C25.45 21 25 21.45 25 22V23C25 23.55 25.45 24 26 24H27C27.55 24 28 23.56 28 23Z" fill="#83CBFF"/><path d="M7 22V23C7 23.55 6.55 24 6 24H5C4.45 24 4 23.55 4 23V22C4 21.45 4.45 21 5 21H6C6.55 21 7 21.45 7 22ZM6 11H5C4.45 11 4 11.45 4 12V13C4 13.55 4.45 14 5 14H6C6.55 14 7 13.55 7 13V12C7 11.45 6.55 11 6 11ZM6 16H5C4.45 16 4 16.45 4 17V18C4 18.55 4.45 19 5 19H6C6.55 19 7 18.55 7 18V17C7 16.45 6.55 16 6 16Z" fill="#83CBFF"/><path d="M26 30H18.9867L15.9711 28.2702L12.9556 30H6V4.46C6 3.1 7.1 2 8.46 2H23.54C24.9 2 26 3.1 26 4.46V30Z" fill="#D3D3D3"/><path d="M19 30H13V26.25C13 25.56 13.56 25 14.25 25H17.75C18.44 25 19.01 25.56 19.01 26.26V30H19Z" fill="#1C1C1C"/><path d="M14.5 18H11.5C11.23 18 11 17.78 11 17.5V15.49C11 15.22 11.22 14.99 11.5 14.99H14.51C14.78 14.99 15.01 15.21 15.01 15.49V17.5C15 17.78 14.78 18 14.5 18ZM21 17.51V15.5C21 15.23 20.78 15 20.5 15H17.5C17.23 15 17 15.22 17 15.5V17.51C17 17.78 17.22 18.01 17.5 18.01H20.51C20.78 18 21 17.78 21 17.51ZM15 22.51V20.5C15 20.23 14.78 20 14.5 20H11.5C11.23 20 11 20.22 11 20.5V22.51C11 22.78 11.22 23.01 11.5 23.01H14.51C14.78 23 15 22.78 15 22.51ZM21 22.51V20.5C21 20.23 20.78 20 20.5 20H17.5C17.23 20 17 20.22 17 20.5V22.51C17 22.78 17.22 23.01 17.5 23.01H20.51C20.78 23 21 22.78 21 22.51ZM15 7.50999V5.5C15 5.23 14.78 5 14.5 5H11.5C11.23 5 11 5.22 11 5.5V7.50999C11 7.77999 11.22 8.00999 11.5 8.00999H14.51C14.78 7.99999 15 7.77999 15 7.50999ZM21 7.50999V5.5C21 5.23 20.78 5 20.5 5H17.5C17.23 5 17 5.22 17 5.5V7.50999C17 7.77999 17.22 8.00999 17.5 8.00999H20.51C20.78 7.99999 21 7.77999 21 7.50999ZM15 12.51V10.5C15 10.23 14.78 10 14.5 10H11.5C11.23 10 11 10.22 11 10.5V12.51C11 12.78 11.22 13.01 11.5 13.01H14.51C14.78 13 15 12.78 15 12.51ZM21 12.51V10.5C21 10.23 20.78 10 20.5 10H17.5C17.23 10 17 10.22 17 10.5V12.51C17 12.78 17.22 13.01 17.5 13.01H20.51C20.78 13 21 12.78 21 12.51Z" fill="#83CBFF"/></svg></div>
           <div class="pain-text">
-            <h3>상대가 기업인데 누구한테, 어떻게 얘기를 꺼내야 하죠?</h3>
-            <p>B2B 채권은 접근이 달라야 해요. 채권추심 전문 변호사 노하우로 길을 찾아드려요.</p>
+            <h3>기업을 상대로는<br class="pain-title-break"> 어떻게 회수해야할지 모르겠어요</h3>
+            <p>B2B 채권은 접근이 달라야 해요.<br class="pain-desc-break"> 채권추심 전문 변호사 노하우로 길을 찾아드려요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
           <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 4.5C18 3.67157 18.6716 3 19.5 3H23.5C24.3284 3 25 3.67157 25 4.5V5L21.5 5.5L18 5V4.5Z" fill="#00D26A"/><path d="M2 8C2 6.34315 3.34315 5 5 5H27C28.6569 5 30 6.34315 30 8V12H2V8Z" fill="#FFB02E"/><path d="M13 8.5C13 7.67157 13.6716 7 14.5 7H18.5C19.3284 7 20 7.67157 20 8.5V9L16.5 10L13 9V8.5Z" fill="#00A6ED"/><path d="M2 12C2 10.3431 3.34315 9 5 9H27C28.6569 9 30 10.3431 30 12V17H2V12Z" fill="#F9C23C"/><path d="M7 12.5C7 11.6716 7.67157 11 8.5 11H12.5C13.3284 11 14 11.6716 14 12.5V13L10.5 14L7 13V12.5Z" fill="#F8312F"/><path d="M2 16C2 14.3431 3.34315 13 5 13H27C28.6569 13 30 14.3431 30 16V27C30 28.6569 28.6569 30 27 30H5C3.34315 30 2 28.6569 2 27V16Z" fill="#FCD53F"/></svg></div>
           <div class="pain-text">
-            <h3>건수가 너무 많아서 그냥 상각처리할까 고민 중이에요</h3>
-            <p>대량 채권도 시스템으로 관리하며 끝까지 추적해요. 상각 전에 한 번만 확인해보세요.</p>
+            <h3>건수가 너무 많아서 관리가 힘들어요</h3>
+            <p>대량 채권도 시스템으로 관리하며 편하게 관리해보세요. 상각 전에 한 번만 확인해보세요.</p>
           </div>
         </div>
         <div class="pain-row reveal">
           <div class="pain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.2066 24.5794C21 25.5 19.05 26 16.5 26C13.7116 26 12 25.5 9.297 24.1399L6.71138 26.3768C5.31666 27.5881 6.10934 30 7.90542 30H24.0901C25.8862 30 26.6889 27.5881 25.2842 26.3768L23.2066 24.5794Z" fill="#D3D3D3"/><path d="M16.5 27C22.299 27 27 22.299 27 16.5C27 10.701 22.299 6 16.5 6C10.701 6 6 10.701 6 16.5C6 22.299 10.701 27 16.5 27Z" fill="#F8312F"/><path d="M16.5 24C20.6421 24 24 20.6422 24 16.5C24 12.3579 20.6421 9 16.5 9C12.3579 9 9 12.3579 9 16.5C9 20.6422 12.3579 24 16.5 24Z" fill="white"/><path d="M4.27314 9.22796C3.53751 6.94375 4.31186 4.34482 6.30578 2.93369C8.2997 1.52256 10.8937 1.75607 12.6263 3.32963C13.1684 3.82708 13.1103 4.73059 12.5198 5.14682L5.91862 9.8066C5.31851 10.2228 4.50544 9.9386 4.27314 9.22796Z" fill="#F9C23C"/><path d="M28.7269 9.22796C29.4625 6.94375 28.6882 4.34482 26.6942 2.93369C24.7003 1.52256 22.1063 1.75607 20.3737 3.32963C19.8316 3.82708 19.8897 4.73059 20.4802 5.14682L27.0814 9.8066C27.6815 10.2228 28.4946 9.9386 28.7269 9.22796Z" fill="#F9C23C"/><path d="M15.1679 16.4454C15.4743 15.9859 16.0952 15.8617 16.5547 16.1681L19.5547 18.1681C20.0142 18.4744 20.1384 19.0953 19.832 19.5548C19.5257 20.0143 18.9048 20.1385 18.4453 19.8322L15.4453 17.8322C14.9858 17.5258 14.8616 16.9049 15.1679 16.4454Z" fill="#F8312F"/><path d="M16 11C16.5523 11 17 11.4477 17 12V17C17 17.5523 16.5523 18 16 18C15.4477 18 15 17.5523 15 17V12C15 11.4477 15.4477 11 16 11Z" fill="#212121"/></svg></div>
           <div class="pain-text">
-            <h3>미수 관리하느라 정작 본업에 집중을 못 하고 있어요</h3>
-            <p>맡기면 끝이에요. 귀사는 하던 일만 하면 돼요.</p>
+            <h3>미수 관리하느라<br class="pain-title-break"> 정작 본업에 집중을 못 하고 있어요</h3>
+            <p>회수는 리바운드에게 맡기고, 핵심 업무에 집중하세요.</p>
           </div>
         </div>
       </div>
@@ -1357,259 +3374,246 @@
 <section class="section how" id="how">
   <div class="section-inner">
     <div class="how-head reveal">
-      <p class="eyebrow center">리바운드가 돈을 받아내는 방법</p>
-      <h2 class="h2">못 갚는 데는 이유가 있어요.<br>그 이유마다 해결책이 있고요.</h2>
-      <p class="how-subtitle">채무자 대부분은 악의가 없어요. 잊었거나, 귀찮거나, 당장 돈이 없거나.<br>채권추심 전문 변호사의 노하우와 AI로 그 이유에 맞게 접근합니다.</p>
+      <p class="eyebrow center">리바운드가 회수를 진행하는 방법</p>
+      <h2 class="h2 desk-only">채무자들이 못 갚는 데는 이유가 있어요.<br>리바운드는 그 이유에 맞게 상환을 설계합니다.</h2>
+      <h2 class="h2 mob-only">채무자마다 상황은 달라요.<br>리바운드는 그에 맞게 상황을 설계해요.</h2>
+      <p class="how-subtitle">리바운드는 알림, 자동이체, 상환 조율을 하나의 흐름으로 운영해요.<br class="br-desk">하나의 흐름 안에서 각 채무자에게 맞게 세부사항을 조절해<br class="br-mob"> 회수 가능성을 높여요.</p>
     </div>
     <div class="how-grid reveal">
 
       <!-- 01 -->
       <div class="how-gc">
         <div class="how-gc-meta">
-          <div class="how-gc-num">01</div>
+          <div class="how-gc-num">잊지 않도록</div>
           <div>
-            <h4>잊은 거라면 — 알림으로 상기</h4>
-            <p>적절한 타이밍에 채무자에게 자동 알림을 보내요. 압박 없이, 부드럽게.</p>
+            <h4>잊지 않도록<br>알림으로 상기</h4>
+            <p>적절한 타이밍에 채무자에게 자동 알림을 보내요.<br>압박 없이, 부드럽게.</p>
           </div>
         </div>
         <div class="how-gc-body">
-        <div class="how-card">
-          <div class="how-card-header">
-            <span class="how-card-title">📱 자동 알림 발송</span>
-            <span class="tag lime-bg">발송 완료</span>
-          </div>
-          <div class="how-card-body">
-            <p class="notif-header">채무자에게 발송된 메시지</p>
-            <div class="notif-bubble">
-              <div class="notif-sender">📨 리바운드</div>
-              <div class="notif-text">㈜ 테크웍스 담당자님, 미납 채권 3,200만원 건 관련 안내드립니다. 편한 시간에 상환 방법을 확인해 주세요.</div>
-              <div class="notif-time">오늘 오전 10:14</div>
+          <div class="how-card">
+            <div class="how-card-header">
+              <span class="how-card-title">알림 자동화</span>
             </div>
-            <div class="notif-bubble">
-              <div class="notif-sender">📨 리바운드</div>
-              <div class="notif-text">이전 안내 건 재공지드립니다. 불편한 점이 있으시다면 편하게 회신 주세요.</div>
-              <div class="notif-time">어제 오후 3:22</div>
-            </div>
-            <div class="notif-stats">
-              <div><div class="notif-stat-num">3회</div><div class="notif-stat-label">발송</div></div>
-              <div><div class="notif-stat-num" style="color:#16A34A">1회</div><div class="notif-stat-label">응답</div></div>
-              <div><div class="notif-stat-num">2일 전</div><div class="notif-stat-label">마지막 발송</div></div>
-            </div>
-            <div style="margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-              <div style="padding:10px 14px;background:var(--off);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.3px;">다음 발송 예정</div>
-              <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                  <div style="font-size:13px;font-weight:600;color:var(--text);">3차 알림 (입금 독촉)</div>
-                  <div style="font-size:12px;color:var(--text3);margin-top:2px;">자동 발송 · 무응답 72시간 경과 시</div>
+            <div class="how-card-body">
+              <p class="notif-header">채무자에게 발송된 메시지</p>
+              <div class="notif-bubble">
+                <div class="notif-bubble-top">
+                  <span class="notif-brand-mark">
+                    <svg viewBox="0 0 43 45" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#B5F23D"/>
+                      <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#B5F23D"/>
+                      <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#B5F23D"/>
+                      <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#B5F23D"/>
+                      <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#B5F23D"/>
+                    </svg>
+                  </span>
+                  <span class="notif-sender">리바운드</span>
+                  <span class="notif-time">오늘 10:14</span>
                 </div>
-                <span style="font-size:12px;color:var(--text2);background:var(--off);padding:4px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;">내일 오전 10:00</span>
+                <div class="notif-text">테크웍스 담당자님, 미납 채권 3,200만원 건 안내드립니다. 편한 시간에 상환 방법을 확인해 주세요.</div>
+              </div>
+              <div class="notif-bubble">
+                <div class="notif-bubble-top">
+                  <span class="notif-brand-mark">
+                    <svg viewBox="0 0 43 45" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path opacity="0.35" d="M25.3768 39.1209V39.3775C25.3089 36.9314 23.3046 34.9813 20.8586 34.9813C18.4127 34.9813 16.3574 36.9998 16.3404 39.4973V39.5315V39.292C16.2045 32.8944 10.956 27.6943 4.62029 27.6772H4.56934C7.03226 27.643 9.03658 25.6245 9.03658 23.127C9.03658 20.6296 7.04925 18.6111 4.58632 18.5769C10.0387 18.5769 15.0495 20.7493 18.7864 24.2731C22.761 28.0022 25.2749 33.2708 25.3938 39.1038L25.3768 39.1209Z" fill="#B5F23D"/>
+                      <path opacity="0.45" d="M40.7483 8.34765C39.1517 9.56216 37.6569 10.9135 36.2471 12.3846C35.6016 13.0688 34.9732 13.7702 34.3787 14.4715C28.6375 21.4165 25.4612 30.0036 25.3762 39.1039V39.5144C25.3762 37.017 23.338 34.9814 20.858 34.9814C18.3781 34.9814 16.3398 37.017 16.3398 39.5144V39.292C16.3738 34.0577 17.2231 29.0114 18.7858 24.2902C20.7561 18.3374 23.8475 12.8807 27.8052 8.19369C29.8095 5.83309 32.0346 3.67776 34.4466 1.74481C34.7184 1.52243 35.0071 1.30006 35.2959 1.07768C35.0411 1.30006 34.8033 1.55664 34.5825 1.84744C34.022 2.6001 33.6992 3.54092 33.6992 4.55016C33.6992 7.06471 35.7375 9.1003 38.2174 9.1003C39.1517 9.1003 40.0349 8.8095 40.7483 8.33054V8.34765Z" fill="#B5F23D"/>
+                      <path opacity="0.5" d="M9.0364 23.1442C9.0364 25.6416 7.03208 27.6772 4.56916 27.6943H4.5182C2.0213 27.6943 0 25.6587 0 23.1442C0 20.6296 2.03828 18.5941 4.5182 18.5941H4.58614C7.04907 18.6283 9.0364 20.6639 9.0364 23.1442Z" fill="#B5F23D"/>
+                      <path opacity="0.8" d="M25.3762 39.5144C25.3762 42.0461 23.338 44.0817 20.858 44.0817C18.3781 44.0817 16.3398 42.0461 16.3398 39.5315V39.4973C16.3398 36.9999 18.3781 34.9643 20.858 34.9643C23.338 34.9643 25.3762 36.9999 25.3762 39.4973V39.5144Z" fill="#B5F23D"/>
+                      <path d="M42.7362 4.56727C42.7362 5.96995 42.1077 7.21867 41.1395 8.03975C41.0886 8.07396 41.0546 8.10817 41.0206 8.14238C41.0206 8.14238 40.8508 8.27923 40.7659 8.34765C40.0355 8.82661 39.1692 9.11741 38.235 9.11741C35.7381 9.11741 33.7168 7.08182 33.7168 4.56727C33.7168 3.55803 34.0395 2.61721 34.6001 1.86455C34.8039 1.59086 35.0417 1.33427 35.3135 1.09479C35.4663 0.975053 35.6022 0.872419 35.7551 0.752678C36.4685 0.273716 37.3348 2.28882e-05 38.252 2.28882e-05C40.7659 2.28882e-05 42.7702 2.03561 42.7702 4.55016L42.7362 4.56727Z" fill="#B5F23D"/>
+                    </svg>
+                  </span>
+                  <span class="notif-sender">리바운드</span>
+                  <span class="notif-time">어제 15:22</span>
+                </div>
+                <div class="notif-text">이전 안내 건 재공지드립니다. 불편한 점이 있으시다면 편하게 회신 주세요.</div>
+              </div>
+              <div class="notif-action">
+                <div>
+                  <span>다음 액션</span>
+                  <strong>3차 알림 자동 예약</strong>
+                </div>
+                <em>내일 10:00</em>
               </div>
             </div>
           </div>
-        </div>
         </div><!-- /how-gc-body -->
       </div><!-- /how-gc 01 -->
 
       <!-- 02 -->
       <div class="how-gc">
         <div class="how-gc-meta">
-          <div class="how-gc-num">02</div>
+          <div class="how-gc-num">귀찮지 않도록</div>
           <div>
-            <h4>귀찮은 거라면 — CMS 연동으로 간편하게</h4>
-            <p>채무자가 직접 은행에 갈 필요 없어요. 자동이체 연동으로 갚는 과정을 최대한 쉽게 만들어요.</p>
+            <h4>CMS 연동으로<br>간편하게</h4>
+            <p>채무자가 직접 은행에 갈 필요 없어요.<br>자동이체 연동으로 갚는 과정을 최대한 쉽게 만들어요.</p>
           </div>
         </div>
         <div class="how-gc-body">
-        <div class="how-card" id="how-mock-2">
-          <div class="how-card-header">
-            <span class="how-card-title">🔗 CMS 자동이체 연동</span>
-            <span class="tag lime-bg">연동 완료</span>
-          </div>
-          <div class="how-card-body">
-            <div class="cms-bank-row">
-              <div class="cms-bank-icon">🏦</div>
-              <div>
-                <div class="cms-bank-name">국민은행</div>
-                <div class="cms-bank-acct">123-456-789012 · 예금주 김○○</div>
-              </div>
+          <div class="how-card" id="how-mock-2">
+            <div class="how-card-header">
+              <span class="how-card-title">CMS 자동이체</span>
             </div>
-            <div class="cms-schedule">
-              <div class="cms-sched-item">
-                <div class="cms-sched-label">자동이체일</div>
-                <div class="cms-sched-val">매월 25일</div>
-              </div>
-              <div class="cms-sched-item">
-                <div class="cms-sched-label">이체 금액</div>
-                <div class="cms-sched-val">350만원/회</div>
-              </div>
-            </div>
-            <div class="cms-confirmed">
-              <span>✓ 자동이체 신청 완료</span>
-              <span>다음 이체일 11.25</span>
-            </div>
-            <div style="margin-top:14px;">
-              <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.3px;margin-bottom:8px;">이체 예정 내역</div>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
-                  <span style="font-size:12px;color:var(--text3);width:36px;">1회차</span>
-                  <span style="font-size:13px;color:var(--text2);">11월 25일</span>
-                  <span style="font-size:13px;font-weight:700;color:var(--text);">350만원</span>
-                  <span style="font-size:11px;padding:2px 8px;background:#FEF9C3;color:#854D0E;border-radius:6px;">예정</span>
+            <div class="how-card-body">
+              <div class="cms-bank-row">
+                <div class="cms-bank-icon">KB</div>
+                <div>
+                  <div class="cms-bank-name">국민은행</div>
+                  <div class="cms-bank-acct">123-456-789012 · 예금주 김OO</div>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
-                  <span style="font-size:12px;color:var(--text3);width:36px;">2회차</span>
-                  <span style="font-size:13px;color:var(--text2);">12월 25일</span>
-                  <span style="font-size:13px;font-weight:700;color:var(--text);">350만원</span>
-                  <span style="font-size:11px;padding:2px 8px;background:var(--off);color:var(--text3);border-radius:6px;border:1px solid var(--border);">대기</span>
+              </div>
+              <div class="cms-schedule">
+                <div class="cms-sched-item">
+                  <div class="cms-sched-label">자동이체일</div>
+                  <div class="cms-sched-val">매월 25일</div>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--off);border-radius:8px;">
-                  <span style="font-size:12px;color:var(--text3);width:36px;">3회차</span>
-                  <span style="font-size:13px;color:var(--text2);">01월 25일</span>
-                  <span style="font-size:13px;font-weight:700;color:var(--text);">300만원</span>
-                  <span style="font-size:11px;padding:2px 8px;background:var(--off);color:var(--text3);border-radius:6px;border:1px solid var(--border);">대기</span>
+                <div class="cms-sched-item">
+                  <div class="cms-sched-label">이체 금액</div>
+                  <div class="cms-sched-val">350만원/회</div>
+                </div>
+              </div>
+              <div class="cms-confirmed">
+                <span>자동이체 신청 완료</span>
+                <span>다음 이체일 11.25</span>
+              </div>
+              <div class="flow-label">이체 예정 내역</div>
+              <div class="flow-list">
+                <div class="flow-row">
+                  <span>1회차</span>
+                  <span>11월 25일</span>
+                  <strong>350만원</strong>
+                  <span class="tag lime-bg">예정</span>
+                </div>
+                <div class="flow-row">
+                  <span>2회차</span>
+                  <span>12월 25일</span>
+                  <strong>350만원</strong>
+                  <span class="tag gray">대기</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
         </div><!-- /how-gc-body -->
       </div><!-- /how-gc 02 -->
 
       <!-- 03 -->
       <div class="how-gc">
         <div class="how-gc-meta">
-          <div class="how-gc-num">03</div>
+          <div class="how-gc-num">현금흐름이 원활하도록</div>
           <div>
-            <h4>돈이 없다면 — 나눠 갚을 방법 제시</h4>
-            <p>귀사가 설정한 조건 범위 안에서 현실적인 분할 방법을 채무자에게 제안하고 설득해요.</p>
+            <h4>현실적인<br>상환 방안 제시</h4>
+            <p>귀사가 설정한 조건 범위 안에서<br>현실적인 분할 방법을 채무자에게 제안하고 설득해요.</p>
           </div>
         </div>
         <div class="how-gc-body">
-        <div class="how-card" id="how-mock-3">
-          <div class="how-card-header">
-            <span class="how-card-title">📋 분할 상환 계획서</span>
-            <span class="tag lime-bg">채무자 동의 완료</span>
-          </div>
-          <div class="how-card-body">
-            <div class="install-summary">
-              <div class="install-summary-item">
-                <div class="install-summary-val">3,200만</div>
-                <div class="install-summary-label">총 채권 금액</div>
-              </div>
-              <div class="install-summary-item">
-                <div class="install-summary-val">3회</div>
-                <div class="install-summary-label">분할 횟수</div>
-              </div>
-              <div class="install-summary-item">
-                <div class="install-summary-val">3개월</div>
-                <div class="install-summary-label">상환 기간</div>
-              </div>
+          <div class="how-card" id="how-mock-3">
+            <div class="how-card-header">
+              <span class="how-card-title">분할 상환 플랜</span>
             </div>
-            <div class="install-row">
-              <span class="install-round">1회차</span>
-              <span class="install-date">11월 25일</span>
-              <span class="install-amount">1,100만원</span>
-              <span class="tag gray">예정</span>
-            </div>
-            <div class="install-row">
-              <span class="install-round">2회차</span>
-              <span class="install-date">12월 25일</span>
-              <span class="install-amount">1,100만원</span>
-              <span class="tag gray">예정</span>
-            </div>
-            <div class="install-row">
-              <span class="install-round">3회차</span>
-              <span class="install-date">01월 25일</span>
-              <span class="install-amount">1,000만원</span>
-              <span class="tag gray">예정</span>
-            </div>
-            <div style="margin-top:16px;padding:14px 16px;background:rgba(181,242,61,0.06);border:1px solid rgba(181,242,61,0.18);border-radius:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <span style="font-size:12px;font-weight:600;color:var(--text2);">총 상환 진행률</span>
-                <span style="font-size:12px;font-weight:700;color:#4CAF24;">0% · 0/3회 완료</span>
+            <div class="how-card-body">
+              <div class="install-summary">
+                <div class="install-summary-item">
+                  <div class="install-summary-val">3,200만</div>
+                  <div class="install-summary-label">총 채권 금액</div>
+                </div>
+                <div class="install-summary-item">
+                  <div class="install-summary-val">3회</div>
+                  <div class="install-summary-label">분할 횟수</div>
+                </div>
+                <div class="install-summary-item">
+                  <div class="install-summary-val">3개월</div>
+                  <div class="install-summary-label">상환 기간</div>
+                </div>
               </div>
-              <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
-                <div style="width:0%;height:100%;background:var(--lime);border-radius:3px;"></div>
+              <div class="install-row">
+                <span class="install-round">1회차</span>
+                <span class="install-date">11월 25일</span>
+                <span class="install-amount">1,100만원</span>
+                <span class="tag gray">예정</span>
               </div>
-              <div style="display:flex;justify-content:space-between;margin-top:10px;">
-                <span style="font-size:12px;color:var(--text3);">잔여 채권</span>
-                <span style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-0.3px;">₩ 3,200만원</span>
+              <div class="install-row">
+                <span class="install-round">2회차</span>
+                <span class="install-date">12월 25일</span>
+                <span class="install-amount">1,100만원</span>
+                <span class="tag gray">예정</span>
+              </div>
+              <div class="install-row">
+                <span class="install-round">3회차</span>
+                <span class="install-date">01월 25일</span>
+                <span class="install-amount">1,000만원</span>
+                <span class="tag gray">예정</span>
+              </div>
+              <div class="install-progress-card">
+                <div class="install-progress-head">
+                  <span>총 상환 진행률</span>
+                  <strong>0% · 0/3회 완료</strong>
+                </div>
+                <div class="install-progress-bar"><span></span></div>
+                <div class="install-progress-foot">
+                  <span>잔여 채권</span>
+                  <strong>3,200만원</strong>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
         </div><!-- /how-gc-body -->
       </div><!-- /how-gc 03 -->
 
       <!-- 04 -->
       <div class="how-gc">
         <div class="how-gc-meta">
-          <div class="how-gc-num">04</div>
+          <div class="how-gc-num">편하게 관리할 수 있도록</div>
           <div>
-            <h4>진행 현황은 관리자 페이지에서</h4>
-            <p>기업 전용 대시보드에서 전체 채권 진행 상태를 한눈에 확인할 수 있어요.</p>
+            <h4>관리자 페이지에서<br>진행 확인</h4>
+            <p>기업 전용 대시보드에서<br>전체 채권 진행 상태를 한눈에 확인할 수 있어요.</p>
           </div>
         </div>
         <div class="how-gc-body">
-        <div class="how-card" id="how-mock-4">
-          <div class="how-card-header">
-            <span class="how-card-title">📋 진행 중인 채권 목록</span>
-            <span class="tag lime-bg">23건 관리 중</span>
-          </div>
-          <div class="how-card-body">
-            <div class="debt-row">
-              <div>
-                <div class="debt-company">㈜ 테크웍스</div>
-                <div style="font-size:12px;color:var(--text3);margin-top:2px">상환 협의 중 · 3회차</div>
-              </div>
-              <div class="debt-right">
-                <div><div class="progress-pill"><div class="progress-fill" style="width:75%"></div></div></div>
-                <span class="tag lime-bg">진행 중</span>
-                <div class="debt-amount">3,200만</div>
-              </div>
+          <div class="how-card" id="how-mock-4">
+            <div class="how-card-header">
+              <span class="how-card-title">진행 중인 채권</span>
             </div>
-            <div class="debt-row">
-              <div>
-                <div class="debt-company">박○○ (개인)</div>
-                <div style="font-size:12px;color:var(--text3);margin-top:2px">분할 이행 중 · 1회차 완료</div>
+            <div class="how-card-body">
+              <div class="debt-row">
+                <div>
+                  <div class="debt-company">테크웍스</div>
+                  <div class="debt-sub">상환 협의 중 · 3회차</div>
+                </div>
+                <div class="debt-right">
+                  <div class="progress-pill"><div class="progress-fill p75"></div></div>
+                  <span class="tag status-progress">진행 중</span>
+                  <div class="debt-amount">3,200만</div>
+                </div>
               </div>
-              <div class="debt-right">
-                <div><div class="progress-pill"><div class="progress-fill" style="width:40%"></div></div></div>
-                <span class="tag green">이행 중</span>
-                <div class="debt-amount">850만</div>
+              <div class="debt-row">
+                <div>
+                  <div class="debt-company">박OO</div>
+                  <div class="debt-sub">분할 이행 중 · 1회차 완료</div>
+                </div>
+                <div class="debt-right">
+                  <div class="progress-pill"><div class="progress-fill p40"></div></div>
+                  <span class="tag status-running">이행 중</span>
+                  <div class="debt-amount">850만</div>
+                </div>
               </div>
-            </div>
-            <div class="debt-row">
-              <div>
-                <div class="debt-company">㈜ 미래건설</div>
-                <div style="font-size:12px;color:var(--text3);margin-top:2px">알림 발송 완료 · 응답 대기</div>
+              <div class="debt-row">
+                <div>
+                  <div class="debt-company">미래건설</div>
+                  <div class="debt-sub">알림 발송 완료 · 응답 대기</div>
+                </div>
+                <div class="debt-right">
+                  <div class="progress-pill"><div class="progress-fill p20"></div></div>
+                  <span class="tag status-waiting">대기 중</span>
+                  <div class="debt-amount">1.2억</div>
+                </div>
               </div>
-              <div class="debt-right">
-                <div><div class="progress-pill"><div class="progress-fill" style="width:20%"></div></div></div>
-                <span class="tag gray">대기 중</span>
-                <div class="debt-amount">1.2억</div>
+              <div class="how-total">
+                <span>이번 달 회수 완료</span>
+                <strong>4,570<span class="amount-unit">만원</span></strong>
               </div>
-            </div>
-            <div class="debt-row">
-              <div>
-                <div class="debt-company">김○○ (개인사업자)</div>
-                <div style="font-size:12px;color:var(--text3);margin-top:2px">최종 정산 완료</div>
-              </div>
-              <div class="debt-right">
-                <div><div class="progress-pill"><div class="progress-fill" style="width:100%"></div></div></div>
-                <span class="tag blue">완료</span>
-                <div class="debt-amount">520만</div>
-              </div>
-            </div>
-            <div style="margin-top:16px;padding:14px;background:var(--off);border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
-              <div style="font-size:13px;color:var(--text2);">이번 달 회수 완료</div>
-              <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-0.5px;">₩ 4,570<span style="font-size:14px;font-weight:600;color:var(--text3);">만원</span></div>
             </div>
           </div>
-        </div>
-
         </div><!-- /how-gc-body -->
       </div><!-- /how-gc 04 -->
 
@@ -1617,8 +3621,8 @@
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section features" id="features">
+<!-- FEATURES (삭제됨) -->
+<section class="section features" id="features" style="display:none">
   <div class="section-inner">
     <div class="features-head reveal">
       <p class="eyebrow center">리바운드의 해결 방식</p>
@@ -1716,24 +3720,24 @@
 <section class="stats">
   <div class="stats-inner">
     <div class="stat-cell reveal">
-      <div class="stat-num">92<span>%</span></div>
-      <div class="stat-label">착수 후 첫 회수 성공률</div>
-      <div class="stat-desc">업계 평균 대비 월등히 높음</div>
+      <div class="stat-num">94<span>%</span></div>
+      <div class="stat-label">평균 회수율</div>
+      <div class="stat-desc">업계 평균 대비 41% 높음</div>
     </div>
     <div class="stat-cell reveal">
-      <div class="stat-num">1,200<span>+</span></div>
-      <div class="stat-label">누적 처리 채권 건수</div>
-      <div class="stat-desc">다양한 업종의 기업 고객</div>
+      <div class="stat-num">5<span>분</span></div>
+      <div class="stat-label">등록 소요 시간</div>
+      <div class="stat-desc">차용증 없이 스마트폰으로</div>
     </div>
     <div class="stat-cell reveal">
-      <div class="stat-num">48<span>억+</span></div>
-      <div class="stat-label">누적 회수 완료 금액</div>
-      <div class="stat-desc">현재까지 처리 규모</div>
+      <div class="stat-num">0<span>원</span></div>
+      <div class="stat-label">미회수 시 비용</div>
+      <div class="stat-desc">성공 보수 방식</div>
     </div>
     <div class="stat-cell reveal">
-      <div class="stat-num">4.9<span>★</span></div>
-      <div class="stat-label">기업 고객 만족도</div>
-      <div class="stat-desc">재이용 의향 95% 이상</div>
+      <div class="stat-num">3<span>일</span></div>
+      <div class="stat-label">평균 첫 접촉</div>
+      <div class="stat-desc">법무법인 명의 신속 처리</div>
     </div>
   </div>
 </section>
@@ -1743,218 +3747,351 @@
   <div class="section-inner">
     <div class="process-split">
       <div class="process-left reveal">
-        <p class="eyebrow">이렇게 진행돼요</p>
-        <h2 class="h2">등록하면<br>나머지는<br>저희가 해요</h2>
-        <p>복잡하게 생각할 거 없어요. 채권 정보만 넣어두면 리바운드가 알아서 움직여요.</p>
+        <div class="process-head">
+          <p class="eyebrow center">이렇게 진행돼요</p>
+          <h2 class="h2 center">채권 정보만 등록하면<br>신청은 자연스럽게 이어져요</h2>
+          <p class="process-sub">채권 입력부터 플랜 제안, 정산 계좌 선택까지<br>하나의 흐름 안에서 확인할 수 있어요.</p>
+        </div>
         <div class="proc-steps">
           <div class="proc-step active">
             <div class="proc-num">01</div>
             <div class="proc-body">
-              <h4>채권 등록 & 조건 설정</h4>
-              <p>채무자 정보와 수용 가능한 상환 범위를 입력해요. 5분이면 돼요.</p>
+              <h4>채권 정보 입력</h4>
+              <p>채무자 정보, 채권 금액, 발생 경위와 증빙 자료를 등록해요.</p>
             </div>
           </div>
           <div class="proc-step">
             <div class="proc-num">02</div>
             <div class="proc-body">
-              <h4>전략 수립</h4>
-              <p>변호사 노하우와 AI가 채무자 접근 전략을 짜요. 귀사가 할 일은 없어요.</p>
+              <h4>상환 플랜 제시</h4>
+              <p>강경/완화 전략과 할인 여부를 고르면 제안 플랜을 비교해요.</p>
             </div>
           </div>
           <div class="proc-step">
             <div class="proc-num">03</div>
             <div class="proc-body">
-              <h4>협의 & 팔로업</h4>
-              <p>알림, CMS 연동, 분할 제안 — 채무자 상황에 맞게 집요하게 설득해요.</p>
+              <h4>정산 계좌 선택</h4>
+              <p>회수금이 입금될 계좌를 선택하거나 새 계좌를 확인해요.</p>
             </div>
           </div>
           <div class="proc-step">
             <div class="proc-num">04</div>
             <div class="proc-body">
-              <h4>회수 완료 → 그때 수수료</h4>
-              <p>받아야 수수료를 내요. 못 받으면 귀사는 한 푼도 내지 않아도 돼요.</p>
+              <h4>인증 후 신청 완료</h4>
+              <p>신청 완료와 동시에 채무자 안내 발송 상태를 확인해요.</p>
             </div>
           </div>
         </div>
       </div>
       <div class="process-right reveal">
 
-        <!-- 패널 01: 채권 등록 & 조건 설정 -->
+        <!-- 패널 01: 채권 정보 입력 -->
         <div class="proc-panel active" id="proc-panel-1">
           <div class="proc-card">
-            <div class="proc-card-top">
-              <span class="proc-card-title">채권 회수 예상 시뮬레이션</span>
-              <span class="tag lime-bg" style="font-size:11px">AI 분석</span>
+            <div class="delegation-head">
+              <div>
+                <div class="delegation-title">서비스 신청</div>
+                <div class="delegation-sub">추가 채권 위임 신청 · 기존 수임 계약 범위</div>
+              </div>
+              <span class="delegation-chip">개별 신청</span>
             </div>
-            <div class="proc-items">
-              <div class="proc-item">
-                <div class="proc-item-dot lime"></div>
-                <span class="proc-item-label">채권 원금</span>
-                <span class="proc-item-val">₩ 32,000,000</span>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot blue"></div>
-                <span class="proc-item-label">채무자 상환 가능 추정액</span>
-                <span class="proc-item-val">₩ 20,800,000</span>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot gray"></div>
-                <span class="proc-item-label">예상 회수 기간</span>
-                <span class="proc-item-val">약 6개월</span>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot gray"></div>
-                <span class="proc-item-label">월 분할 상환 (예상)</span>
-                <span class="proc-item-val">약 350만원/월</span>
-              </div>
+            <div class="delegation-stepper">
+              <div class="delegation-step active"><div><div class="delegation-step-mark">1</div><span class="delegation-step-label">채권정보</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step"><div><div class="delegation-step-mark">2</div><span class="delegation-step-label">플랜제시</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step"><div><div class="delegation-step-mark">3</div><span class="delegation-step-label">동의·계좌·계약</span></div></div>
             </div>
-            <div class="proc-total">
-              <span class="proc-total-label">회수 가능 예상 금액</span>
-              <span class="proc-total-val">₩ 20,800,000</span>
-            </div>
-            <div style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6;">
-              * 위 수치는 채무자 분석 기반 예상값으로, 실제 결과는 상이할 수 있습니다.
+            <div class="delegation-card">
+              <div class="delegation-grid">
+                <div class="delegation-box">
+                  <h4>채권자 정보</h4>
+                  <div class="delegation-field">
+                    <label>채권자명</label>
+                    <div class="delegation-input">(주)그라운드</div>
+                  </div>
+                  <div class="delegation-field">
+                    <label>채권자 연락처</label>
+                    <div class="delegation-input">02-0000-0000</div>
+                  </div>
+                  <h4 style="margin-top:14px;">안내사항</h4>
+                  <ul class="delegation-help">
+                    <li>필수 항목만 입력하면 다음 단계로 이동합니다</li>
+                    <li>계약서, 세금계산서 등 증빙을 함께 첨부할 수 있어요</li>
+                  </ul>
+                </div>
+                <div class="delegation-form">
+                  <div class="delegation-row-title">
+                    <strong>신청 채권 <span style="color:#98A2B3;font-weight:800;">1건</span></strong>
+                    <span class="delegation-status">입력 중</span>
+                  </div>
+                  <div class="delegation-box" style="background:#fff;">
+                    <h4>채무자 정보</h4>
+                    <div class="delegation-field-grid">
+                      <div class="delegation-field"><label>채무자명 *</label><div class="delegation-input">(주)한걸음</div></div>
+                      <div class="delegation-field"><label>채무자 유형 *</label><div class="delegation-input">사업자</div></div>
+                      <div class="delegation-field"><label>채무자 연락처 *</label><div class="delegation-input">02-1234-5678</div></div>
+                      <div class="delegation-field"><label>사업자번호 *</label><div class="delegation-input">123-81-12345</div></div>
+                    </div>
+                    <h4 style="margin-top:8px;">채권 정보</h4>
+                    <div class="delegation-field-grid">
+                      <div class="delegation-field"><label>채권금액 *</label><div class="delegation-input">12,456,452원</div></div>
+                      <div class="delegation-field"><label>채권 종류 *</label><div class="delegation-input">물품대금</div></div>
+                    </div>
+                    <div class="delegation-upload">계약서, 세금계산서 등 증빙 자료 첨부 · 선택</div>
+                  </div>
+                  <div class="delegation-bottom">
+                    <span style="font-size:11px;color:#667085;font-weight:700;">총 <b style="color:#101828;">1</b>건 채권</span>
+                    <span class="delegation-primary">다음 단계</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 패널 02: 전략 수립 -->
+        <!-- 패널 02: 플랜 제시 -->
         <div class="proc-panel" id="proc-panel-2">
           <div class="proc-card">
-            <div class="proc-card-top">
-              <span class="proc-card-title">AI 채무자 접근 전략 분석</span>
-              <span class="tag lime-bg" style="font-size:11px">분석 완료</span>
+            <div class="delegation-head">
+              <div>
+                <div class="delegation-title">서비스 신청</div>
+                <div class="delegation-sub">상환 방식과 할인 조건을 선택하세요</div>
+              </div>
+              <span class="delegation-chip">플랜 제시</span>
             </div>
-            <div class="proc-items">
-              <div class="proc-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
-                <div style="display:flex;align-items:center;gap:8px;width:100%;">
-                  <div class="proc-item-dot lime"></div>
-                  <span class="proc-item-label">채무자 유형</span>
-                  <span class="proc-item-val">일시적 유동성 부족</span>
-                </div>
-              </div>
-              <div class="proc-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
-                <div style="display:flex;align-items:center;gap:8px;width:100%;">
-                  <div class="proc-item-dot blue"></div>
-                  <span class="proc-item-label">접근 채널 순서</span>
-                </div>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:16px;">
-                  <span style="font-size:11px;padding:3px 10px;background:rgba(181,242,61,0.12);color:var(--lime);border-radius:6px;font-weight:600;">1차 문자</span>
-                  <span style="font-size:11px;color:rgba(255,255,255,0.3);">→</span>
-                  <span style="font-size:11px;padding:3px 10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border-radius:6px;">2차 이메일</span>
-                  <span style="font-size:11px;color:rgba(255,255,255,0.3);">→</span>
-                  <span style="font-size:11px;padding:3px 10px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border-radius:6px;">3차 전화</span>
-                </div>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot lime"></div>
-                <span class="proc-item-label">권장 전략</span>
-                <span class="proc-item-val">3개월 분할 상환</span>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot gray"></div>
-                <span class="proc-item-label">예상 회수율</span>
-                <span class="proc-item-val" style="color:var(--lime);">87%</span>
-              </div>
+            <div class="delegation-stepper">
+              <div class="delegation-step done"><div><div class="delegation-step-mark">✓</div><span class="delegation-step-label">채권정보</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step active"><div><div class="delegation-step-mark">2</div><span class="delegation-step-label">플랜제시</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step"><div><div class="delegation-step-mark">3</div><span class="delegation-step-label">동의·계좌·계약</span></div></div>
             </div>
-            <div class="proc-total">
-              <span class="proc-total-label">AI 분석 신뢰도</span>
-              <span class="proc-total-val">92%</span>
+            <div class="delegation-card">
+              <div class="delegation-row-title">
+                <strong>샘플 채무자(주)</strong>
+                <span class="delegation-status">원금 12,456,452원</span>
+              </div>
+              <div class="delegation-accordion">
+                <div class="delegation-acc-item">
+                  <div class="delegation-acc-head">
+                    <div>
+                      <h4>상환 전략 선택</h4>
+                      <p>채무자에게 상환 방식을 어떻게 제안할지 선택</p>
+                    </div>
+                  </div>
+                  <div class="delegation-acc-body">
+                    <div class="delegation-choice-grid">
+                      <div class="delegation-choice">
+                        <strong>강경</strong>
+                        <p>회수 속도 우선</p>
+                      </div>
+                      <div class="delegation-choice active">
+                        <strong>완화</strong>
+                        <p>월 부담 완화</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="delegation-acc-item">
+                  <div class="delegation-acc-head">
+                    <div>
+                      <h4>할인율 입력</h4>
+                      <p>채권 원금 중 일부를 할인하여 제시</p>
+                    </div>
+                    <span class="delegation-chip">15% 적용</span>
+                  </div>
+                  <div class="delegation-acc-body">
+                    <div class="delegation-discount-input">
+                      <span class="delegation-discount-label">할인율</span>
+                      <span class="delegation-discount-value">15<em>%</em></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="delegation-bottom">
+                <span class="delegation-outline">이전</span>
+                <span class="delegation-primary">정산 계좌 선택</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 패널 03: 협의 & 팔로업 -->
+        <!-- 패널 03: 정산 계좌 선택 -->
         <div class="proc-panel" id="proc-panel-3">
           <div class="proc-card">
-            <div class="proc-card-top">
-              <span class="proc-card-title">협의 & 팔로업 진행 현황</span>
-              <span class="tag lime-bg" style="font-size:11px">진행 중</span>
+            <div class="delegation-head">
+              <div>
+                <div class="delegation-title">서비스 신청</div>
+                <div class="delegation-sub">회수금이 입금될 정산 계좌를 선택하세요</div>
+              </div>
+              <span class="delegation-chip">계좌 선택</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;align-items:flex-start;gap:12px;">
-                <div style="width:22px;height:22px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#0B1C2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div style="flex:1;">
-                  <div style="font-size:13px;font-weight:600;color:#fff;">1차 알림 발송 완료</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 15일 · 오전 10:00 자동 발송</div>
-                </div>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;">
-                <div style="width:22px;height:22px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#0B1C2C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div style="flex:1;">
-                  <div style="font-size:13px;font-weight:600;color:#fff;">2차 알림 발송 완료</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 22일 · 무응답 72시간 후 자동 발송</div>
-                </div>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;">
-                <div style="width:22px;height:22px;border-radius:50%;background:rgba(181,242,61,0.2);border:1.5px solid var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                  <div style="width:6px;height:6px;border-radius:50%;background:var(--lime);"></div>
-                </div>
-                <div style="flex:1;">
-                  <div style="font-size:13px;font-weight:600;color:#fff;">CMS 자동이체 신청서 발송</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;">10월 29일 · 진행 중</div>
-                </div>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;">
-                <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
-                  <div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);"></div>
-                </div>
-                <div style="flex:1;">
-                  <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.4);">분할 상환 동의서 발송 예정</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;">11월 5일 예정</div>
-                </div>
-              </div>
+            <div class="delegation-stepper">
+              <div class="delegation-step done"><div><div class="delegation-step-mark">✓</div><span class="delegation-step-label">채권정보</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step done"><div><div class="delegation-step-mark">✓</div><span class="delegation-step-label">플랜제시</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step active"><div><div class="delegation-step-mark">3</div><span class="delegation-step-label">동의·계좌·계약</span></div></div>
             </div>
-            <div class="proc-total" style="margin-top:16px;">
-              <span class="proc-total-label">전체 진행률</span>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:100px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
-                  <div style="width:65%;height:100%;background:var(--lime);border-radius:3px;"></div>
+            <div class="delegation-card">
+              <div class="delegation-account-list">
+                <div class="delegation-account active">
+                  <div>
+                    <strong>KB국민 · 정산 계좌</strong>
+                    <span>123-456-789012 · 예금주 (주)그라운드</span>
+                  </div>
+                  <span class="delegation-chip">선택됨</span>
                 </div>
-                <span class="proc-total-val" style="font-size:16px;">65%</span>
+                <div class="delegation-account">
+                  <div>
+                    <strong>신한 · 예비 계좌</strong>
+                    <span>987-654-321098 · 예금주 (주)그라운드</span>
+                  </div>
+                  <span style="font-size:11px;color:#98A2B3;font-weight:800;">선택 가능</span>
+                </div>
+              </div>
+              <div class="delegation-box" style="margin-top:14px;background:#F7F8FA;">
+                <h4>계좌 안내</h4>
+                <ul class="delegation-help">
+                  <li>회수금은 선택한 정산 계좌로 입금됩니다</li>
+                  <li>다른 계좌는 계좌 관리에서 추가 등록할 수 있어요</li>
+                </ul>
+              </div>
+              <div class="delegation-bottom">
+                <span class="delegation-outline">이전</span>
+                <span class="delegation-primary">인증서 확인</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 패널 04: 회수 완료 -->
+        <!-- 패널 04: 안내 발송 완료 -->
         <div class="proc-panel" id="proc-panel-4">
           <div class="proc-card">
-            <div class="proc-card-top">
-              <span class="proc-card-title">회수 완료 정산 내역</span>
-              <span style="font-size:11px;padding:3px 10px;border-radius:8px;background:rgba(34,197,94,0.15);color:#4ade80;font-weight:700;">회수 완료 ✓</span>
-            </div>
-            <div class="proc-items">
-              <div class="proc-item">
-                <div class="proc-item-dot lime"></div>
-                <span class="proc-item-label">총 회수 금액</span>
-                <span class="proc-item-val">₩ 20,800,000</span>
+            <div class="delegation-head">
+              <div>
+                <div class="delegation-title">서비스 신청</div>
+                <div class="delegation-sub">신청 완료 후 채무자에게 안내가 발송됩니다</div>
               </div>
-              <div class="proc-item">
-                <div class="proc-item-dot gray"></div>
-                <span class="proc-item-label">수수료율 (성공 보수)</span>
-                <span class="proc-item-val">10%</span>
-              </div>
-              <div class="proc-item">
-                <div class="proc-item-dot gray"></div>
-                <span class="proc-item-label">리바운드 수수료</span>
-                <span class="proc-item-val">₩ 2,080,000</span>
-              </div>
+              <span class="delegation-chip">발송 완료</span>
             </div>
-            <div class="proc-total">
-              <span class="proc-total-label">귀사 최종 수령액</span>
-              <span class="proc-total-val">₩ 18,720,000</span>
+            <div class="delegation-stepper">
+              <div class="delegation-step done"><div><div class="delegation-step-mark">✓</div><span class="delegation-step-label">채권정보</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step done"><div><div class="delegation-step-mark">✓</div><span class="delegation-step-label">플랜제시</span></div><span class="delegation-step-line"></span></div>
+              <div class="delegation-step active"><div><div class="delegation-step-mark">3</div><span class="delegation-step-label">동의·계좌·계약</span></div></div>
             </div>
-            <div style="margin-top:12px;padding:12px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;">
-              회수되지 않으면 수수료는 0원이에요. 성공한 만큼만 지불하는 구조예요.
+            <div class="delegation-cert">
+              <div class="delegation-cert-box">
+                <h4>신청 요약</h4>
+                <div class="delegation-summary-row"><span>채권자</span><strong>(주)그라운드</strong></div>
+                <div class="delegation-summary-row"><span>채권 건수</span><strong>1건</strong></div>
+                <div class="delegation-summary-row"><span>채무자</span><strong>샘플 채무자(주)</strong></div>
+                <div class="delegation-summary-row"><span>채권금액</span><strong>12,456,452원</strong></div>
+                <div class="delegation-summary-row"><span>정산 계좌</span><strong>KB국민 123-456-789012</strong></div>
+              </div>
+              <div class="delegation-cert-box delegation-dispatch-box">
+                <h4>채무자 안내 발송</h4>
+                <div class="dispatch-status">
+                  <span class="dispatch-check">✓</span>
+                  <div>
+                    <strong>안내가 발송됐어요</strong>
+                    <span>알림톡 · 문자 동시 발송</span>
+                  </div>
+                </div>
+                <div class="dispatch-message">
+                  <div class="dispatch-message-head">
+                    <span class="dispatch-logo"><svg viewBox="0 0 54 55" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path opacity="0.35" d="M31.6527 48.796V49.1161C31.5679 46.065 29.0679 43.6327 26.0171 43.6327C22.9662 43.6327 20.4026 46.1503 20.3814 49.2654V49.3081V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79245 23.2139 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2762C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6527 48.796Z" fill="#FF5900"/><path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4475C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6327 26.0165 43.6327C22.9232 43.6327 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27568 39.9572 4.58731 42.9656 2.17631C43.3046 1.89894 43.6648 1.62157 44.025 1.3442C43.7072 1.62157 43.4106 1.94161 43.1351 2.30433C42.436 3.24312 42.0334 4.41662 42.0334 5.67546C42.0334 8.81189 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF5900"/><path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1926 5.6356 23.1926H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#FF5900"/><path opacity="0.8" d="M31.6521 49.2868C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2868Z" fill="#FF5900"/><path d="M53.3057 5.6968C53.3057 7.44637 52.5218 9.00392 51.3142 10.0281C51.2506 10.0707 51.2082 10.1134 51.1658 10.1561C51.1658 10.1561 50.954 10.3268 50.8481 10.4121C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83323 42.0557 5.6968C42.0557 4.43796 42.4582 3.26446 43.1574 2.32567C43.4116 1.98429 43.7082 1.66425 44.0472 1.36554C44.2379 1.21618 44.4074 1.08817 44.598 0.938813C45.4879 0.341398 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53903 53.3481 5.67546L53.3057 5.6968Z" fill="#FF5900"/></svg></span>
+                    <strong>리바운드</strong>
+                    <span class="dispatch-time">방금 전</span>
+                  </div>
+                  <p>(주)한걸음 담당자님, 미납 채권 12,456,452원 건이 접수되었습니다. 안내 링크에서 상환 방법을 확인해 주세요.</p>
+                </div>
+                <div class="dispatch-list">
+                  <div class="dispatch-row"><span>서비스 신청</span><strong>접수 완료</strong></div>
+                  <div class="dispatch-row"><span>채무자 안내</span><strong>발송 완료</strong></div>
+                  <div class="dispatch-row"><span>응답 상태</span><strong>대기 중</strong></div>
+                </div>
+                <div class="delegation-bottom">
+                  <span class="delegation-outline">이전</span>
+                  <span class="delegation-primary">발송 내역 확인</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COST -->
+<section class="section" style="background:#fff;">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow center">비용 구조</p>
+      <h2 class="h2 center">초기 비용 없이<br>빠른 회수 경험을 제공해요</h2>
+    </div>
+    <div class="cost-bento">
+      <div class="cost-card reveal">
+        <div class="cost-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="17" viewBox="0 0 29 21" fill="none">
+            <path d="M24.8028 2.079C22.119 0.71925 18.5561 0 14.5 0C10.4439 0 6.88103 0.71925 4.19723 2.079C1.51344 3.43875 0 5.35237 0 7.35V13.65C0 15.6476 1.53027 17.5678 4.19723 18.921C6.8642 20.2742 10.4439 21 14.5 21C18.5561 21 22.119 20.2808 24.8028 18.921C27.4866 17.5612 29 15.6476 29 13.65V7.35C29 5.35237 27.4697 3.43219 24.8028 2.079ZM13.4643 14.679V18.879C11.0045 18.7976 8.93304 18.4301 7.25 17.8959V13.7878C9.27887 14.3358 11.3651 14.6359 13.4643 14.6816V14.679ZM15.5357 14.679C17.6349 14.6333 19.7211 14.3332 21.75 13.7852V17.8946C20.067 18.4288 17.9955 18.7963 15.5357 18.8777V14.679ZM2.07143 13.65V11.2258C2.72331 11.7742 3.43686 12.2425 4.19723 12.621C4.51183 12.7798 4.84455 12.9294 5.17857 13.0712V17.0625C3.12915 16.0335 2.07143 14.7381 2.07143 13.65ZM23.8214 17.0625V13.0712C24.1593 12.9294 24.4882 12.7798 24.8028 12.621C25.5631 12.2425 26.2767 11.7742 26.9286 11.2258V13.65C26.9286 14.7381 25.8708 16.0335 23.8214 17.0625Z" fill="#B5F23D"/>
+          </svg>
+        </div>
+        <div class="cost-card-lbl">시작비용 0원으로 서비스를 시작해보세요</div>
+        <p>100% 온라인 운영으로 비용을 최소화했어요.<br>초기비용 없이 서비스를 시작하고, 회수 성공 시에만 수수료를 지불해요.</p>
+      </div>
+      <div class="cost-card reveal reveal-d1">
+        <div class="cost-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 20 29" fill="none">
+            <path d="M11.901 0.563024C12.1026 0.304792 12.3828 0.121916 12.6977 0.0431228C13.0127 -0.0356706 13.3444 -0.00591718 13.6409 0.12771C13.9374 0.261336 14.1818 0.491265 14.3357 0.781378C14.4896 1.07149 14.5444 1.40535 14.4913 1.73051L12.9474 11.1537H18.5363C18.8114 11.1536 19.0809 11.2324 19.314 11.3809C19.5471 11.5294 19.7342 11.7417 19.854 11.9934C19.9738 12.2451 20.0213 12.526 19.9912 12.8039C19.9611 13.0818 19.8545 13.3454 19.6836 13.5645L8.09752 28.437C7.89598 28.6952 7.61573 28.8781 7.30081 28.9569C6.98588 29.0357 6.65413 29.0059 6.35765 28.8723C6.06117 28.7387 5.81677 28.5087 5.66284 28.2186C5.50891 27.9285 5.45417 27.5947 5.50722 27.2695L7.05116 17.8463H1.46226C1.18728 17.8461 0.917935 17.7671 0.685079 17.6185C0.452223 17.4699 0.265282 17.2576 0.145681 17.0059C0.0260798 16.7543 -0.0213426 16.4735 0.00884849 16.1958C0.0390396 15.918 0.145623 15.6545 0.316383 15.4355L11.901 0.563024Z" fill="#B5F23D"/>
+          </svg>
+        </div>
+        <div class="cost-card-lbl">최대 1개월 안에 첫 회수를 경험해보세요</div>
+        <p>수 개월에 걸쳐 진행되는 법적 분쟁과는 달리,<br>리바운드는 채무자의 반응에 따라 최대 1개월 내에 첫 회수가 이루어져요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="section off" style="background:#fff;">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">신뢰와 안전</p>
+      <h2 class="h2">법률 전문성과<br>철저한 보안을 기반으로 해요</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card law reveal">
+        <div>
+          <div class="trust-icon">
+            <svg width="26" height="26" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.31138 6.35027C4.28711 6.35027 4.26486 6.34363 4.24059 6.34363C3.77573 6.34363 3.75146 6.37685 3.75146 6.92521V9.14723C3.75146 9.53784 3.78902 9.57771 4.42434 9.58002C5.24109 9.46445 5.9183 9.09176 5.91599 8.27038C5.91599 7.11184 5.03308 6.42135 4.31138 6.35027Z" fill="#032A49"/><path d="M10.4725 0H2.61812C1.17732 0 0 1.18078 0 2.62592V10.5034C0 11.7642 0.907472 12.8852 2.09345 13.1336C2.556 13.0449 2.61783 12.8762 2.61783 11.8642V7.83096C2.61783 6.69004 2.59558 6.56581 2.11772 6.49705L1.81003 6.45256V5.95967C1.81003 5.95967 3.08269 5.9773 3.79081 5.95967C2.9365 5.4535 2.1287 4.68326 2.1287 3.50912C2.11541 1.96431 3.31497 0.896493 5.29344 0.896493C5.74501 0.896493 6.30261 0.951965 6.84923 1.11404C7.05292 1.16056 7.36494 1.29606 7.5354 1.37146V3.23379C7.5354 3.23379 7.02865 3.23379 7.02634 3.2205C6.79405 2.52365 6.20958 1.52459 5.22699 1.52459C4.32617 1.52459 3.77752 2.12177 3.77752 2.80533C3.77752 3.43574 4.39493 3.99941 5.07647 4.35679L5.9773 4.83638C6.82265 5.28709 7.90058 6.08159 7.90058 7.58423C7.90058 7.70181 7.87863 7.80842 7.86505 7.92167C7.78531 8.60322 7.47559 9.17815 6.96422 9.59303C6.86686 9.65283 6.76718 9.70628 6.67646 9.7528C6.63428 9.77504 6.62099 9.79931 6.60799 9.82589C6.58574 9.87038 6.58372 9.92354 6.61897 10.0036C7.36927 11.5308 7.83384 12.3854 8.38047 12.8514C8.56624 13.0022 8.74998 13.0799 8.90513 13.1244H10.4719C11.9127 13.1244 13.09 11.9436 13.09 10.4985V2.62592C13.09 1.18078 11.9127 0 10.4719 0H10.4725Z" fill="#032A49"/><path d="M5.84723 12.2458C5.48436 11.642 5.22318 11.0827 4.96201 10.4788C4.9022 10.3456 4.83142 10.2569 4.74966 10.1948C4.5792 10.2127 4.22297 10.2304 4.03922 10.2304C3.93521 10.2304 3.85547 10.2148 3.76042 10.2104C3.75378 10.2416 3.75146 10.2792 3.75146 10.3303V11.731C3.75146 12.7786 3.80462 12.9851 4.31571 13.0761L4.55695 13.1206H6.52444C6.26095 12.9297 6.04427 12.5679 5.84492 12.2438L5.84723 12.2461V12.2458Z" fill="#032A49"/></svg>
+          </div>
+          <div class="trust-law-name">법무법인 수륜아시아</div>
+          <div class="trust-law-sub">Sulryu Asia Law Firm</div>
+          <p>리바운드는 법무법인 수륜아시아의 실무 노하우를 바탕으로 만들어졌어요. 복잡한 법적 절차에 들어가기 전, 문제를 더 간편하게 해결할 수 있도록 구성된 서비스예요.</p>
+        </div>
+        <div class="trust-law-footer">
+          <a href="http://srlaw.co.kr/" target="_blank" rel="noopener" class="trust-law-link">
+            법무법인 수륜아시아 홈페이지
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="trust-deco"></div>
+      </div>
+      <div class="trust-right-stack reveal reveal-d1">
+        <div class="trust-card light">
+          <div class="trust-deco"></div>
+          <div class="trust-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="27" viewBox="0 0 34 41" fill="none"><path d="M17 0L0 7.45455V18.6364C0 28.9795 7.25333 38.6518 17 41C26.7467 38.6518 34 28.9795 34 18.6364V7.45455L17 0ZM17 11.1818C19.6444 11.1818 22.2889 13.2318 22.2889 15.8409V18.6364C23.4222 18.6364 24.5556 19.7545 24.5556 21.0591V27.5818C24.5556 28.7 23.4222 29.8182 22.1 29.8182H11.7111C10.5778 29.8182 9.44444 28.7 9.44444 27.3955V20.8727C9.44444 19.7545 10.5778 18.6364 11.7111 18.6364V15.8409C11.7111 13.2318 14.3556 11.1818 17 11.1818ZM17 13.4182C15.4889 13.4182 14.1667 14.35 14.1667 15.8409V18.6364H19.8333V15.8409C19.8333 14.35 18.5111 13.4182 17 13.4182Z" fill="var(--text3)"/></svg>
+          </div>
+          <h3>데이터 암호화</h3>
+          <p>모든 개인정보와 채권 정보는 AES-256 암호화로 보호돼요. 채권자와 채무자 정보는 철저하게 분리 관리되며, 제3자에게 제공되지 않아요.</p>
+        </div>
+        <div class="trust-card soft">
+          <div class="trust-deco"></div>
+          <div class="trust-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="20" viewBox="0 0 50 34" fill="none"><path d="M40.3125 12.5833C39.6127 9.03691 37.7033 5.84346 34.9106 3.54843C32.1178 1.2534 28.6148 -0.000817172 25 3.99451e-07C18.9792 3.99451e-07 13.75 3.41667 11.1458 8.41667C8.08382 8.74757 5.2521 10.1983 3.19477 12.4903C1.13744 14.7822 -0.000357712 17.7535 8.43599e-08 20.8333C8.43599e-08 27.7292 5.60417 33.3333 12.5 33.3333H39.5833C45.3333 33.3333 50 28.6667 50 22.9167C50 17.4167 45.7292 12.9583 40.3125 12.5833Z" fill="var(--text3)"/></svg>
+          </div>
+          <h3>클라우드 보안</h3>
+          <p>AWS 기반의 안전한 클라우드 인프라에서 운영되며, 24시간 모니터링과 정기적인 보안 감사를 통해 서비스 안정성을 유지해요.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1965,16 +4102,133 @@
   <div class="cta-bg"></div>
   <div class="cta-inner">
     <p class="eyebrow center">성공의 가치만 나눕니다</p>
-    <h2 class="h2 white center">일단 맡겨보세요<br><em>회수되지 않으면 비용이 발생하지 않아요!</em></h2>
-    <p>첫 상담은 무료예요. 채권 금액이랑 채무자 정보만 있으면 바로 시작할 수 있어요.</p>
+    <h2 class="h2 white center">일단 맡겨보세요 <br class="cta-break cta-break-laptop">회수되지 않으면 비용이 발생하지 않아요!</h2>
+    <p>복잡한 준비 없이 <br class="cta-break">채권 정보만으로 시작할 수 있어요.</p>
     <div class="cta-btns">
-      <a href="#" class="btn-lime">무료 상담 신청하기 →</a>
-      <a href="#process" class="btn-outline-white">프로세스 보기</a>
+      <a href="support.html" class="btn-lime">서비스 신청하기</a>
     </div>
   </div>
 </section>
 
 <!-- SERVICE SWITCH POPUP (mobile) -->
+
+<!-- 개인 서비스 준비중 팝업 -->
+<style>
+  #readyPopupOverlay {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(17,24,39,0.56);
+    z-index:2000;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  #readyPopupOverlay.open { display:flex; }
+  #readyPopupOverlay.open #readyPopupCard { animation:rpDialog 0.16s ease-out both; }
+  @keyframes rpDialog { from { opacity:0; transform:translateY(8px) scale(0.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+  #readyPopupCard {
+    width:min(420px, 100%);
+    background:#fff;
+    border:1px solid #E5E7EB;
+    border-radius:14px;
+    box-shadow:0 24px 72px rgba(0,0,0,0.22), 0 6px 20px rgba(0,0,0,0.12);
+    padding:24px 24px 20px;
+    position:relative;
+  }
+  .rp-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:20px;
+  }
+  .rp-label {
+    font-size:14px;
+    font-weight:800;
+    color:#344054;
+    line-height:1.3;
+  }
+  .rp-x {
+    width:28px;
+    height:28px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:#667085;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .rp-x:hover { background:#F2F4F7; color:#101828; }
+  .rp-title {
+    font-size:19px;
+    font-weight:900;
+    color:#101828;
+    letter-spacing:-0.3px;
+    line-height:1.45;
+    margin-bottom:10px;
+  }
+  .rp-copy {
+    font-size:14px;
+    color:#667085;
+    line-height:1.7;
+    font-weight:600;
+    margin-bottom:20px;
+  }
+  .rp-actions {
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .rp-btn-primary,
+  .rp-btn-ghost {
+    min-width:88px;
+    height:42px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .rp-btn-primary {
+    background:var(--navy);
+    color:#fff;
+    border:1px solid var(--navy);
+  }
+  .rp-btn-primary:hover { background:#142638; }
+  .rp-btn-ghost {
+    background:#fff;
+    color:#475467;
+    border:1px solid #D0D5DD;
+  }
+  .rp-btn-ghost:hover { background:#F8FAFC; }
+  @media(max-width:480px){
+    #readyPopupOverlay { padding:18px; }
+    #readyPopupCard { padding:22px 20px 18px; border-radius:12px; }
+    .rp-actions { justify-content:stretch; }
+    .rp-btn-primary,.rp-btn-ghost { flex:1; min-width:0; }
+  }
+</style>
+<div id="readyPopupOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div id="readyPopupCard">
+    <div class="rp-head">
+      <div class="rp-label">서비스 안내</div>
+      <button class="rp-x" type="button" aria-label="닫기" onclick="document.getElementById('readyPopupOverlay').classList.remove('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <h3 class="rp-title">개인 서비스는 현재 준비 중입니다.</h3>
+    <p class="rp-copy">지금은 기업 Biz 서비스를 먼저 운영하고 있어요. 개인 서비스는 준비가 끝나는 대로 안내드리겠습니다.</p>
+    <div class="rp-actions">
+      <button class="rp-btn-ghost" type="button" onclick="document.getElementById('readyPopupOverlay').classList.remove('open')">닫기</button>
+      <button class="rp-btn-primary" type="button" onclick="if(window.ChannelIO){window.ChannelIO('showMessenger');document.getElementById('readyPopupOverlay').classList.remove('open');}else{window.location.href='support.html';}">문의하기</button>
+    </div>
+  </div>
+</div>
+
 <footer id="shared-footer"></footer>
 <script src="footer.js?v=2"></script>
 
@@ -1990,15 +4244,35 @@
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   // Process 섹션 — 항목 클릭 시 우측 패널 전환
-  document.querySelectorAll('.proc-step').forEach((step, i) => {
+  const procSteps = Array.from(document.querySelectorAll('.proc-step'));
+  const procPanels = Array.from(document.querySelectorAll('.proc-panel'));
+  procSteps.forEach((step, i) => {
     step.addEventListener('click', () => {
-      document.querySelectorAll('.proc-step').forEach(s => s.classList.remove('active'));
-      step.classList.add('active');
-      document.querySelectorAll('.proc-panel').forEach(p => p.classList.remove('active'));
-      const panel = document.getElementById('proc-panel-' + (i + 1));
-      if (panel) panel.classList.add('active');
+      procSteps.forEach((s, idx) => s.classList.toggle('active', idx === i));
+      procPanels.forEach((p, idx) => p.classList.toggle('active', idx === i));
     });
   });
+
+  // 모바일에서는 panel을 해당 step 안으로 이동, 데스크톱에서는 process-right로 복귀
+  const PROC_MOBILE_BP = 768;
+  const procRight = document.querySelector('.process-right');
+  let procIsMobile = null;
+  function relocateProcPanels() {
+    const isMobile = window.innerWidth <= PROC_MOBILE_BP;
+    if (isMobile === procIsMobile) return;
+    procIsMobile = isMobile;
+    document.querySelectorAll('.proc-step').forEach((step, i) => {
+      const panel = document.getElementById('proc-panel-' + (i + 1));
+      if (!panel) return;
+      if (isMobile) {
+        if (!step.contains(panel)) step.appendChild(panel);
+      } else {
+        if (procRight && !procRight.contains(panel)) procRight.appendChild(panel);
+      }
+    });
+  }
+  relocateProcPanels();
+  window.addEventListener('resize', relocateProcPanels);
 
   // Consult modal
   const MODAL_HTML = `
@@ -2013,7 +4287,7 @@
       <div style="text-align:center;margin-bottom:32px;">
         <div style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);border-radius:20px;padding:6px 16px;margin-bottom:14px;">
           <span style="width:7px;height:7px;background:var(--lime);border-radius:50%;display:inline-block;"></span>
-          <span style="font-size:12px;font-weight:700;color:var(--lime);letter-spacing:0.5px;">무료 상담 신청</span>
+          <span style="font-size:12px;font-weight:700;color:var(--lime);letter-spacing:0.5px;">BIZ 신청</span>
         </div>
         <h2 style="font-size:28px;font-weight:900;color:#1F2937;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;font-family:'Pretendard',sans-serif;">리바운드 서비스 신청</h2>
         <p style="font-size:14px;color:#6B7280;">법인 간 미수금 회수, 리바운드와 함께 해결해보세요</p>
@@ -2147,10 +4421,10 @@
   style.textContent = `
     @keyframes spin { to { transform: rotate(360deg); } }
     .form-label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
-    .form-input { width:100%; padding:13px 16px; border:1.5px solid #E5E7EB; border-radius:10px; font-size:14px; color:#111827; font-family:inherit; outline:none; transition:border-color 0.2s,box-shadow 0.2s; background:#fff; }
-    .form-input:focus { border-color:#B5F23D; box-shadow:0 0 0 3px rgba(181,242,61,0.15); }
+    .form-input { width:100%; padding:13px 16px; border:1.5px solid #E5E7EB; border-radius:10px; font-size:14px; color:#111827; font-family:inherit; outline:none; transition:border-color 0.2s; background:#fff; }
+    .form-input:focus { border-color:#B5F23D; border-width:2px; box-shadow:none; }
     .form-input.input-error { border-color:#EF4444; }
-    .form-input.input-error:focus { border-color:#EF4444; box-shadow:0 0 0 3px rgba(239,68,68,0.1); }
+    .form-input.input-error:focus { border-color:#EF4444; border-width:2px; box-shadow:none; }
     .field-error { font-size:12px; color:#EF4444; margin-top:5px; min-height:0; line-height:1.4; display:none; }
     .field-error.show { display:block; }
     select.form-input { cursor:pointer; }
@@ -2165,9 +4439,18 @@
   const loading = document.getElementById('consult-loading');
   const successModal = document.getElementById('consult-success');
 
+  let savedScrollY = 0;
+
   function openModal() {
+    savedScrollY = window.scrollY || window.pageYOffset || 0;
     overlay.style.display = 'flex';
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
     document.getElementById('consult-form').reset();
     document.getElementById('amount-korean').textContent = '';
     // 모든 에러 초기화
@@ -2179,7 +4462,14 @@
 
   function closeModal() {
     overlay.style.display = 'none';
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, savedScrollY);
   }
 
   document.getElementById('consult-close').addEventListener('click', closeModal);
@@ -2189,9 +4479,10 @@
     closeModal();
   });
 
-  // Wire all "무료 상담" buttons
+  // Wire all "서비스 신청하기" buttons + GNB "신청하기" CTA
   document.querySelectorAll('a').forEach(btn => {
-    if (btn.textContent.trim().includes('무료 상담')) {
+    const txt = btn.textContent.trim();
+    if (txt.includes('서비스 신청하기') || btn.classList.contains('gnb-start')) {
       btn.addEventListener('click', e => { e.preventDefault(); openModal(); });
     }
   });
@@ -2407,15 +4698,22 @@
       additionalNotes: document.getElementById('f-notes').value,
     };
     try {
-      await fetch('/api/submit-consult', {
+      const response = await fetch('/api/submit-consult', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify(payload)
       });
-    } catch(err) { /* API 없어도 성공 처리 */ }
+      if (!response.ok) throw new Error('submit failed');
+    } catch(err) {
+      loading.style.display = 'none';
+      alert('신청 접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
     loading.style.display = 'none';
     overlay.style.display = 'none';
     successModal.style.display = 'flex';
   });
+
+
 
 </script>
 </body>

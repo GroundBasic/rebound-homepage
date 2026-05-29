@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <title>고객센터 – Rebound</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="common.css?v=2" />
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -28,84 +30,6 @@
       -webkit-font-smoothing: antialiased;
       word-break: keep-all;
     }
-
-    /* ── GNB ── */
-    .gnb {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 64px;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .gnb-inner {
-      max-width: 1256px; margin: 0 auto;
-      padding: 0 48px; height: 100%;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .gnb-left { display: flex; align-items: center; gap: 28px; }
-    .gnb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .toggle-pill {
-      display: flex; background: var(--off);
-      border: 1px solid var(--border);
-      border-radius: 20px; padding: 3px;
-    }
-    .toggle-pill a {
-      padding: 5px 16px; border-radius: 16px;
-      font-size: 13px; font-weight: 500;
-      text-decoration: none; color: var(--text2);
-      transition: all 0.2s;
-    }
-    .toggle-pill a.on { background: var(--white); color: var(--text); font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-    .gnb-nav { display: flex; gap: 4px; align-items: center; }
-    .gnb-nav a { font-size: 14px; color: #302622; font-weight: 600; text-decoration: none; padding: 7px 13px; border-radius: 8px; transition: background 0.15s, color 0.15s; }
-    .gnb-nav a:hover { background: #F1F5F7; color: #17191A; }
-    .gnb-nav-active { background: none !important; color: var(--orange) !important; font-weight: 800; }
-    .gnb-actions { display: flex; align-items: center; gap: 4px; }
-    .gnb-login { font-size: 14px; color: #302622; text-decoration: none; padding: 7px 13px; border-radius: 8px; font-weight: 600; transition: background 0.15s, color 0.15s; }
-    .gnb-login:hover { background: #F1F5F7; color: #17191A; }
-    a.gnb-start {
-      background: var(--orange); color: #fff !important;
-      font-size: 14px; font-weight: 600;
-      padding: 7px 13px; border-radius: 8px;
-      text-decoration: none; transition: opacity 0.2s;
-      white-space: nowrap;    }
-    a.gnb-start:hover { opacity: 0.85; }
-
-    /* ── BIZ HINT ── */
-    .biz-hint-wrap { position: relative; }
-    .biz-hint {
-      position: absolute; top: calc(100% + 12px); left: auto; right: 0;
-      background: #1B1F26; border-radius: 14px;
-      padding: 14px 16px; width: 300px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
-      opacity: 0; pointer-events: none;
-      transform: translateY(-6px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 300;
-    }
-    .biz-hint.visible { opacity: 1; pointer-events: auto; transform: translateY(0); animation: bizFloat 2.8s ease-in-out infinite; }
-    @keyframes bizFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    .biz-hint::before {
-      content: ''; position: absolute; top: -7px; right: 28px; left: auto;
-      width: 14px; height: 8px; background: #1B1F26;
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    }
-    .biz-hint-close {
-      position: absolute; top: 10px; right: 12px;
-      background: none; border: none; color: rgba(255,255,255,0.45);
-      font-size: 16px; line-height: 1; cursor: pointer;
-      width: 20px; height: 20px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      transition: color 0.15s, background 0.15s;
-    }
-    .biz-hint-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
-    .biz-hint-link { text-decoration: none; display: block; }
-    .biz-hint-title { display: block; color: #B5F23D; font-size: 13px; font-weight: 700; margin-bottom: 5px; padding-right: 24px; }
-    .biz-hint-desc { display: block; color: rgba(255,255,255,0.85); font-size: 13px; line-height: 1.55; white-space: nowrap; }
-    .biz-hint-desc strong { font-weight: 700; color: #fff; }
 
     /* ── HEADER AREA ── */
     .support-header {
@@ -327,157 +251,7 @@
       font-size: 13px; color: var(--text2);
     }
 
-    /* ── FOOTER ── */
-    footer { background: #F5F5F5; }
-    .footer-inner { max-width: 1256px; margin: 0 auto; padding: 0 48px; }
-    .footer-top { display:flex; gap:80px; padding:64px 0 48px; }
-    .footer-brand { flex: 0 0 380px; }
-    .footer-logo { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
-    .footer-brand-title { font-size:14px; font-weight:700; color:#374151; margin-bottom:8px; }
-    .footer-brand p { font-size:13px; color:#9CA3AF; line-height:1.8; }
-    .footer-links { display:flex; gap:80px; flex:1; justify-content:flex-start; padding-left:40px; }
-    .footer-col { display:flex; flex-direction:column; gap:12px; min-width:120px; }
-    .footer-col h5 { font-size:14px; font-weight:700; color:#374151; margin-bottom:4px; }
-    .footer-col a { font-size:14px; color:#9CA3AF; text-decoration:none; transition:color 0.2s; }
-    .footer-col a:hover { color:#374151; }
-    .footer-bottom { padding:32px 0 48px; }
-    .footer-copy { font-size:13px; color:#9CA3AF; }
-
-    /* ── MOBILE MENU BUTTON (hidden on desktop) ── */
-    .gnb-mobile-btn {
-      display: none;
-      background: none; border: none; cursor: pointer;
-      width: 40px; height: 40px;
-      align-items: center; justify-content: center;
-      border-radius: 8px; transition: background 0.15s;
-    }
-    .gnb-mobile-btn:hover { background: #F1F5F7; }
-    .gnb-mobile-btn span {
-      display: block; width: 20px; height: 2px;
-      background: var(--text); border-radius: 2px;
-      position: relative;
-    }
-    .gnb-mobile-btn span::before,
-    .gnb-mobile-btn span::after {
-      content: ''; position: absolute; left: 0;
-      width: 20px; height: 2px; background: var(--text);
-      border-radius: 2px;
-    }
-    .gnb-mobile-btn span::before { top: -6px; }
-    .gnb-mobile-btn span::after { top: 6px; }
-    .gnb-mobile-btn.open span { background: transparent; }
-    .gnb-mobile-btn.open span::before { top: 0; transform: rotate(45deg); }
-    .gnb-mobile-btn.open span::after { top: 0; transform: rotate(-45deg); }
-
-    /* ── MOBILE MENU PANEL ── */
-    .mobile-menu {
-      display: none; position: fixed;
-      top: 64px; left: 0; right: 0; bottom: 0;
-      background: #fff;
-      z-index: 199; flex-direction: column;
-      padding: 0; overflow-y: auto;
-    }
-    .mobile-menu.open { display: flex; }
-    .mobile-menu-nav {
-      flex: 1; padding: 20px 24px 0;
-      display: flex; flex-direction: column;
-    }
-    .mobile-menu-nav a {
-      font-size: 17px; font-weight: 500; color: #6B7280;
-      text-decoration: none; padding: 16px 0;
-      transition: color 0.15s;
-    }
-    .mobile-menu-nav a:hover { color: var(--orange); }
-    .mobile-menu-nav .mobile-menu-switch {
-      font-size: 14px; font-weight: 500;
-      color: var(--text3);
-      margin-top: 8px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-    .mobile-menu-nav .mobile-menu-switch:hover { color: var(--orange); }
-    .mobile-menu-bottom {
-      padding: 16px 24px 32px;
-    }
-    .mobile-menu-bottom a {
-      display: block; width: 100%; text-align: center;
-      background: var(--orange); color: #fff;
-      font-size: 15px; font-weight: 700;
-      padding: 14px; border-radius: 10px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    .mobile-menu-bottom a:hover { opacity: 0.9; }
-    .switch-popup-overlay {
-      display: none; position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 400;
-      align-items: center; justify-content: center;
-    }
-    .switch-popup-overlay.show { display: flex; }
-    .switch-popup {
-      background: #1B1F26;
-      border-radius: 20px;
-      padding: 32px 24px 18px;
-      width: 100%; max-width: 300px;
-      text-align: center;
-      animation: popIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      position: relative;
-    }
-    .switch-popup-close {
-      position: absolute; top: 12px; right: 12px;
-      background: none; border: none;
-      color: rgba(255,255,255,0.3);
-      width: 28px; height: 28px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .switch-popup-close:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .switch-popup-emoji {
-      font-size: 36px; margin-bottom: 16px;
-    }
-    .switch-popup h3 {
-      font-size: 17px; font-weight: 700;
-      color: #fff; margin-bottom: 8px;
-    }
-    .switch-popup p {
-      font-size: 13px; color: rgba(255,255,255,0.5);
-      line-height: 1.5; margin-bottom: 24px;
-    }
-    .switch-popup-go {
-      display: block; width: 100%;
-      padding: 14px 0;
-      background: #B5F23D; color: #111827;
-      font-size: 15px; font-weight: 700;
-      border: none; border-radius: 12px;
-      cursor: pointer; font-family: inherit;
-      text-decoration: none; text-align: center;
-      transition: opacity 0.2s;
-      margin-bottom: 6px;
-    }
-    .switch-popup-go:hover { opacity: 0.9; }
-    .switch-popup-dismiss {
-      display: block; width: 100%;
-      background: none; border: none;
-      color: rgba(255,255,255,0.35); font-size: 11px;
-      cursor: pointer; font-family: inherit;
-      text-align: center; padding: 2px 0;
-      transition: color 0.15s;
-    }
-    .switch-popup-dismiss:hover { color: rgba(255,255,255,0.6); }
-
     @media (max-width: 768px) {
-      .gnb-inner { padding: 0 20px; }
-      .gnb-nav, .gnb-actions, .biz-hint-wrap { display: none !important; }
-      .gnb-left { flex: none; }
-      .gnb-mobile-btn { display: flex; margin-left: auto; }
       .support-header { padding: 40px 20px 0; }
       .support-header h1 { font-size: 28px; }
       .faq-section { padding: 56px 20px; }
@@ -516,81 +290,24 @@
       }
       .faq-content { padding-left: 0; min-height: auto; }
       .faq-q { padding: 18px 0; margin: 0; font-size: 15px; }
-      .footer-inner { padding: 0 20px; }
-      .footer-top { flex-direction: column; gap: 28px; padding: 32px 0 24px; }
-      .footer-brand { flex: none; }
-      .footer-links { gap: 24px; flex-wrap: wrap; padding-left: 0; }
-      .footer-col { min-width: 80px; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-bottom: 24px; }
     }
   </style>
 </head>
 <body>
 
 <!-- GNB -->
-<header class="gnb">
-  <div class="gnb-inner">
-    <div class="gnb-left">
-      <a href="rebound-personal.html" class="gnb-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 54 55" fill="none">
-          <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#FF6D24"/>
-          <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.3046 1.89892 43.6648 1.62155 44.025 1.34418C43.7072 1.62155 43.4106 1.94159 43.1351 2.30431C42.436 3.2431 42.0334 4.4166 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF6D24"/>
-          <path opacity="0.5" d="M11.2712 28.868C11.2712 31.9831 8.7712 34.5221 5.69916 34.5434H5.6356C2.52119 34.5434 0 32.0044 0 28.868C0 25.7316 2.54238 23.1925 5.6356 23.1925H5.72035C8.79239 23.2352 11.2712 25.7742 11.2712 28.868Z" fill="#FF6D24"/>
-          <path opacity="0.8" d="M31.6521 49.2867C31.6521 52.4445 29.1097 54.9835 26.0165 54.9835C22.9232 54.9835 20.3809 52.4445 20.3809 49.3081V49.2654C20.3809 46.1503 22.9232 43.6113 26.0165 43.6113C29.1097 43.6113 31.6521 46.1503 31.6521 49.2654V49.2867Z" fill="#FF6D24"/>
-          <path d="M53.3057 5.69678C53.3057 7.44635 52.5218 9.0039 51.3142 10.028C51.2506 10.0707 51.2082 10.1134 51.1658 10.1561C51.1658 10.1561 50.954 10.3267 50.8481 10.4121C49.937 11.0095 48.8565 11.3722 47.6913 11.3722C44.5769 11.3722 42.0557 8.83321 42.0557 5.69678C42.0557 4.43794 42.4582 3.26445 43.1574 2.32565C43.4116 1.98427 43.7082 1.66423 44.0472 1.36552C44.2379 1.21617 44.4074 1.08815 44.598 0.938796C45.4879 0.34138 46.5684 0 47.7125 0C50.8481 0 53.3481 2.53901 53.3481 5.67544L53.3057 5.69678Z" fill="#FF6D24"/>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="88" height="27" viewBox="0 0 145 44" fill="none">
-          <g clip-path="url(#wm-su)">
-            <path d="M5.28317 25.6802H19.9764V8.82065H0.0732422V13.7767H14.664V20.7241H0.0732422V37.5394H25.4351V43.9262H30.645V8.82065H25.4351V32.6276H5.28317V25.6802Z" fill="#1A1714"/>
-            <path d="M41.8261 8.82065H36.6162V37.4509H56.5193V8.82065H51.3094V18.6443H41.8261V8.82065ZM51.2948 23.5561V32.4506H41.8115V23.5561H51.2948Z" fill="#1A1714"/>
-            <path d="M67.3779 8.82065H62.168V43.9262H67.3779V19.4851H73.3781V14.588H67.3779V8.82065Z" fill="#1A1714"/>
-            <path d="M88.276 35.9759H93.7054V28.5122H106.891V23.4087H74.3877V28.5122H88.276V35.9759Z" fill="#1A1714"/>
-            <path d="M79.5976 31.6835H74.3877V43.9262H106.891V39.0292H79.5976V31.6835Z" fill="#1A1714"/>
-            <path d="M119.038 13.88H143.449V8.82065H113.77V30.3118H143.449V25.3557H119.038V13.88Z" fill="#1A1714"/>
-            <path d="M144.927 38.8227H113.023V43.9263H144.927V38.8227Z" fill="#1A1714"/>
-            <path d="M90.6617 20.3259C97.3936 20.3259 102.486 15.9598 102.486 10.1777C102.486 4.39558 97.3936 0.073761 90.6617 0.073761C83.9297 0.073761 78.8076 4.42508 78.8076 10.1924C78.8076 15.9598 83.9005 20.3406 90.6617 20.3406V20.3259ZM90.6617 4.64634C94.2911 4.64634 97.0424 7.03588 97.0424 10.1924C97.0424 13.349 94.3057 15.7828 90.6617 15.7828C87.0177 15.7828 84.2517 13.3785 84.2517 10.1924C84.2517 7.00638 87.003 4.64634 90.6617 4.64634Z" fill="#1A1714"/>
-          </g>
-          <defs><clipPath id="wm-su"><rect width="145" height="44" fill="white"/></clipPath></defs>
-        </svg>
-      </a>
-      <div class="biz-hint-wrap">
-        <div class="toggle-pill">
-          <a href="rebound-personal.html" class="on">개인</a>
-          <a href="rebound-biz.html">기업 Biz</a>
-        </div>
-        <div class="biz-hint" id="bizHint">
-          <button class="biz-hint-close" id="bizHintClose" aria-label="닫기">✕</button>
-          <a href="rebound-biz.html" class="biz-hint-link">
-            <span class="biz-hint-title">사업자 회원이신가요?</span>
-            <span class="biz-hint-desc">기업 회원 전용 회수 기능과 혜택을 확인해보세요.</span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <nav class="gnb-nav">
-      <a href="rebound-personal.html">홈</a>
-      <a href="team.html">팀 리바운드</a>
-      <a href="support.html" class="gnb-nav-active">고객센터</a>
-      <a href="https://blog.naver.com/reboundkr">블로그</a>
-      <a href="self-check.html" target="_blank" >셀프 진단</a>
-    </nav>
-    <button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>
-    <div class="gnb-actions">
-      <a href="login.html" class="gnb-login">로그인</a>
-      <a href="#" class="gnb-start">리바운드 시작하기</a>
-    </div>
-  </div>
-</header>
-
+<header id="shared-gnb"></header>
+<script src="gnb.js?v=3"></script>
 <!-- MOBILE MENU -->
 <div id="shared-mobile-menu"></div>
-<script src="mobile-menu.js?v=2"></script>
+<script src="mobile-menu.js?v=4"></script>
 <script src="auth-nav.js?v=1"></script>
+<script src="ready-popup.js?v=4"></script>
 
 <!-- HEADER -->
 <div class="support-header">
   <h1>고객센터</h1>
-  <p>리바운드에 대해 궁금한 점이 있으신가요? 모두 찾아보세요!</p>
+  <p>리바운드에 대해 궁금한 점이 있으신가요? 모두 물어보세요!</p>
   <div class="search-wrap">
     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="faqSearch" placeholder="궁금한 키워드를 검색하세요" oninput="filterFaq(this.value)">
@@ -684,52 +401,11 @@
   </div><!-- /faq-layout -->
 </div>
 
-<!-- SERVICE SWITCH POPUP (mobile) -->
-<div class="switch-popup-overlay" id="switchPopup">
-  <div class="switch-popup">
-    <button class="switch-popup-close" id="switchClose" aria-label="닫기">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h3>사업자 회원이신가요?</h3>
-    <p>기업 전용 채권 관리 기능과<br>대량 회수 서비스를 확인해보세요.</p>
-    <a href="rebound-biz.html" class="switch-popup-go">기업 Biz 서비스 보기</a>
-    <button class="switch-popup-dismiss" id="switchDismiss">오늘 하루 안 보기</button>
-  </div>
-</div>
-
 <footer id="shared-footer"></footer>
 <script src="footer.js?v=2"></script>
 
 <script>
-  // ── Service switch popup (mobile) ──
-  (function() {
-    const popup = document.getElementById('switchPopup');
-    const dismiss = document.getElementById('switchDismiss');
-    const closeX = document.getElementById('switchClose');
-    if (!popup) return;
-    const dismissed = localStorage.getItem('switchPopupDismissed');
-    if (dismissed) {
-      const dismissDate = new Date(parseInt(dismissed));
-      const now = new Date();
-      if (dismissDate.toDateString() === now.toDateString()) return;
-    }
-    if (window.innerWidth <= 960) {
-      setTimeout(() => popup.classList.add('show'), 800);
-    }
-    function closePopup() { popup.classList.remove('show'); }
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup) closePopup();
-    });
-    if (closeX) closeX.addEventListener('click', closePopup);
-    if (dismiss) {
-      dismiss.addEventListener('click', () => {
-        localStorage.setItem('switchPopupDismissed', Date.now().toString());
-        closePopup();
-      });
-    }
-  })();
-
-  // Mobile menu toggle은 mobile-menu.js에서 처리
+// Mobile menu toggle은 mobile-menu.js에서 처리
 
   let activeCat = 'all';
   let currentPage = 1;
@@ -754,15 +430,44 @@
     render(query);
   }
 
+  // 한글 미완성 자모 검색: "리ㅂ" → "리바운드", "미수ㄱ" → "미수금" 매칭
+  function koreanMatch(text, query) {
+    if (!query) return true;
+    const CHOSEONG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    let pattern = '';
+    for (const ch of query) {
+      const code = ch.charCodeAt(0);
+      // 단독 자음(초성) 범위: ㄱ(0x3131) ~ ㅎ(0x314E)
+      if (code >= 0x3131 && code <= 0x314E) {
+        const idx = CHOSEONG.indexOf(ch);
+        if (idx !== -1) {
+          // 해당 초성으로 시작하는 모든 음절 범위
+          const start = String.fromCharCode(0xAC00 + idx * 21 * 28);
+          const end   = String.fromCharCode(0xAC00 + (idx + 1) * 21 * 28 - 1);
+          pattern += `[${start}-${end}]`;
+        } else {
+          pattern += ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+      } else {
+        pattern += ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }
+    }
+    try {
+      return new RegExp(pattern, 'i').test(text);
+    } catch(e) {
+      return text.toLowerCase().includes(query.toLowerCase());
+    }
+  }
+
   function getFilteredItems(query) {
     const items = Array.from(document.querySelectorAll('.faq-item'));
-    const q = (query || document.getElementById('faqSearch').value || '').trim().toLowerCase();
+    const q = (query || document.getElementById('faqSearch').value || '').trim();
     return items.filter(item => {
       const cat = item.dataset.cat;
-      const text = item.querySelector('.faq-q').textContent.toLowerCase();
-      const answer = item.querySelector('.faq-a').textContent.toLowerCase();
+      const text = item.querySelector('.faq-q').textContent;
+      const answer = item.querySelector('.faq-a').textContent;
       const catMatch = activeCat === 'all' || cat === activeCat;
-      const searchMatch = !q || text.includes(q) || answer.includes(q);
+      const searchMatch = !q || koreanMatch(text, q) || koreanMatch(answer, q);
       return catMatch && searchMatch;
     });
   }
@@ -834,5 +539,6 @@
     });
   })();
 </script>
+<script src="apply-popup.js?v=2"></script>
 </body>
 </html>

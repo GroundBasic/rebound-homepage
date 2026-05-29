@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <title>로그인 — 리바운드</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <style>
@@ -118,6 +119,7 @@
       transition: opacity 0.15s;
     }
     .btn-login:hover { opacity: 0.92; }
+    .btn-login:disabled { background: #D1D5DB; cursor: not-allowed; opacity: 1; }
 
     /* ── 구분선 ── */
     .divider {
@@ -178,7 +180,7 @@
 <body>
 
   <!-- 로고 -->
-  <a href="rebound-personal.html" class="login-logo" aria-label="리바운드 홈">
+  <a href="rebound-biz.html" class="login-logo" aria-label="리바운드 홈">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 54 55" fill="none">
       <path opacity="0.35" d="M31.6526 48.796V49.1161C31.5679 46.065 29.0679 43.6326 26.017 43.6326C22.9662 43.6326 20.4026 46.1503 20.3814 49.2654V49.0094C20.212 41.0296 13.6653 34.5434 5.76278 34.5221H5.69922C8.77126 34.4794 11.2713 31.9617 11.2713 28.8466C11.2713 25.7315 8.79244 23.2138 5.72041 23.1712C12.5213 23.1712 18.7713 25.8809 23.4323 30.2761C28.3899 34.9275 31.5255 41.499 31.6738 48.7747L31.6526 48.796Z" fill="#FF6D24"/>
       <path opacity="0.45" d="M50.8258 10.4121C48.8343 11.927 46.9699 13.6125 45.2114 15.4474C44.4063 16.3009 43.6224 17.1757 42.8809 18.0505C35.7199 26.713 31.758 37.4238 31.6521 48.7747V49.2868C31.6521 46.1717 29.1097 43.6326 26.0165 43.6326C22.9232 43.6326 20.3809 46.1717 20.3809 49.2868V49.0094C20.4232 42.4805 21.4826 36.1863 23.4317 30.2975C25.8893 22.8725 29.7453 16.0662 34.6817 10.2201C37.1817 7.27566 39.9572 4.58729 42.9656 2.17629C43.3046 1.89892 43.6648 1.62155 44.025 1.34418C43.7072 1.62155 43.4106 1.94159 43.1351 2.30431C42.436 3.2431 42.0334 4.4166 42.0334 5.67544C42.0334 8.81187 44.5758 11.3509 47.669 11.3509C48.8343 11.3509 49.936 10.9882 50.8258 10.3908V10.4121Z" fill="#FF6D24"/>
@@ -218,7 +220,7 @@
           <input type="checkbox" name="remember">
           자동 로그인
         </label>
-        <a href="#">비밀번호 찾기</a>
+        <a href="#" onclick="alert('준비 중입니다.');return false;">비밀번호 찾기</a>
       </div>
 
       <button type="submit" class="btn-login">로그인</button>
@@ -226,7 +228,7 @@
 
     <div class="divider">또는</div>
 
-    <a href="#" class="btn-kakao">
+    <a href="#" class="btn-kakao" onclick="alert('준비 중입니다.');return false;">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 1C4.58172 1 1 3.79086 1 7.24138C1 9.4138 2.43448 11.3 4.57931 12.3793L3.77241 15.6414C3.70345 15.8897 3.98966 16.0897 4.2 15.9517L8.07931 13.4207C8.38276 13.4621 8.69138 13.4828 9 13.4828C13.4183 13.4828 17 10.6919 17 7.24138C17 3.79086 13.4183 1 9 1Z" fill="#181600"/>
       </svg>
@@ -234,24 +236,39 @@
     </a>
 
     <p class="signup-link">
-      아직 계정이 없으신가요?<a href="#">회원가입</a>
+      아직 계정이 없으신가요?<a href="#" onclick="alert('준비 중입니다.');return false;">회원가입</a>
     </p>
   </div>
 
-  <a href="rebound-personal.html" class="back-home">← 홈으로 돌아가기</a>
+  <a href="rebound-biz.html" class="back-home">← 홈으로 돌아가기</a>
 
   <script>
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
+      const form = e.currentTarget;
+      const submitBtn = form.querySelector('.btn-login');
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+      const remember = !!(form.elements.remember && form.elements.remember.checked);
 
-      if (email === 'hgu.ekgml312@gmail.com' && password === '1234') {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '로그인 중...';
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, remember })
+        });
+        if (!response.ok) throw new Error('login failed');
+        const data = await response.json().catch(() => ({}));
         sessionStorage.setItem('rebound_logged_in', 'true');
-        sessionStorage.setItem('rebound_user_email', email);
-        window.location.href = 'rebound-personal.html';
-      } else {
-        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+        sessionStorage.setItem('rebound_user_email', data.email || email);
+        window.location.href = data.redirectUrl || 'rebound-biz.html';
+      } catch (err) {
+        alert('로그인 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '로그인';
       }
     }
   </script>

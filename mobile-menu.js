@@ -13,10 +13,10 @@
 
   // 비즈/개인 바로가기 링크
   var switchLink = isBiz
-    ? '<a href="rebound-personal.html" class="mobile-menu-switch">\uAC1C\uC778 \uC11C\uBE44\uC2A4 \uBC14\uB85C\uAC00\uAE30 \u2192</a>'
+    ? '<a href="#" class="mobile-menu-switch" data-ready-popup="true">\uAC1C\uC778 \uC11C\uBE44\uC2A4 \uBC14\uB85C\uAC00\uAE30 \u2192</a>'
     : '<a href="rebound-biz.html" class="mobile-menu-switch">\uAE30\uC5C5 Biz \uC11C\uBE44\uC2A4 \u2192</a>';
 
-  var homeLink = isBiz ? 'rebound-biz.html' : 'rebound-personal.html';
+  var homeLink = 'rebound-biz.html';
 
   // 메뉴 HTML 삽입
   var menuHTML = '<div class="mobile-menu" id="mobileMenu">'
@@ -24,8 +24,8 @@
     + '<a href="' + homeLink + '">\uD648</a>'
     + '<a href="team.html">\uD300 \uB9AC\uBC14\uC6B4\uB4DC</a>'
     + '<a href="support.html">\uACE0\uAC1D\uC13C\uD130</a>'
-    + '<a href="https://blog.naver.com/reboundkr" target="_blank">\uBE14\uB85C\uADF8</a>'
-    + '<a href="self-check.html" target="_blank">\uC140\uD504 \uC9C4\uB2E8</a>'
+    + '<a href="https://blog.naver.com/reboundkr" target="_blank" rel="noopener noreferrer">\uBE14\uB85C\uADF8</a>'
+    + '<a href="self-check.html" target="_blank" rel="noopener noreferrer">\uC140\uD504 \uC9C4\uB2E8</a>'
     + switchLink
     + '</nav>'
     + '</div>';
@@ -54,6 +54,15 @@
 
   var links = menu.querySelectorAll('a');
   for (var i = 0; i < links.length; i++) {
-    links[i].addEventListener('click', closeMenu);
+    links[i].addEventListener('click', function(e) {
+      if (this.getAttribute('data-ready-popup') === 'true') {
+        e.preventDefault();
+        closeMenu();
+        var popup = document.getElementById('readyPopupOverlay');
+        if (popup) popup.classList.add('open');
+        return;
+      }
+      closeMenu();
+    });
   }
 })();

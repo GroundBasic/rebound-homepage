@@ -1,0 +1,569 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>셀프 진단 플로우 빌더</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --orange:#FF6D24;--lime:#B5F23D;--navy:#111827;--text:#1A1714;--text2:#6B6B6B;--text3:#999;
+    --border:#E5E5E5;--bg:#F3F3F5;--card:#fff;
+    --block:#DC2626;--block-bg:#FEF2F2;--block-border:#FECACA;
+    --personal:#FF6D24;--personal-bg:#FFF0E8;--personal-border:#FFD4BC;
+    --lawyer:#2563EB;--lawyer-bg:#EFF6FF;--lawyer-border:#BFDBFE;
+    --biz:#3A7A00;--biz-bg:#F0FFE0;--biz-border:#C6F09A;
+  }
+  body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+  .header{background:var(--navy);color:#fff;padding:20px 28px;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px}
+  .header-info{flex:1}
+  .header h1{font-size:16px;font-weight:800;margin-bottom:1px}
+  
+  .header p{font-size:12px;color:rgba(255,255,255,0.4)}
+  .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all 0.15s}
+  .btn-sm{padding:6px 13px;font-size:12px;border-radius:7px}
+  .btn-orange{background:var(--orange);color:#fff}
+  .btn-orange:hover{opacity:0.88}
+  .btn-outline{background:transparent;color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.2)}
+  .btn-outline:hover{border-color:rgba(255,255,255,0.5);color:#fff}
+  .btn-lime{background:var(--lime);color:var(--navy)}
+  .btn-lime:hover{opacity:0.9}
+
+  .layout{max-width:900px;margin:0 auto;padding:24px 20px 120px}
+
+  .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border-radius:12px;padding:4px;border:1px solid var(--border)}
+  .tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;color:var(--text3);border-radius:8px;cursor:pointer;transition:all 0.15s}
+  .tab.active{background:var(--navy);color:#fff}
+  .tab:hover:not(.active){background:#f0f0f0;color:var(--text2)}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
+  /* BLOCK BANNER */
+  .block-banner{background:var(--block-bg);border:1px solid var(--block-border);border-radius:12px;padding:13px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+  .block-banner h3{font-size:13px;font-weight:800;color:var(--block);margin-bottom:2px}
+  .block-banner p{font-size:12px;color:#7f1d1d;line-height:1.5}
+
+  /* RESULT LEGEND */
+  .result-legend{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+  .rl{padding:4px 11px;border-radius:7px;font-size:11px;font-weight:700;border:1px solid transparent}
+  .rl-BLOCK{background:var(--block-bg);color:var(--block);border-color:var(--block-border)}
+  .rl-PERSONAL{background:var(--personal-bg);color:var(--personal);border-color:var(--personal-border)}
+  .rl-LAWYER{background:var(--lawyer-bg);color:var(--lawyer);border-color:var(--lawyer-border)}
+  .rl-BIZ{background:var(--biz-bg);color:var(--biz);border-color:var(--biz-border)}
+
+  /* QUESTION CARD */
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:10px}
+  .q-card.path-common{border-left:4px solid #9CA3AF}
+  .q-card.path-personal{border-left:4px solid var(--orange)}
+  .q-card.path-biz{border-left:4px solid var(--lime)}
+  .q-card-header{display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap}
+  .q-num{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+  .mini-input{padding:5px 9px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:#fff}
+  .mini-input:focus{outline:none;border-color:var(--orange)}
+  .q-id-input{width:68px;font-weight:700}
+  .path-select{width:76px;cursor:pointer}
+  .q-flags{display:flex;gap:5px;margin-left:auto}
+  .flag-btn{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;background:#F0F0F4;color:var(--text3);cursor:pointer;user-select:none;border:1px solid transparent;transition:all 0.15s}
+  .flag-btn.on{background:var(--navy);color:#fff}
+  .btn-del-q{padding:4px 9px;border:1px solid var(--block-border);background:var(--block-bg);color:var(--block);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s}
+  .btn-del-q:hover{background:var(--block);color:#fff;border-color:var(--block)}
+
+  .field{margin-bottom:11px}
+  .q-label{font-size:10px;font-weight:800;color:var(--text3);margin-bottom:4px;display:block;letter-spacing:0.4px;text-transform:uppercase}
+  .q-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;transition:border-color 0.15s;resize:vertical}
+  .q-input:focus{outline:none;border-color:var(--orange)}
+
+  /* CHOICES */
+  .choice-row{margin-bottom:8px;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:#FAFAFA;transition:background 0.15s}
+  .choice-row.has-block{background:var(--block-bg);border-color:var(--block-border)}
+  .choice-top{display:flex;gap:7px;align-items:center;margin-bottom:6px}
+  .choice-label{flex:1;min-width:0;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:#fff}
+  .choice-label:focus{outline:none;border-color:var(--orange)}
+  .excl-btn{padding:3px 7px;border-radius:6px;font-size:10px;font-weight:700;background:#F0F0F4;color:var(--text3);cursor:pointer;flex-shrink:0;user-select:none;border:1px solid transparent;transition:all 0.15s}
+  .excl-btn.on{background:#FEF3C7;color:#92400E;border-color:#FDE68A}
+  .btn-rm{width:24px;height:24px;border:none;background:none;color:#ccc;font-size:16px;cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+  .btn-rm:hover{background:#FEF2F2;color:var(--block)}
+
+  .choice-bottom{display:flex;gap:10px;align-items:center}
+  .choice-dest{display:flex;align-items:center;gap:5px;flex:1}
+  .dest-label{font-size:10px;font-weight:800;color:var(--text3);white-space:nowrap;letter-spacing:0.3px;text-transform:uppercase}
+  .dest-select{flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;transition:all 0.15s}
+  .dest-select:focus{outline:none;border-color:var(--orange)}
+  /* result select color coding */
+  .dest-select.rv-BLOCK{border-color:var(--block-border);background:var(--block-bg);color:var(--block);font-weight:700}
+  .dest-select.rv-PERSONAL{border-color:var(--personal-border);background:var(--personal-bg);color:var(--personal);font-weight:700}
+  .dest-select.rv-LAWYER{border-color:var(--lawyer-border);background:var(--lawyer-bg);color:var(--lawyer);font-weight:700}
+  .dest-select.rv-BIZ{border-color:var(--biz-border);background:var(--biz-bg);color:var(--biz);font-weight:700}
+  .dest-divider{width:1px;height:24px;background:var(--border);flex-shrink:0}
+
+  .btn-add-choice{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--orange);font-weight:700;cursor:pointer;padding:4px 0;border:none;background:none;font-family:inherit;margin-top:4px}
+  .btn-add-choice:hover{text-decoration:underline}
+
+  .add-card{border:2px dashed var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px;font-weight:600;transition:all 0.15s;margin-top:6px}
+  .add-card:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,109,36,0.03)}
+
+  /* FLOW PREVIEW */
+  .flow-list{display:flex;flex-direction:column;gap:8px}
+  .flow-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .flow-q-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .flow-q-id{font-size:12px;font-weight:800;background:var(--navy);color:#fff;padding:2px 8px;border-radius:6px;flex-shrink:0}
+  .flow-q-text{font-size:13px;font-weight:600}
+  .flow-choices{display:flex;flex-direction:column;gap:5px}
+  .flow-choice{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 0;border-bottom:1px solid #f0f0f0}
+  .flow-choice:last-child{border-bottom:none}
+  .flow-choice-label{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .flow-dests{display:flex;gap:4px;flex-shrink:0}
+  .flow-badge{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+  .fb-BLOCK{background:var(--block-bg);color:var(--block)}
+  .fb-PERSONAL{background:var(--personal-bg);color:var(--personal)}
+  .fb-LAWYER{background:var(--lawyer-bg);color:var(--lawyer)}
+  .fb-BIZ{background:var(--biz-bg);color:var(--biz)}
+  .fb-Q{background:#F0F0F4;color:var(--text2)}
+  .fb-end{background:#F9FAFB;color:#9CA3AF;border:1px solid #E5E7EB}
+  .fb-ROUTE{background:#FFFBEB;color:#B45309}
+
+  /* EXPORT */
+  .export-hint{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.6}
+  .export-hint code{background:#F0F0F4;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px}
+  .export-actions{display:flex;gap:8px;margin-bottom:12px}
+  .export-box{width:100%;min-height:360px;padding:16px;background:#1e1e2e;color:#cdd6f4;border:none;border-radius:12px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.7;resize:vertical}
+
+  @media(max-width:640px){
+    .header{padding:14px 16px;flex-wrap:wrap}
+    .layout{padding:16px 12px 80px}
+    .choice-bottom{flex-wrap:wrap}
+    .dest-divider{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-info">
+    <h1>셀프 진단 플로우 빌더</h1>
+    <p>이동 경로(next)와 결과 태그(result)를 각각 설정하세요</p>
+  </div>
+  <button class="btn btn-outline btn-sm" onclick="resetData()">초기화</button>
+  <button class="btn btn-lime btn-sm" onclick="switchTab('export');setTimeout(copyCode,100)">JS 복사</button>
+</div>
+
+<div class="layout">
+  <div class="tabs">
+    <div class="tab active" data-tab="questions" onclick="switchTab('questions')">질문 편집</div>
+    <div class="tab" data-tab="preview" onclick="switchTab('preview')">플로우 보기</div>
+    <div class="tab" data-tab="export" onclick="switchTab('export')">코드 내보내기</div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="panel active" id="panel-questions">
+    <div class="block-banner">
+      <div style="font-size:18px;flex-shrink:0;line-height:1.4">🚫</div>
+      <div>
+        <h3>BLOCK — 가장 강력한 결과 (우선순위: BLOCK > LAWYER > BIZ > PERSONAL)</h3>
+        <p>모든 질문을 마친 후 수집된 결과 태그 중 <strong>BLOCK이 하나라도 있으면</strong> 최종 결과는 항상 서비스 대상 아님으로 표시됩니다. <strong>이동(next)</strong>은 다음에 보여줄 질문, <strong>결과 태그(result)</strong>는 이 선택지가 기여하는 결과 유형입니다.</p>
+      </div>
+    </div>
+    <div class="result-legend">
+      <span class="rl rl-BLOCK">BLOCK 서비스 대상 아님</span>
+      <span class="rl rl-PERSONAL">PERSONAL 개인 서비스</span>
+      <span class="rl rl-LAWYER">LAWYER 변호사 상담</span>
+      <span class="rl rl-BIZ">BIZ 리바운드 Biz</span>
+    </div>
+    <div id="questionList"></div>
+    <div class="add-card" onclick="addQuestion()">+ 질문 추가</div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="panel" id="panel-preview">
+    <div id="flowPreview"></div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="panel" id="panel-export">
+    <p class="export-hint">아래 코드를 <code>self-check.html</code> 안의 <code>const QUESTIONS = {...};</code> 전체와 교체하세요.</p>
+    <div class="export-actions">
+      <button class="btn btn-orange btn-sm" id="copyBtn" onclick="copyCode()">클립보드에 복사</button>
+    </div>
+    <textarea class="export-box" id="exportBox" readonly spellcheck="false"></textarea>
+  </div>
+</div>
+
+<script>
+// ── RESULT TYPES ──
+const RESULTS = [
+  {id:'BLOCK',    label:'🚫 BLOCK — 서비스 대상 아님'},
+  {id:'PERSONAL', label:'👤 PERSONAL — 개인 서비스'},
+  {id:'LAWYER',   label:'⚖️ LAWYER — 변호사 상담 권유'},
+  {id:'BIZ',      label:'🏢 BIZ — 리바운드 Biz'},
+];
+
+// ── DEFAULT DATA ──
+// next: 다음 이동할 질문 ID (빈 문자열=진단 종료)
+// result: 이 선택지가 기여하는 결과 태그 (없으면 빈 문자열)
+function getDefaultQuestions() {
+  return [
+    {id:'Q1',path:'common',text:'어떤 종류의 돈인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'친구·가족 등 지인에게 빌려준 돈',      next:'Q2', result:'',         exclusive:false},
+      {label:'거래처에게 못 받은 물건·서비스 대금',  next:'Q2', result:'',         exclusive:false},
+      {label:'월세, 보증금 등 임대 관련한 금액',     next:'Q2', result:'',         exclusive:false},
+      {label:'급여, 일당, 용역비 등 일한 대가',      next:'Q2', result:'',         exclusive:false}
+    ]},
+    {id:'Q2',path:'common',text:'아래와 관련된 이유로\n발생한 돈인가요?',sub:'예) 양육비, 위자료, 교통사고 합의금, 폭행 합의금,\n도박으로 인한 빚, 불법 사채로 발생한 금액 등',multi:false,twoCol:true,choices:[
+      {label:'예',   next:'',      result:'BLOCK', exclusive:false},
+      {label:'아니오',next:'ROUTE', result:'',      exclusive:false}
+    ]},
+    {id:'Q3',path:'personal',text:'현재 받지 못한 금액은\n얼마인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'10만~300만 원',        next:'Q5', result:'', exclusive:false},
+      {label:'300만 원~1,000만 원',  next:'Q5', result:'', exclusive:false},
+      {label:'1,000만 원~3,000만 원',next:'Q5', result:'', exclusive:false},
+      {label:'3,000만 원 이상',      next:'Q5', result:'', exclusive:false}
+    ]},
+    {id:'Q4',path:'biz',text:'현재 받지 못한 금액은\n얼마인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'100만 원 이하',        next:'Q9', result:'', exclusive:false},
+      {label:'100만 원~1,000만 원',  next:'Q9', result:'', exclusive:false},
+      {label:'1,000만 원~3,000만 원',next:'Q9', result:'', exclusive:false},
+      {label:'3,000만 원~1억 원',    next:'Q9', result:'', exclusive:false},
+      {label:'1억 원 이상',          next:'Q9', result:'', exclusive:false}
+    ]},
+    {id:'Q5',path:'personal',text:'돈을 돌려주지 않는 상대는\n누구인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'친구 · 연인 · 가족',              next:'Q6', result:'', exclusive:false},
+      {label:'직장 동료 · 지인',                next:'Q6', result:'', exclusive:false},
+      {label:'가게 · 온라인 쇼핑몰 · 개인 자영업자',next:'Q6', result:'', exclusive:false},
+      {label:'법인',                           next:'Q6', result:'', exclusive:false}
+    ]},
+    {id:'Q6',path:'personal',text:'상대방의 연락처를\n알고 계신가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'알고 있고 연락이 닿아요',          next:'Q7', result:'', exclusive:false},
+      {label:'연락처는 알고 있는데 응답이 없어요',next:'Q7', result:'', exclusive:false},
+      {label:'연락처를 몰라요',                 next:'Q8', result:'', exclusive:false}
+    ]},
+    {id:'Q7',path:'personal',text:'돈을 받기 위해 연락하면\n어떤 반응인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'기다려주면 갚을 수 있다며 계속 미루기만 해요',next:'Q8', result:'', exclusive:false},
+      {label:'조금씩 나눠서 갚겠다고 하는데 못믿겠어요',   next:'Q8', result:'', exclusive:false},
+      {label:'받을 돈이 있는데 상대방은 없다고 해요',      next:'Q8', result:'', exclusive:false},
+      {label:'연락을 피해요',                            next:'Q8', result:'', exclusive:false}
+    ]},
+    {id:'Q8',path:'personal',text:'상대가 돈을 갚기로 한 날로부터\n얼마나 지났나요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'1년 미만',    next:'', result:'PERSONAL', exclusive:false},
+      {label:'1~3년',      next:'', result:'PERSONAL', exclusive:false},
+      {label:'3~5년',      next:'', result:'PERSONAL', exclusive:false},
+      {label:'5~10년',     next:'', result:'PERSONAL', exclusive:false},
+      {label:'10년 이상',  next:'', result:'PERSONAL', exclusive:false},
+      {label:'기억이 안나요',next:'', result:'PERSONAL', exclusive:false}
+    ]},
+    {id:'Q9',path:'biz',text:'돈을 돌려주지 않는 상대는\n누구인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'개인 고객',    next:'Q10', result:'', exclusive:false},
+      {label:'가게/자영업자',next:'Q11', result:'', exclusive:false},
+      {label:'법인/회사',   next:'Q11', result:'', exclusive:false}
+    ]},
+    {id:'Q10',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,twoCol:false,choices:[
+      {label:'이름',                  next:'Q12', result:'', exclusive:false},
+      {label:'연락처',                next:'Q12', result:'', exclusive:false},
+      {label:'이메일',                next:'Q12', result:'', exclusive:false},
+      {label:'알고 있는 정보가 없어요',next:'Q12', result:'', exclusive:true}
+    ]},
+    {id:'Q11',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,twoCol:false,choices:[
+      {label:'이름',                  next:'Q13', result:'', exclusive:false},
+      {label:'연락처',                next:'Q13', result:'', exclusive:false},
+      {label:'이메일',                next:'Q13', result:'', exclusive:false},
+      {label:'상호명',                next:'Q13', result:'', exclusive:false},
+      {label:'사업자등록번호',          next:'Q13', result:'', exclusive:false},
+      {label:'알고 있는 정보가 없어요',next:'Q13', result:'', exclusive:true}
+    ]},
+    {id:'Q12',path:'biz',text:'상대가 돈을 갚기로 한 날로부터\n얼마나 지났나요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'1년 미만', next:'', result:'BIZ', exclusive:false},
+      {label:'1~3년',   next:'', result:'BIZ', exclusive:false},
+      {label:'3~5년',   next:'', result:'BIZ', exclusive:false},
+      {label:'5년 초과', next:'', result:'BIZ', exclusive:false}
+    ]},
+    {id:'Q13',path:'biz',text:'돈을 받기 위해 연락하면\n어떤 반응인가요?',sub:'',multi:false,twoCol:false,choices:[
+      {label:'기다려주면 갚을 수 있다며 계속 미루기만 해요',next:'Q12', result:'', exclusive:false},
+      {label:'조금씩 나눠서 갚겠다고 하는데 못믿겠어요',   next:'Q12', result:'', exclusive:false},
+      {label:'받을 돈이 있는데 상대방은 없다고 해요',      next:'Q12', result:'', exclusive:false},
+      {label:'연락을 피해요',                            next:'Q12', result:'', exclusive:false}
+    ]}
+  ];
+}
+
+let questions = getDefaultQuestions();
+
+// ── TABS ──
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'preview') renderPreview();
+  if (name === 'export') renderExport();
+}
+
+// ── SYNC DOM → DATA ──
+function syncQuestion(qi) {
+  const cards = document.querySelectorAll('.q-card');
+  const card = cards[qi];
+  if (!card) return;
+  questions[qi].id   = card.querySelector('.q-id-input').value.trim();
+  questions[qi].path = card.querySelector('.path-select').value;
+  questions[qi].text = card.querySelector('.q-text-input').value;
+  questions[qi].sub  = card.querySelector('.q-sub-input').value;
+  card.querySelectorAll('.choice-row').forEach((row, ci) => {
+    if (!questions[qi].choices[ci]) return;
+    questions[qi].choices[ci].label     = row.querySelector('.choice-label').value;
+    questions[qi].choices[ci].next      = row.querySelector('.choice-next-sel').value;
+    questions[qi].choices[ci].result    = row.querySelector('.choice-result-sel').value;
+    questions[qi].choices[ci].exclusive = row.querySelector('.excl-btn').classList.contains('on');
+  });
+}
+
+function syncAll() {
+  document.querySelectorAll('.q-card').forEach((_, i) => syncQuestion(i));
+}
+
+// ── DROPDOWN OPTIONS ──
+// next: 질문 이동 대상 (결과 타입 없음)
+function nextOptsHtml(sel) {
+  let h = '<option value=""' + (sel===''?' selected':'') + '>⏹ 진단 종료 (결과 계산)</option>';
+  h += '<optgroup label="특수 처리">';
+  h += `<option value="ROUTE"${sel==='ROUTE'?' selected':''}>↳ ROUTE — Q1 답변에 따라 자동 분기</option>`;
+  h += '</optgroup><optgroup label="다음 질문">';
+  questions.forEach(q => {
+    const short = q.text.replace(/\n/g,' ').substring(0,18);
+    h += `<option value="${q.id}"${sel===q.id?' selected':''}>${q.id} — ${short}</option>`;
+  });
+  h += '</optgroup>';
+  return h;
+}
+
+// result: 결과 태그
+function resultOptsHtml(sel) {
+  let h = `<option value=""${sel===''?' selected':''}>태그 없음</option>`;
+  RESULTS.forEach(r => {
+    h += `<option value="${r.id}"${sel===r.id?' selected':''}>${r.label}</option>`;
+  });
+  return h;
+}
+
+// ── RENDER QUESTIONS ──
+function renderQuestions() {
+  const list = document.getElementById('questionList');
+  if (!questions.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text3);padding:32px;font-size:13px">질문이 없습니다.</p>';
+    return;
+  }
+  list.innerHTML = questions.map((q, qi) => {
+    const choicesHtml = q.choices.map((c, ci) => {
+      const hasBlock = c.result === 'BLOCK';
+      const rowCls = 'choice-row' + (hasBlock ? ' has-block' : '');
+      const resCls = 'dest-select choice-result-sel' + (c.result ? ' rv-' + c.result : '');
+      const canRemove = q.choices.length > 1;
+      return `<div class="${rowCls}">
+        <div class="choice-top">
+          <input class="choice-label" value="${esc(c.label)}" placeholder="선택지 ${ci+1}" oninput="syncQuestion(${qi})">
+          <span class="excl-btn${c.exclusive?' on':''}" title="단독 선택지 (다른 항목과 함께 선택 불가)" onclick="toggleExcl(${qi},${ci})">단독</span>
+          ${canRemove ? `<button class="btn-rm" onclick="removeChoice(${qi},${ci})">×</button>` : '<span style="width:24px;flex-shrink:0"></span>'}
+        </div>
+        <div class="choice-bottom">
+          <div class="choice-dest">
+            <span class="dest-label">이동</span>
+            <select class="dest-select choice-next-sel" onchange="syncQuestion(${qi})">${nextOptsHtml(c.next)}</select>
+          </div>
+          <div class="dest-divider"></div>
+          <div class="choice-dest">
+            <span class="dest-label">결과 태그</span>
+            <select class="${resCls}" onchange="onResultChange(this,${qi},${ci})">${resultOptsHtml(c.result)}</select>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="q-card path-${q.path||'common'}">
+      <div class="q-card-header">
+        <div class="q-num">${qi+1}</div>
+        <input class="mini-input q-id-input" value="${esc(q.id)}" placeholder="Q1" oninput="syncQuestion(${qi})" onblur="onIdBlur(${qi})">
+        <select class="mini-input path-select" onchange="syncQuestion(${qi});renderQuestions()">
+          <option value="common"${q.path==='common'?' selected':''}>공통</option>
+          <option value="personal"${q.path==='personal'?' selected':''}>개인</option>
+          <option value="biz"${q.path==='biz'?' selected':''}>Biz</option>
+        </select>
+        <div class="q-flags">
+          <span class="flag-btn${q.multi?' on':''}" onclick="toggleFlag(${qi},'multi')">복수선택</span>
+          <span class="flag-btn${q.twoCol?' on':''}" onclick="toggleFlag(${qi},'twoCol')">2열</span>
+        </div>
+        <button class="btn-del-q" onclick="removeQuestion(${qi})">삭제</button>
+      </div>
+      <div class="field">
+        <label class="q-label">질문 내용</label>
+        <textarea class="q-input q-text-input" rows="2" oninput="syncQuestion(${qi})">${esc(q.text)}</textarea>
+      </div>
+      <div class="field">
+        <label class="q-label">보조 텍스트 (선택)</label>
+        <textarea class="q-input q-sub-input" rows="2" placeholder="예) 양육비, 위자료..." oninput="syncQuestion(${qi})">${esc(q.sub)}</textarea>
+      </div>
+      <div class="field">
+        <label class="q-label">선택지</label>
+        ${choicesHtml}
+        <button class="btn-add-choice" onclick="addChoice(${qi})">+ 선택지 추가</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACTIONS ──
+function onResultChange(sel, qi, ci) {
+  const v = sel.value;
+  sel.className = 'dest-select choice-result-sel' + (v ? ' rv-' + v : '');
+  const row = sel.closest('.choice-row');
+  row.className = 'choice-row' + (v === 'BLOCK' ? ' has-block' : '');
+  syncQuestion(qi);
+}
+
+function toggleFlag(qi, flag) {
+  syncAll();
+  questions[qi][flag] = !questions[qi][flag];
+  renderQuestions();
+}
+
+function toggleExcl(qi, ci) {
+  syncAll();
+  questions[qi].choices[ci].exclusive = !questions[qi].choices[ci].exclusive;
+  renderQuestions();
+}
+
+function onIdBlur(qi) {
+  syncAll();
+  renderQuestions();
+}
+
+function addQuestion() {
+  syncAll();
+  const num = questions.length + 1;
+  questions.push({id:'Q'+num, path:'common', text:'', sub:'', multi:false, twoCol:false,
+    choices:[{label:'', next:'', result:'', exclusive:false}]});
+  renderQuestions();
+}
+
+function removeQuestion(qi) {
+  if (questions.length <= 1) { alert('최소 1개의 질문이 필요합니다.'); return; }
+  if (!confirm('이 질문을 삭제할까요?')) return;
+  syncAll();
+  questions.splice(qi, 1);
+  renderQuestions();
+}
+
+function addChoice(qi) {
+  syncAll();
+  questions[qi].choices.push({label:'', next:'', result:'', exclusive:false});
+  renderQuestions();
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.q-card');
+    const rows = cards[qi] && cards[qi].querySelectorAll('.choice-row');
+    if (rows && rows.length) rows[rows.length-1].scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 50);
+}
+
+function removeChoice(qi, ci) {
+  syncAll();
+  questions[qi].choices.splice(ci, 1);
+  renderQuestions();
+}
+
+function resetData() {
+  if (!confirm('현재 편집 내용을 버리고 기본 Q1~Q13 데이터로 초기화할까요?')) return;
+  questions = getDefaultQuestions();
+  renderQuestions();
+}
+
+// ── PREVIEW ──
+const RESULT_LABELS = {
+  BLOCK:'서비스 대상 아님', PERSONAL:'개인 서비스',
+  LAWYER:'변호사 상담', BIZ:'리바운드 Biz'
+};
+
+function renderPreview() {
+  syncAll();
+  const box = document.getElementById('flowPreview');
+  box.innerHTML = '<div class="flow-list">' + questions.map(q => {
+    const pathColor = q.path==='biz' ? 'var(--biz)' : q.path==='personal' ? 'var(--orange)' : '#6B7280';
+    const flags = [q.multi?'복수선택':'', q.twoCol?'2열':''].filter(Boolean).join(' · ');
+    const choicesHtml = q.choices.map(c => {
+      const nextLabel = c.next === 'ROUTE' ? 'ROUTE' : c.next || '종료';
+      const nextCls = c.next === 'ROUTE' ? 'flow-badge fb-ROUTE' : c.next ? 'flow-badge fb-Q' : 'flow-badge fb-end';
+      const resultBadge = c.result ? `<span class="flow-badge fb-${c.result}">${RESULT_LABELS[c.result]||c.result}</span>` : '';
+      return `<div class="flow-choice">
+        <span class="flow-choice-label">${esc(c.label)||'(미입력)'}${c.exclusive?' <em style="color:var(--text3);font-style:normal">[단독]</em>':''}</span>
+        <div class="flow-dests">
+          <span class="${nextCls}">${nextLabel}</span>
+          ${resultBadge}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="flow-q">
+      <div class="flow-q-header">
+        <span class="flow-q-id">${esc(q.id)}</span>
+        <span class="flow-q-text" style="color:${pathColor}">${esc(q.text.replace(/\n/g,' '))}</span>
+        ${flags ? `<span style="font-size:11px;color:var(--text3);margin-left:auto">(${flags})</span>` : ''}
+      </div>
+      <div class="flow-choices">${choicesHtml}</div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ── EXPORT ──
+function jsStr(s) {
+  return "'" + (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r/g,'').replace(/\n/g,'\\n') + "'";
+}
+
+function generateCode() {
+  const lines = ['const QUESTIONS = {'];
+  questions.forEach((q, qi) => {
+    const last = qi === questions.length - 1;
+    const props = [`id:${jsStr(q.id)}`, `path:${jsStr(q.path)}`, `text:${jsStr(q.text)}`, `sub:${jsStr(q.sub)}`];
+    if (q.multi) props.push('multi:true');
+    if (q.twoCol) props.push('twoCol:true');
+    const choiceParts = q.choices.map(c => {
+      const cp = [`label:${jsStr(c.label)}`, `next:${jsStr(c.next)}`];
+      if (c.result) cp.push(`result:${jsStr(c.result)}`);
+      if (c.exclusive) cp.push('exclusive:true');
+      return `    {${cp.join(',')}}`;
+    });
+    lines.push(`  ${q.id}:{${props.join(',')},choices:[`);
+    lines.push(choiceParts.join(',\n'));
+    lines.push(`  ]}${last ? '' : ','}`);
+  });
+  lines.push('};');
+  return lines.join('\n');
+}
+
+function renderExport() {
+  syncAll();
+  document.getElementById('exportBox').value = generateCode();
+}
+
+function copyCode() {
+  syncAll();
+  renderExport();
+  const code = document.getElementById('exportBox').value;
+  const btn = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '복사됨!';
+    setTimeout(() => btn.textContent = '클립보드에 복사', 1800);
+  }).catch(() => {
+    document.getElementById('exportBox').select();
+    document.execCommand('copy');
+    btn.textContent = '복사됨!';
+    setTimeout(() => btn.textContent = '클립보드에 복사', 1800);
+  });
+}
+
+// ── UTIL ──
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── INIT ──
+renderQuestions();
+</script>
+</body>
+</html>

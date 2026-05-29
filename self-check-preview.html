@@ -1,0 +1,413 @@
+\<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>셀프 진단 플로우 미리보기</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#FF6D24;--lime:#B5F23D;--navy:#111827;--text:#1A1714;--text2:#6B6B6B;--text3:#999;--border:#E5E5E5;--bg:#F3F3F5;--card:#fff}
+  body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+  /* TOP BAR */
+  .topbar{background:var(--navy);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+  .topbar h1{font-size:15px;font-weight:800}
+  .topbar-tabs{display:flex;gap:4px;margin-left:auto}
+  .topbar-tab{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;color:rgba(255,255,255,0.5);border:1px solid transparent}
+  .topbar-tab:hover{color:#fff}
+  .topbar-tab.active{background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.15)}
+
+  .main{max-width:1100px;margin:0 auto;padding:24px}
+
+  /* ── VIEW: MAP ── */
+  .view{display:none}
+  .view.active{display:block}
+
+  /* FLOW MAP */
+  .flow-map{display:flex;flex-direction:column;gap:0}
+  .flow-group{margin-bottom:32px}
+  .flow-group-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding-left:4px}
+  .flow-group-label.personal{color:var(--orange)}
+  .flow-group-label.biz{color:#3A7A00}
+  .flow-cards{display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:10px}
+
+  .fcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.15s;position:relative}
+  .fcard:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);transform:translateY(-2px)}
+  .fcard.active{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,109,36,0.15)}
+  .fcard.is-biz{border-left:3px solid var(--lime)}
+  .fcard.is-personal{border-left:3px solid var(--orange)}
+  .fcard.is-common{border-left:3px solid var(--border)}
+  .fcard.is-result{border-left:3px solid #8B5CF6;background:#FAFAFF}
+  .fcard-id{font-size:11px;font-weight:800;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  .fcard-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;letter-spacing:0.3px}
+  .badge-common{background:#EEEEF2;color:#777}
+  .badge-personal{background:#FFF0E8;color:var(--orange)}
+  .badge-biz{background:#F0FFE0;color:#3A7A00}
+  .badge-result{background:#F0EEFF;color:#7C3AED}
+  .fcard-text{font-size:13px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .fcard-choices{font-size:11px;color:var(--text3)}
+  .fcard-arrow{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .fcard-arrow span{font-size:10px;padding:2px 7px;border-radius:6px;background:#f0f0f4;color:#666;font-weight:600}
+
+  /* ── VIEW: DETAIL ── */
+  .detail-layout{display:grid;grid-template-columns:260px 1fr;gap:24px;min-height:calc(100vh - 120px)}
+  .detail-sidebar{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 90px);overflow-y:auto;padding-right:8px}
+  .sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all 0.12s;margin-bottom:2px}
+  .sidebar-item:hover{background:#EEEEF2;color:var(--text)}
+  .sidebar-item.active{background:var(--navy);color:#fff}
+  .sidebar-item .si-id{font-size:11px;font-weight:800;width:36px;flex-shrink:0}
+  .sidebar-item .si-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .dot-common{background:#ccc}
+  .dot-personal{background:var(--orange)}
+  .dot-biz{background:var(--lime)}
+  .dot-result{background:#8B5CF6}
+  .sidebar-divider{height:1px;background:var(--border);margin:12px 0}
+
+  .detail-content{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px;min-height:400px}
+  .dc-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .dc-id{font-size:22px;font-weight:900;color:var(--navy)}
+  .dc-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+  .dc-question{font-size:20px;font-weight:700;color:var(--text);margin-bottom:24px;line-height:1.5}
+  .dc-note{font-size:13px;color:var(--text3);margin-bottom:24px;padding:12px 16px;background:#F8F8FA;border-radius:10px;line-height:1.6}
+
+  .dc-choices{display:flex;flex-direction:column;gap:8px}
+  .dc-choice{display:flex;align-items:center;gap:12px;padding:14px 18px;border:1px solid var(--border);border-radius:12px;transition:all 0.12s;cursor:pointer}
+  .dc-choice:hover{border-color:var(--orange);background:rgba(255,109,36,0.03)}
+  .dc-choice-num{width:28px;height:28px;background:#F0F0F4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--text2);flex-shrink:0}
+  .dc-choice-label{font-size:14px;font-weight:500;color:var(--text);flex:1}
+  .dc-choice-next{font-size:11px;font-weight:700;color:var(--text3);padding:3px 8px;border-radius:6px;background:#f0f0f4;white-space:nowrap}
+  .dc-choice-next.has-next{background:#FFF0E8;color:var(--orange);cursor:pointer}
+  .dc-choice-next.has-next:hover{background:var(--orange);color:#fff}
+  .dc-choice-next.biz-next{background:#F0FFE0;color:#3A7A00}
+  .dc-choice-next.biz-next:hover{background:var(--lime);color:var(--navy)}
+
+  /* RESULT DETAIL */
+  .dc-result-box{padding:24px;border-radius:14px;background:linear-gradient(135deg,#FFF8F4,#FFF0E8);border:1px solid rgba(255,109,36,0.15);margin-top:8px}
+  .dc-result-box.biz-result{background:linear-gradient(135deg,#F8FFF0,#F0FFE0);border-color:rgba(181,242,61,0.3)}
+  .dc-result-title{font-size:18px;font-weight:800;margin-bottom:8px}
+  .dc-result-desc{font-size:14px;color:var(--text2);line-height:1.7}
+  .dc-result-empty{font-size:13px;color:var(--text3);font-style:italic}
+
+  /* NAV BUTTONS */
+  .dc-nav{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+  .dc-nav-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;transition:all 0.12s;color:var(--text2)}
+  .dc-nav-btn:hover{border-color:var(--navy);color:var(--text)}
+
+  /* ── VIEW: SIMULATE ── */
+  .sim-wrap{max-width:420px;margin:0 auto}
+  .sim-phone{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.12);min-height:680px;display:flex;flex-direction:column}
+  .sim-header{padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+  .sim-progress{display:flex;gap:3px;margin-bottom:12px}
+  .sim-bar{flex:1;height:3px;border-radius:2px;background:#EEEEF2}
+  .sim-bar.filled{background:var(--orange)}
+  .sim-bar.biz-filled{background:var(--lime)}
+  .sim-step{font-size:11px;color:var(--text3);font-weight:600}
+  .sim-body{flex:1;padding:28px 24px;display:flex;flex-direction:column}
+  .sim-question{font-size:20px;font-weight:700;line-height:1.45;margin-bottom:24px;color:var(--text)}
+  .sim-choices{display:flex;flex-direction:column;gap:8px;flex:1}
+  .sim-choice{padding:14px 18px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.12s;color:var(--text)}
+  .sim-choice:hover{border-color:var(--orange);background:rgba(255,109,36,0.04)}
+  .sim-choice.selected{border-color:var(--orange);background:var(--orange);color:#fff}
+  .sim-footer{padding:16px 24px 24px;display:flex;gap:8px}
+  .sim-btn{flex:1;padding:14px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all 0.12s}
+  .sim-btn-back{background:#F0F0F4;color:var(--text2)}
+  .sim-btn-back:hover{background:#E4E4E8}
+  .sim-btn-next{background:var(--orange);color:#fff}
+  .sim-btn-next:hover{opacity:0.9}
+  .sim-btn-next:disabled{background:#ddd;color:#aaa;cursor:not-allowed}
+  .sim-result{text-align:center;padding:40px 24px}
+  .sim-result-emoji{font-size:48px;margin-bottom:16px}
+  .sim-result-title{font-size:22px;font-weight:800;margin-bottom:8px}
+  .sim-result-desc{font-size:14px;color:var(--text2);line-height:1.7}
+
+  /* UNCONNECTED WARNING */
+  .warn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#D97706;background:#FFFBEB;padding:3px 8px;border-radius:6px;font-weight:600;margin-top:4px}
+
+  @media(max-width:768px){
+    .detail-layout{grid-template-columns:1fr}
+    .detail-sidebar{position:static;max-height:none;display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding-bottom:8px}
+    .sidebar-item{white-space:nowrap;flex-shrink:0}
+    .sidebar-divider{display:none}
+    .detail-content{padding:24px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>셀프 진단 플로우</h1>
+  <div class="topbar-tabs">
+    <div class="topbar-tab active" onclick="showView('map')">전체 맵</div>
+    <div class="topbar-tab" onclick="showView('detail')">질문 상세</div>
+    <div class="topbar-tab" onclick="showView('simulate')">시뮬레이션</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="view active" id="view-map"></div>
+  <div class="view" id="view-detail"></div>
+  <div class="view" id="view-simulate"></div>
+</div>
+
+<script>
+const DATA = {"questions":[{"id":"Q1","path":"common","text":"어떤 종류의 돈인가요?","choices":[{"label":"친구·가족 등 지인에게 빌려준 돈","next":"Q3"},{"label":"거래처에게 못 받은 물건·서비스 대금","next":"Q3"},{"label":"월세, 보증금 등 임대 관련한 금액","next":"Q3"},{"label":"급여, 일당, 용역비 등 일한 대가","next":"Q4"}]},{"id":"Q2","path":"common","text":"아래와 관련된 이유로 발생한 돈인가요?  예) 양육비, 위자료, 교통사고 합의금, 폭행 합의금, 도박으로 인한 빚, 불법 사채로 발생한 금액 등","choices":[{"label":"예","next":""},{"label":"아니오","next":""}]},{"id":"Q3","path":"personal","text":"현재 받지 못한 금액은 얼마인가요?","choices":[{"label":"10만~300만 원","next":"Q5"},{"label":"300만 원~1,000만 원","next":"Q5"},{"label":"1,000만 원~3,000만 원","next":"Q5"},{"label":"3,000만 원 이상","next":"Q5"}]},{"id":"Q4","path":"biz","text":"현재 받지 못한 금액은 얼마인가요?","choices":[{"label":"100만 원 이하","next":"Q9"},{"label":"100만 원~1,000만 원","next":"Q9"},{"label":"1,000만 원~3,000만 원","next":"Q9"},{"label":"3,000만 원~1억 원","next":"Q9"},{"label":"1억 원 이상","next":"Q9"}]},{"id":"Q5","path":"personal","text":"돈을 돌려주지 않는 상대는 누구인가요?","choices":[{"label":"친구 · 연인 · 가족","next":"Q6"},{"label":"직장 동료 · 지인","next":"Q6"},{"label":"가게 · 온라인 쇼핑몰 · 개인 자영업자","next":"Q6"},{"label":"법인","next":"Q6"}]},{"id":"Q6","path":"personal","text":"상대방의 연락처를 알고 계신가요?","choices":[{"label":"알고 있고 연락이 닿아요","next":"Q7"},{"label":"연락처는 알고 있는데 응답이 없어요","next":"Q7"},{"label":"연락처를 몰라요","next":"Q8"}]},{"id":"Q7","path":"personal","text":"돈을 받기 위해 연락하면 어떤 반응인가요?","choices":[{"label":"기다려주면 갚을 수 있다며 계속 미루기만 해요","next":"Q8"},{"label":"조금씩 나눠서 갚겠다고 하는데 못믿겠어요","next":"Q8"},{"label":"받을 돈이 있는데 상대방은 없다고 해요","next":"Q8"},{"label":"연락을 피해요","next":"Q8"}]},{"id":"Q8","path":"personal","text":"상대가 돈을 갚기로 한 날로부터 얼마나 지났나요?","choices":[{"label":"1년 미만","next":"R1"},{"label":"1~3년","next":"R1"},{"label":"3~5년","next":"R1"},{"label":"5~10년","next":"R1"},{"label":"10년 이상","next":"R1"},{"label":"기억이 안나요","next":"R1"}]},{"id":"Q9","path":"biz","text":"돈을 돌려주지 않는 상대는 누구인가요?","choices":[{"label":"개인 고객","next":"Q10"},{"label":"가게/자영업자","next":"Q11"},{"label":"법인/회사","next":"Q11"}]},{"id":"Q10","path":"biz","text":"상대방에 대해 알고 있는 정보를 모두 선택해주세요","choices":[{"label":"이름","next":"Q12"},{"label":"연락처","next":"Q12"},{"label":"이메일","next":"Q12"},{"label":"알고 있는 정보가 없어요","next":"Q12"}]},{"id":"Q11","path":"biz","text":"상대방에 대해 알고 있는 정보를 모두 선택해주세요","choices":[{"label":"이름","next":"Q13"},{"label":"연락처","next":"Q13"},{"label":"이메일","next":"Q13"},{"label":"상호명","next":"Q13"},{"label":"사업자등록번호","next":"Q13"},{"label":"알고 있는 정보가 없어요","next":"Q13"}]},{"id":"Q12","path":"biz","text":"상대가 돈을 갚기로 한 날로부터 얼마나 지났나요?","choices":[{"label":"1년 미만","next":"R2"},{"label":"1~3년","next":"R2"},{"label":"3~5년","next":"R2"},{"label":"5년 초과","next":"R2"}]},{"id":"Q13","path":"biz","text":"돈을 받기 위해 연락하면 어떤 반응인가요?","choices":[{"label":"기다려주면 갚을 수 있다며 계속 미루기만 해요","next":"Q12"},{"label":"조금씩 나눠서 갚겠다고 하는데 못믿겠어요","next":"Q12"},{"label":"받을 돈이 있는데 상대방은 없다고 해요","next":"Q12"},{"label":"연락을 피해요","next":"Q12"}]}],"results":[{"id":"R1","path":"personal","title":"준비중이에요!","grade":"","description":"개인 고객을 위한 리바운드 서비스는 아직 준비중이에요","cta":""},{"id":"R2","path":"biz","title":"","grade":"","description":"","cta":""}]};
+
+const allItems = [...DATA.questions, ...DATA.results];
+let currentDetail = 'Q1';
+
+// ── HELPERS ──
+function find(id) { return allItems.find(x => x.id === id); }
+function isResult(id) { return DATA.results.some(r => r.id === id); }
+function pathBadge(path) {
+  if (path === 'biz') return '<span class="fcard-badge badge-biz">Biz</span>';
+  if (path === 'personal') return '<span class="fcard-badge badge-personal">개인</span>';
+  return '<span class="fcard-badge badge-common">공통</span>';
+}
+function pathDot(path) {
+  if (path === 'biz') return 'dot-biz';
+  if (path === 'personal') return 'dot-personal';
+  return 'dot-common';
+}
+function hasUnconnected(q) { return q.choices && q.choices.some(c => !c.next); }
+function getNextIds(q) { return [...new Set(q.choices.map(c => c.next).filter(Boolean))]; }
+
+// ── VIEW SWITCHING ──
+function showView(name) {
+  document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('view-' + name).classList.add('active');
+  if (name === 'map') renderMap();
+  if (name === 'detail') renderDetail();
+  if (name === 'simulate') startSimulation();
+}
+
+// ── MAP VIEW ──
+function renderMap() {
+  const common = DATA.questions.filter(q => q.path === 'common');
+  const personal = DATA.questions.filter(q => q.path === 'personal');
+  const biz = DATA.questions.filter(q => q.path === 'biz');
+  const personalR = DATA.results.filter(r => r.path === 'personal');
+  const bizR = DATA.results.filter(r => r.path === 'biz');
+
+  let html = '';
+
+  function renderCards(items, isRes) {
+    return items.map(item => {
+      const cls = isRes ? 'is-result' : ('is-' + item.path);
+      const badge = isRes ? '<span class="fcard-badge badge-result">결과</span>' : pathBadge(item.path);
+      const warn = !isRes && hasUnconnected(item) ? '<div class="warn">! 미연결 선택지</div>' : '';
+      const text = isRes ? (item.title || '(미입력)') : item.text;
+      const arrows = !isRes ? '<div class="fcard-arrow">' + getNextIds(item).map(n => '<span>' + n + '</span>').join('') + '</div>' : '';
+      const choiceCount = !isRes ? '<span>' + item.choices.length + '개 선택지</span>' : '';
+      return '<div class="fcard ' + cls + '" onclick="goDetail(\'' + item.id + '\')">' +
+        '<div class="fcard-id">' + item.id + ' ' + badge + '</div>' +
+        '<div class="fcard-text">' + text + '</div>' +
+        '<div class="fcard-choices">' + choiceCount + arrows + '</div>' +
+        warn +
+      '</div>';
+    }).join('');
+  }
+
+  if (common.length) {
+    html += '<div class="flow-group"><div class="flow-group-label">공통 질문</div><div class="flow-cards">' + renderCards(common) + '</div></div>';
+  }
+  if (personal.length || personalR.length) {
+    html += '<div class="flow-group"><div class="flow-group-label personal">개인 경로</div><div class="flow-cards">' + renderCards(personal) + renderCards(personalR, true) + '</div></div>';
+  }
+  if (biz.length || bizR.length) {
+    html += '<div class="flow-group"><div class="flow-group-label biz">Biz 경로</div><div class="flow-cards">' + renderCards(biz) + renderCards(bizR, true) + '</div></div>';
+  }
+
+  document.getElementById('view-map').innerHTML = html;
+}
+
+function goDetail(id) {
+  currentDetail = id;
+  document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.topbar-tab')[1].classList.add('active');
+  document.getElementById('view-detail').classList.add('active');
+  renderDetail();
+}
+
+// ── DETAIL VIEW ──
+function renderDetail() {
+  const sidebar = allItems.map(item => {
+    const isR = isResult(item.id);
+    const dotCls = isR ? 'dot-result' : pathDot(item.path);
+    const active = item.id === currentDetail ? 'active' : '';
+    const label = isR ? (item.title || '결과') : item.text;
+    const short = label.length > 18 ? label.substring(0, 18) + '...' : label;
+    return '<div class="sidebar-item ' + active + '" onclick="currentDetail=\'' + item.id + '\';renderDetail()">' +
+      '<span class="si-dot ' + dotCls + '"></span>' +
+      '<span class="si-id">' + item.id + '</span>' +
+      '<span>' + short + '</span>' +
+    '</div>';
+  });
+
+  // Insert dividers between path groups
+  let lastPath = '';
+  const sidebarWithDividers = [];
+  allItems.forEach((item, i) => {
+    const p = isResult(item.id) ? 'result' : item.path;
+    if (lastPath && lastPath !== p) sidebarWithDividers.push('<div class="sidebar-divider"></div>');
+    sidebarWithDividers.push(sidebar[i]);
+    lastPath = p;
+  });
+
+  const item = find(currentDetail);
+  let content = '';
+
+  if (isResult(currentDetail)) {
+    const r = item;
+    const boxCls = r.path === 'biz' ? 'biz-result' : '';
+    content = '<div class="dc-header"><span class="dc-id">' + r.id + '</span><span class="dc-badge ' + (r.path === 'biz' ? 'badge-biz' : 'badge-personal') + '">' + (r.path === 'biz' ? 'Biz' : '개인') + ' 결과</span></div>';
+    if (r.title || r.description) {
+      content += '<div class="dc-result-box ' + boxCls + '">';
+      content += r.title ? '<div class="dc-result-title">' + r.title + '</div>' : '';
+      content += r.grade ? '<div style="font-size:13px;color:var(--orange);font-weight:700;margin-bottom:8px">' + r.grade + '</div>' : '';
+      content += r.description ? '<div class="dc-result-desc">' + r.description + '</div>' : '';
+      content += r.cta ? '<div style="margin-top:16px;font-size:13px;font-weight:700;color:var(--orange)">CTA: ' + r.cta + '</div>' : '';
+      content += '</div>';
+    } else {
+      content += '<div class="dc-result-empty">아직 내용이 입력되지 않았습니다</div>';
+    }
+  } else {
+    const q = item;
+    content = '<div class="dc-header"><span class="dc-id">' + q.id + '</span>' + pathBadge(q.path) + '</div>';
+    content += '<div class="dc-question">' + q.text + '</div>';
+    if (hasUnconnected(q)) {
+      content += '<div class="warn" style="margin-bottom:16px">! 일부 선택지의 다음 경로가 설정되지 않았습니다</div>';
+    }
+    content += '<div class="dc-choices">' + q.choices.map((c, i) => {
+      let nextLabel = '';
+      let nextCls = '';
+      if (c.next) {
+        const target = find(c.next);
+        const targetPath = target ? (isResult(c.next) ? 'result' : target.path) : '';
+        nextCls = targetPath === 'biz' ? 'has-next biz-next' : 'has-next';
+        nextLabel = c.next + (target ? (isResult(c.next) ? '' : ' → ' + target.text.substring(0, 12) + '...') : '');
+      } else {
+        nextLabel = '미연결';
+      }
+      return '<div class="dc-choice">' +
+        '<div class="dc-choice-num">' + (i + 1) + '</div>' +
+        '<div class="dc-choice-label">' + c.label + '</div>' +
+        (c.next ?
+          '<div class="dc-choice-next ' + nextCls + '" onclick="event.stopPropagation();currentDetail=\'' + c.next + '\';renderDetail()">' + nextLabel + '</div>' :
+          '<div class="dc-choice-next">' + nextLabel + '</div>') +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  // Navigation
+  const idx = allItems.findIndex(x => x.id === currentDetail);
+  const prev = idx > 0 ? allItems[idx - 1].id : null;
+  const next = idx < allItems.length - 1 ? allItems[idx + 1].id : null;
+  content += '<div class="dc-nav">';
+  if (prev) content += '<button class="dc-nav-btn" onclick="currentDetail=\'' + prev + '\';renderDetail()">&larr; ' + prev + '</button>';
+  if (next) content += '<button class="dc-nav-btn" style="margin-left:auto" onclick="currentDetail=\'' + next + '\';renderDetail()">' + next + ' &rarr;</button>';
+  content += '</div>';
+
+  document.getElementById('view-detail').innerHTML =
+    '<div class="detail-layout"><div class="detail-sidebar">' + sidebarWithDividers.join('') + '</div><div class="detail-content">' + content + '</div></div>';
+}
+
+// ── SIMULATE VIEW ──
+let simHistory = [];
+let simCurrent = 'Q1';
+let simSelected = null;
+
+function startSimulation() {
+  simHistory = [];
+  simCurrent = 'Q1';
+  simSelected = null;
+  renderSimulation();
+}
+
+function renderSimulation() {
+  const item = find(simCurrent);
+  const isR = isResult(simCurrent);
+
+  // Count total steps in current path
+  const totalEstimate = 8;
+  const step = simHistory.length + 1;
+  const isBiz = item && item.path === 'biz';
+
+  let html = '<div class="sim-wrap"><div class="sim-phone">';
+
+  // Header with progress
+  html += '<div class="sim-header">';
+  html += '<div class="sim-progress">';
+  for (let i = 0; i < totalEstimate; i++) {
+    html += '<div class="sim-bar ' + (i < step ? (isBiz ? 'biz-filled' : 'filled') : '') + '"></div>';
+  }
+  html += '</div>';
+  html += '<div class="sim-step">' + (isR ? '진단 완료' : step + '번째 질문') + '</div>';
+  html += '</div>';
+
+  // Body
+  html += '<div class="sim-body">';
+
+  if (isR) {
+    const r = item;
+    html += '<div class="sim-result">';
+    html += '<div class="sim-result-emoji">&#x1F4CB;</div>';
+    html += '<div class="sim-result-title">' + (r.title || '진단 완료') + '</div>';
+    html += '<div class="sim-result-desc">' + (r.description || '') + '</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="sim-question">' + item.text + '</div>';
+    html += '<div class="sim-choices">';
+    item.choices.forEach((c, i) => {
+      const sel = simSelected === i ? 'selected' : '';
+      html += '<div class="sim-choice ' + sel + '" onclick="simSelected=' + i + ';renderSimulation()">' + c.label + '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+
+  // Footer
+  html += '<div class="sim-footer">';
+  if (simHistory.length > 0) {
+    html += '<button class="sim-btn sim-btn-back" onclick="simGoBack()">이전</button>';
+  }
+  if (!isR) {
+    const canNext = simSelected !== null && item.choices[simSelected] && item.choices[simSelected].next;
+    html += '<button class="sim-btn sim-btn-next" ' + (!canNext ? 'disabled' : '') + ' onclick="simGoNext()">다음</button>';
+  } else {
+    html += '<button class="sim-btn sim-btn-next" onclick="startSimulation()">처음부터</button>';
+  }
+  html += '</div>';
+
+  html += '</div></div>';
+  document.getElementById('view-simulate').innerHTML = html;
+}
+
+function simGoNext() {
+  const item = find(simCurrent);
+  if (simSelected === null || !item.choices[simSelected]) return;
+  const next = item.choices[simSelected].next;
+  if (!next) return;
+  simHistory.push({ id: simCurrent, selected: simSelected });
+  simCurrent = next;
+  simSelected = null;
+  renderSimulation();
+}
+
+function simGoBack() {
+  if (simHistory.length === 0) return;
+  const prev = simHistory.pop();
+  simCurrent = prev.id;
+  simSelected = prev.selected;
+  renderSimulation();
+}
+
+// ── INIT ──
+renderMap();
+</script>
+</body>
+</html>
