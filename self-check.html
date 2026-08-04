@@ -7,7 +7,13 @@
   <title>리바운드 — 셀프 진단</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    /* CDN 폰트만 강제 사용 — PC에 설치된(버전 충돌/깨진) 로컬 Pretendard를 무시한다. */
+    @font-face { font-family: 'PretendardW'; font-weight: 400; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 500; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 600; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 700; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 800; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-ExtraBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 900; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Black.woff2') format('woff2'); }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --orange: #FF6D24;
@@ -22,7 +28,7 @@
     }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'PretendardW', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
       background: #E0E0E0;
       color: var(--text);
       line-height: 1.6;
@@ -571,6 +577,14 @@
       flex-shrink: 0;
       margin-bottom: 0;
     }
+    /* CHECK POINT 아이콘 */
+    .check-ic {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      background: none;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
     .step-text .sub { font-size: 12px; color: var(--text3); line-height: 1.4; margin-bottom: 2px; }
     .step-text .main { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; line-height: 1.4; }
 
@@ -690,11 +704,6 @@
     .action-card-blue .action-card-list li::before { background: #009DFF; }
 
     /* ── LIME THEME (Biz) ── */
-    .result-lime .result-section-label { color: #5A9200; }
-    .result-lime .step-num { background: #B5F23D !important; color: #1C3000 !important; }
-    .result-lime .glass-card-icon { background: none !important; }
-    .result-lime .btn-cta { background: #B5F23D; color: #0B1C2C; }
-    .result-lime .btn-cta:hover { background: #C8F76A; }
     .guide-cards {
       display: flex; gap: 16px;
       overflow-x: auto; padding-bottom: 8px;
@@ -752,6 +761,7 @@
       padding: 16px 0;
       background: var(--orange);
       color: #fff; font-size: 15px; font-weight: 600;
+      line-height: 1.5;
       border: none; border-radius: 12px;
       cursor: pointer; font-family: inherit;
       text-align: center; text-decoration: none;
@@ -868,11 +878,12 @@ function closeChipPopup() {
 
 // ── FLOW DATA ──
 const QUESTIONS = {
+  // Q1은 결과를 정하지 않음 — branch(PERSONAL/BIZ)가 Q2 이후 어느 갈래(Q3/Q4)로 갈지만 정한다
   Q1:{id:'Q1',path:'common',text:'어떤 종류의 돈인가요?',sub:'',choices:[
-    {label:'친구·가족 등 지인에게 빌려준 돈',next:'Q2',result:'PERSONAL'},
-    {label:'거래처에게 못 받은 물건·서비스 대금',next:'Q2',result:'PERSONAL'},
-    {label:'월세, 보증금 등 임대 관련한 금액',next:'Q2',result:'PERSONAL'},
-    {label:'급여, 일당, 용역비 등 일한 대가',next:'Q2',result:'BIZ'}
+    {label:'친구·가족 등 지인에게 빌려준 돈',next:'Q2',branch:'PERSONAL'},
+    {label:'거래처에게 못 받은 물건·서비스 대금',next:'Q2',branch:'BIZ'},
+    {label:'월세, 보증금 등 임대 관련한 금액',next:'Q2',branch:'PERSONAL'},
+    {label:'급여, 일당, 용역비 등 일한 대가',next:'Q2',branch:'PERSONAL'}
   ]},
   Q2:{id:'Q2',path:'common',text:'아래와 관련된 이유로\n발생한 돈인가요?',sub:'예) 양육비, 위자료, 교통사고 합의금, 폭행 합의금,\n도박으로 인한 빚, 불법 사채로 발생한 금액 등',twoCol:true,choices:[
     {label:'예',next:'',result:'BLOCK'},
@@ -882,7 +893,7 @@ const QUESTIONS = {
     {label:'10만~300만 원',next:'Q5',result:'PERSONAL'},
     {label:'300만 원~1,000만 원',next:'Q5',result:'PERSONAL'},
     {label:'1,000만 원~3,000만 원',next:'Q5',result:'PERSONAL'},
-    {label:'3,000만 원 이상',next:'Q5',result:'PERSONAL'}
+    {label:'3,000만 원 이상',next:'Q5',result:'LAWYER'}
   ]},
   Q4:{id:'Q4',path:'biz',text:'현재 받지 못한 금액은\n얼마인가요?',sub:'',choices:[
     {label:'100만 원 이하',next:'Q9',result:'BIZ'},
@@ -900,7 +911,7 @@ const QUESTIONS = {
   Q6:{id:'Q6',path:'personal',text:'상대방의 연락처를\n알고 계신가요?',sub:'',choices:[
     {label:'알고 있고 연락이 닿아요',next:'Q7'},
     {label:'연락처는 알고 있는데 응답이 없어요',next:'Q7'},
-    {label:'연락처를 몰라요',next:'Q8'}
+    {label:'연락처를 몰라요',next:'Q8',result:'LAWYER'}
   ]},
   Q7:{id:'Q7',path:'personal',text:'돈을 받기 위해 연락하면\n어떤 반응인가요?',sub:'',choices:[
     {label:'기다려주면 갚을 수 있다며 계속 미루기만 해요',next:'Q8',result:'PERSONAL'},
@@ -912,8 +923,8 @@ const QUESTIONS = {
     {label:'1년 미만',next:'',result:'PERSONAL'},
     {label:'1~3년',next:'',result:'PERSONAL'},
     {label:'3~5년',next:'',result:'PERSONAL'},
-    {label:'5~10년',next:'',result:'PERSONAL'},
-    {label:'10년 이상',next:'',result:'PERSONAL'},
+    {label:'5~10년',next:'',result:'LAWYER'},
+    {label:'10년 이상',next:'',result:'LAWYER'},
     {label:'기억이 안나요',next:'',result:'PERSONAL'}
   ]},
   Q9:{id:'Q9',path:'biz',text:'돈을 돌려주지 않는 상대는\n누구인가요?',sub:'',choices:[
@@ -921,20 +932,20 @@ const QUESTIONS = {
     {label:'가게/자영업자',next:'Q11'},
     {label:'법인/회사',next:'Q11'}
   ]},
-  // requiredAll: 필수로 선택해야 하는 선택지 인덱스 목록. 하나라도 빠지면 BLOCK 처리
-  Q10:{id:'Q10',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,requiredAll:[0,1],choices:[
+  // requiredAll: 모두 선택해야 하는 선택지 인덱스 목록. 하나라도 빠지면(=모르면) 변호사 상담(LAWYER) 처리
+  Q10:{id:'Q10',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,requiredAll:[0,1,2],choices:[
     {label:'이름',next:'Q12'},
     {label:'연락처',next:'Q12'},
     {label:'이메일',next:'Q12'},
-    {label:'알고 있는 정보가 없어요',next:'Q12',result:'BLOCK',exclusive:true}
+    {label:'알고 있는 정보가 없어요',next:'Q12',result:'LAWYER',exclusive:true}
   ]},
-  Q11:{id:'Q11',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,requiredAll:[0,1,3,4],choices:[
+  Q11:{id:'Q11',path:'biz',text:'상대방에 대해 알고 있는\n정보를 모두 선택해주세요',sub:'',multi:true,requiredAll:[0,1,2,3,4],choices:[
     {label:'이름',next:'Q13'},
     {label:'연락처',next:'Q13'},
     {label:'이메일',next:'Q13'},
     {label:'상호명',next:'Q13'},
     {label:'사업자등록번호',next:'Q13'},
-    {label:'알고 있는 정보가 없어요',next:'Q13',result:'BLOCK',exclusive:true}
+    {label:'알고 있는 정보가 없어요',next:'Q13',result:'LAWYER',exclusive:true}
   ]},
   Q12:{id:'Q12',path:'biz',text:'상대가 돈을 갚기로 한 날로부터\n얼마나 지났나요?',sub:'',choices:[
     {label:'1년 미만',next:'',result:'BIZ'},
@@ -945,7 +956,7 @@ const QUESTIONS = {
   Q13:{id:'Q13',path:'biz',text:'돈을 받기 위해 연락하면\n어떤 반응인가요?',sub:'',choices:[
     {label:'기다려주면 갚을 수 있다며 계속 미루기만 해요',next:'Q12'},
     {label:'조금씩 나눠서 갚겠다고 하는데 못믿겠어요',next:'Q12'},
-    {label:'받을 돈이 있는데 상대방은 없다고 해요',next:'Q12'},
+    {label:'받을 돈이 있는데 상대방은 없다고 해요',next:'Q12',result:'LAWYER'},
     {label:'연락을 피해요',next:'Q12'}
   ]}
 };
@@ -964,14 +975,14 @@ function estimateTotal() {
 }
 
 function getCurrentPath() {
-  if (answers['Q1'] === 3) return 'biz';
-  return 'personal';
+  // Q1 선택지의 branch 값으로 경로 결정
+  var c = QUESTIONS.Q1.choices[answers['Q1']];
+  return (c && c.branch === 'BIZ') ? 'biz' : 'personal';
 }
 
 function getRouteTarget() {
-  // Q2 "아니오" 선택 시 Q1 답변에 따라 분기
-  if (answers['Q1'] === 3) return 'Q4'; // 급여/용역비 → Biz
-  return 'Q3'; // 나머지 → 개인
+  // Q2 "아니오" 선택 시 Q1의 branch에 따라 분기
+  return getCurrentPath() === 'biz' ? 'Q4' : 'Q3';
 }
 
 // ── SCREEN TRANSITIONS ──
@@ -1164,8 +1175,9 @@ function selectChoice(qId, idx, el, event) {
 }
 
 // ── RESULT DETERMINATION ──
-// 지금까지의 모든 답변에서 result 태그를 수집해 최종 결과를 결정
-// 우선순위: BLOCK > LAWYER > BIZ > PERSONAL
+// 기본 결과는 Q1 분기(개인=personal / 기업=biz).
+// 중간에 하나라도 LAWYER가 있으면 변호사 상담, 하나라도 BLOCK이 있으면 무조건 서비스 대상 아님.
+// 우선순위: BLOCK > LAWYER > 분기 기본값
 function determineResult() {
   var collected = [];
 
@@ -1182,7 +1194,7 @@ function determineResult() {
     });
   });
 
-  // 2) requiredAll 검증: 지정된 인덱스를 모두 선택하지 않으면 BLOCK
+  // 2) requiredAll 검증: 정보 항목 중 하나라도 체크하지 않으면(=모르면) 변호사 상담
   Object.keys(answers).forEach(function(qId) {
     var q = QUESTIONS[qId];
     if (!q || !q.requiredAll) return;
@@ -1190,14 +1202,12 @@ function determineResult() {
     var allMet = q.requiredAll.every(function(reqIdx) {
       return selected.indexOf(reqIdx) !== -1;
     });
-    if (!allMet) collected.push('BLOCK');
+    if (!allMet) collected.push('LAWYER');
   });
 
-  if (collected.indexOf('BLOCK')    !== -1) return 'block';
-  if (collected.indexOf('LAWYER')   !== -1) return 'lawyer';
-  if (collected.indexOf('BIZ')      !== -1) return 'biz';
-  if (collected.indexOf('PERSONAL') !== -1) return 'personal';
-  return 'personal';
+  if (collected.indexOf('BLOCK')  !== -1) return 'block';
+  if (collected.indexOf('LAWYER') !== -1) return 'lawyer';
+  return getCurrentPath(); // 분기 기본값: 'personal' | 'biz'
 }
 
 // ── BACK ──
@@ -1239,8 +1249,8 @@ function showResult(type) {
       '<div class="result-hero" style="background:linear-gradient(180deg,#F0F0F2 0%,#fff 100%)">' +
         '<div class="result-hero-blobs"><div class="r-blob" style="width:160px;height:160px;background:rgba(150,150,160,0.2);top:-30px;right:-40px"></div><div class="r-blob" style="width:120px;height:120px;background:rgba(100,100,120,0.15);bottom:0;left:-30px;animation-delay:-3s"></div></div>' +
         '<div class="result-tag" style="color:#666"><div class="result-tag-dot" style="background:#999"></div>진단 결과</div>' +
-        '<h1 class="result-hero-title">리바운드 서비스<br>대상이 아니에요</h1>' +
-        '<p class="result-hero-desc">해당 유형의 채권은 전문 법률 상담이<br>필요한 영역이에요.</p>' +
+        '<h1 class="result-hero-title">지금 상황엔 리바운드보다<br>다른 방법이 더 적합해요.</h1>' +
+        '<p class="result-hero-desc">해당 유형의 채권은<br>전문 법률 상담이 더 잘 맞아요.</p>' +
       '</div>' +
       '<div class="result-body">' +
         '<div class="result-section">' +
@@ -1255,9 +1265,9 @@ function showResult(type) {
           '</div>' +
         '</div>' +
         '<div class="result-section">' +
-          '<div class="result-section-label">RECOMMEND</div>' +
+          '<div class="result-section-label" style="color:#009DFF">RECOMMEND</div>' +
           '<div class="result-section-title">이렇게 해보는 건 어때요?</div>' +
-          '<div class="action-card">' +
+          '<div class="action-card action-card-blue">' +
             '<div class="action-card-title">법률 상담받기</div>' +
             '<div class="action-card-desc">먼저 법률 상담을 통해 상황을 정확하게 파악하고<br>법적인 해결 방법을 알아봐요</div>' +
             '<ul class="action-card-list">' +
@@ -1265,7 +1275,7 @@ function showResult(type) {
               '<li>법률구조공단</li>' +
               '<li>그 외 이용 가능한 법률 상담 기관</li>' +
             '</ul>' +
-            '<a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">수륜아시아 방문하기</a>' +
+            '<a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">법무법인 수륜아시아 홈페이지</a>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -1279,13 +1289,13 @@ function showResult(type) {
       '<div class="result-hero" style="background:linear-gradient(180deg,#FFF8F4 0%,#fff 100%)">' +
         '<div class="result-hero-blobs"><div class="r-blob" style="width:180px;height:180px;background:rgba(255,109,36,0.15);top:-40px;right:-50px"></div><div class="r-blob" style="width:140px;height:140px;background:rgba(255,180,130,0.18);bottom:-20px;left:-40px;animation-delay:-3s"></div></div>' +
         '<div class="result-tag" style="color:var(--orange)"><div class="result-tag-dot" style="background:var(--orange)"></div>진단 결과</div>' +
-        '<h1 class="result-hero-title"><em>개인 간 리바운드</em>,<br>곧 만나보실 수 있어요</h1>' +
-        '<p class="result-hero-desc">개인간 채무도 리바운드로 해결할 수 있도록<br>준비중이에요</p>' +
+        '<h1 class="result-hero-title"><em>개인 간 채권</em>도,<br>리바운드로 진행해보세요!</h1>' +
+        '<p class="result-hero-desc">사건에 따라 진행 방식이 달라서,<br>상담을 통해 확인해드려요!</p>' +
       '</div>' +
       '<div class="result-body">' +
         '<div class="result-section">' +
           '<div class="result-section-label">BENEFIT</div>' +
-          '<div class="result-section-title">출시되면 이런 서비스를 누릴 수 있어요</div>' +
+          '<div class="result-section-title">리바운드로 진행되면 이런 점이 좋아요</div>' +
           '<div class="step-list">' +
             '<div class="step-item"><div class="step-inner"><div class="step-num">1</div><div class="step-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div></div>' +
             '<div class="step-item"><div class="step-inner"><div class="step-num">2</div><div class="step-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div></div>' +
@@ -1294,9 +1304,23 @@ function showResult(type) {
             '<div class="step-item"><div class="step-inner"><div class="step-num">5</div><div class="step-text"><div class="sub">별도 인력이나 시간 투입 없이</div><div class="main">미수금 관리·회수 진행 가능</div></div></div></div>' +
           '</div>' +
         '</div>' +
+        '<div class="result-section">' +
+          '<div class="result-section-label">CHECK POINT</div>' +
+          '<div class="result-section-title">상담에서는 이런 걸 확인해요</div>' +
+          '<div class="step-list">' +
+            '<div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2C7.34315 2 6 3.34315 6 5V7H25V5C25 3.34315 23.6569 2 22 2H9Z" fill="#7167A4"/><path d="M9 30C7.34315 30 6 28.6569 6 27V25H25V27C25 28.6569 23.6569 30 22 30H9Z" fill="#7167A4"/><path d="M6 6H25V26H6V6Z" fill="#321B41"/><path d="M13.5 10C13.5 9.44772 13.9477 9 14.5 9H16.5C17.0523 9 17.5 9.44772 17.5 10V12C17.5 12.5523 17.0523 13 16.5 13H14.5C13.9477 13 13.5 12.5523 13.5 12V10ZM8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15ZM14.5 19C13.9477 19 13.5 19.4477 13.5 20V22C13.5 22.5523 13.9477 23 14.5 23H16.5C17.0523 23 17.5 22.5523 17.5 22V20C17.5 19.4477 17.0523 19 16.5 19H14.5Z" fill="#00A6ED"/><path d="M8.5 10C8.5 9.44772 8.94772 9 9.5 9H11.5C12.0523 9 12.5 9.44772 12.5 10V12C12.5 12.5523 12.0523 13 11.5 13H9.5C8.94772 13 8.5 12.5523 8.5 12V10ZM8.5 20C8.5 19.4477 8.94772 19 9.5 19H11.5C12.0523 19 12.5 19.4477 12.5 20V22C12.5 22.5523 12.0523 23 11.5 23H9.5C8.94772 23 8.5 22.5523 8.5 22V20ZM19.5 14C18.9477 14 18.5 14.4477 18.5 15V17C18.5 17.5523 18.9477 18 19.5 18H21.5C22.0523 18 22.5 17.5523 22.5 17V15C22.5 14.4477 22.0523 14 21.5 14H19.5Z" fill="#FF822D"/><path d="M18.5 10C18.5 9.44772 18.9477 9 19.5 9H21.5C22.0523 9 22.5 9.44772 22.5 10V12C22.5 12.5523 22.0523 13 21.5 13H19.5C18.9477 13 18.5 12.5523 18.5 12V10ZM13.5 15C13.5 14.4477 13.9477 14 14.5 14H16.5C17.0523 14 17.5 14.4477 17.5 15V17C17.5 17.5523 17.0523 18 16.5 18H14.5C13.9477 18 13.5 17.5523 13.5 17V15ZM19.5 19C18.9477 19 18.5 19.4477 18.5 20V22C18.5 22.5523 18.9477 23 19.5 23H21.5C22.0523 23 22.5 22.5523 22.5 22V20C22.5 19.4477 22.0523 19 21.5 19H19.5Z" fill="#FCD53F"/></svg></div><div class="step-text"><div class="main">채무자(돈 갚을 분)와 연락이 닿는지</div></div></div></div>' +
+            '<div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.6821 1.16021e-05L1 0C0.447716 -5.05255e-07 0 0.447715 0 1V25C0 25.5523 0.447715 26 1 26L19 26C19.5523 26 20 25.5523 20 25V6.45333L13.6821 1.16021e-05Z" fill="#F3EEF8"/><path d="M3.5 9H16.5C16.7761 9 17 9.22386 17 9.5C17 9.77614 16.7761 10 16.5 10H3.5C3.22386 10 3 9.77614 3 9.5C3 9.22386 3.22386 9 3.5 9ZM3.5 12C3.22386 12 3 12.2239 3 12.5C3 12.7761 3.22386 13 3.5 13H16.5C16.7761 13 17 12.7761 17 12.5C17 12.2239 16.7761 12 16.5 12H3.5ZM3 15.5C3 15.2239 3.22386 15 3.5 15H16.5C16.7761 15 17 15.2239 17 15.5C17 15.7761 16.7761 16 16.5 16H3.5C3.22386 16 3 15.7761 3 15.5ZM3.5 18C3.22386 18 3 18.2239 3 18.5C3 18.7761 3.22386 19 3.5 19H11.5C11.7761 19 12 18.7761 12 18.5C12 18.2239 11.7761 18 11.5 18H3.5Z" fill="#998EA4"/><path d="M20 6.45325H15.3892C14.4464 6.45325 13.6821 5.68896 13.6821 4.74614V0L20 6.45325Z" fill="#CDC4D6"/></svg></div><div class="step-text"><div class="main">채권 금액과 상황이 구체적인지</div></div></div></div>' +
+            '<div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="27" height="27" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip_pcheck_hand)"><path d="M11.4063 6.15625C6.13126 5.50625 4.25001 8.15625 3.34376 9.37501C0.875013 13.0156 2.35939 17.0156 4.15626 18.9375C4.15626 18.9375 14.25 28.7656 14.5313 29.0312C14.8125 29.2969 15.4766 30.2031 17.0781 29.9453C18.4757 29.7203 18.875 28.0312 18.875 28.0312C18.875 28.0312 19.9073 28.8731 21.3906 28.0312C22.5469 27.375 22.5 26.0625 22.5 26.0625C22.5 26.0625 23.7383 26.6829 25.0625 25.5625C26.2553 24.5532 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.5856 22.9571 27.3438 22.125C28.3688 21 28.0156 19.5781 27.3438 18.9375L19.625 10.5L19.0313 7.375L11.4063 6.15625Z" fill="#FFD7C2"/><path d="M26.7074 22.5933L24.4809 20.3364C24.287 20.1398 23.9704 20.1376 23.7739 20.3315C23.5773 20.5255 23.5751 20.8421 23.769 21.0386L25.5334 22.8272C25.5223 22.7973 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.0977 22.8769 26.7074 22.5933Z" fill="#F1B99B"/><path d="M23.9779 26.1509L21.6684 23.5872C21.4835 23.382 21.1674 23.3656 20.9622 23.5504C20.757 23.7352 20.7406 24.0514 20.9254 24.2565L22.5845 26.0983C22.7836 26.1741 23.3157 26.3302 23.9779 26.1509Z" fill="#F1B99B"/><path d="M20.5759 28.351L18.7698 26.438C18.5802 26.2372 18.2638 26.2281 18.063 26.4177C17.8622 26.6073 17.8531 26.9237 18.0427 27.1245L18.9471 28.0824C19.1457 28.2124 19.7417 28.5326 20.5759 28.351Z" fill="#F1B99B"/><path d="M18.4033 29.0535C17.6442 29.2557 16.2359 29.3193 15.2656 28.2812L14.4899 28.9916C14.51 29.011 14.524 29.0244 14.5313 29.0312C14.5602 29.0586 14.5932 29.0927 14.6309 29.1317C14.9591 29.4711 15.6414 30.1766 17.0781 29.9453C17.6998 29.8452 18.124 29.4554 18.4033 29.0535Z" fill="#F1B99B"/><path d="M6.375 6.8125C4.6875 8.97916 2.0875 14.5875 6.6875 18.4375L5.24045 19.9931C4.5734 19.3437 4.15626 18.9375 4.15626 18.9375C2.35939 17.0156 0.875013 13.0156 3.34376 9.375C3.35716 9.35698 3.37078 9.33864 3.38461 9.32C3.90872 8.61416 4.74999 7.48117 6.33357 6.75266L6.375 6.8125Z" fill="#F1B99B"/><path d="M17.25 23.6875C18.4531 25.0781 16.9492 26.8496 16.25 27.5938L5.66868 16.5845C7.64313 14.5816 8.94702 14.3814 9.82813 15.25C10.7092 16.1186 10.2969 16.7344 10.2969 16.7344C10.2969 16.7344 11.4909 16.0557 12.75 17.2969C14.0091 18.5381 13.1406 19.4844 13.1406 19.4844C13.1406 19.4844 14.44 19.2504 15.3594 20.2812C16.3906 21.4375 15.7344 22.7812 15.7344 22.7812C15.7344 22.7812 16.5248 22.8493 17.25 23.6875Z" fill="#F1B99B"/><path d="M12.4375 8C15.6719 6.70313 20.5781 6.04688 22.8281 6.01562C24.3594 6.01562 26.3091 6.38659 28.375 8.8125C31.6748 12.6873 29.2031 17.1094 27.25 18.9062V17.5C27.25 17.5 19.7436 10.9644 19.5 10.7344C19.05 10.3094 17.1979 10.4375 17 10.5C16.3958 10.6875 15.35 11 14 11.5C12.9023 11.9066 12.0312 11.5781 11.6718 10.7344C11.3124 9.89062 10.8297 8.64466 12.4375 8Z" fill="#FFD7C2"/><path d="M28.3106 17.7099C27.9645 18.1804 27.599 18.5852 27.25 18.9063C24.4896 16.5 18.8719 11.5813 18.4219 11.1563C17.9719 10.7313 17.4479 10.75 17.25 10.8125C16.6458 11 15.1 11.5 13.75 12C12.6523 12.4066 11.5469 11.5781 11.1875 10.7344C10.8589 9.96292 10.8321 8.85521 12.0589 8.17831L12.69 7.90133C12.7068 7.89496 12.7235 7.8886 12.7403 7.88226C10.7869 9.34968 12.5116 11.1435 14.125 10.9375C14.6919 10.8651 15.625 10.6719 16.5313 10.4375C16.8909 10.3445 17.2439 10.1794 17.5771 10.0236C18.2021 9.73124 18.7575 9.47151 19.1563 9.78126C20.6561 10.9462 25.1333 14.7492 28.3106 17.7099Z" fill="#F1B99B"/><path d="M8.81945 16.8786C8.07602 15.9154 6.69251 15.7372 5.72929 16.4806L3.81252 18.1016C2.92972 18.836 2.70107 20.2103 3.34614 21.103C3.93006 21.9111 4.82674 22.2447 5.64863 22.0112C5.28362 22.846 5.31493 23.914 6.01567 24.5001C6.67051 25.0477 7.47952 25.423 8.29069 25.1697C8.21346 25.7052 8.3713 26.2914 8.92192 26.875C9.44191 27.4262 10.1973 27.7006 11.0083 27.5183C10.9011 28.0902 11.0818 28.7257 11.7507 29.3711C12.57 30.1616 13.8311 30.2288 15.0157 29.1407L15.7879 28.241C16.4082 27.461 17.2658 26.1055 15.9844 24.9532C15.5412 24.5547 15.0316 24.3341 14.5026 24.3327C14.7901 23.6321 14.7847 22.7748 13.9532 21.9532C13.4334 21.4396 12.7958 21.2165 12.0932 21.3852C12.473 20.5766 12.4644 19.7523 11.7032 19.0001C11.0118 18.3169 10.1604 17.9929 9.06004 18.6091C9.25414 18.0144 9.20803 17.3821 8.81945 16.8786Z" fill="#FFD7C2"/><path d="M9.03352 17.2422L4.31006 21.9066C4.72783 22.0935 5.1834 22.1356 5.61931 22.0191L9.08879 18.593C9.0792 18.5983 9.0696 18.6036 9.05998 18.609C9.20968 18.1502 9.2165 17.6692 9.03352 17.2422Z" fill="#F1B99B"/><path d="M12.2463 19.8263L6.95856 25.0846C7.38419 25.2563 7.83707 25.3112 8.29063 25.1696C8.29059 25.1698 8.29067 25.1693 8.29063 25.1696L12.0982 21.3838C12.0965 21.3842 12.0948 21.3846 12.0932 21.385C12.3378 20.8641 12.4213 20.3367 12.2463 19.8263Z" fill="#F1B99B"/><path d="M14.5732 22.8968L9.65496 27.3953C10.0587 27.5722 10.5196 27.6262 11.0004 27.5199L14.5129 24.3071C14.683 23.8795 14.7429 23.3951 14.5732 22.8968Z" fill="#F1B99B"/></g><defs><clipPath id="clip_pcheck_hand"><rect width="32" height="32" fill="white"/></clipPath></defs></svg></div><div class="step-text"><div class="main">현실적으로 협의·상환 여지가 있는지</div></div></div></div>' +
+          '</div>' +
+          '<p style="font-size:13px;color:var(--text3);line-height:1.6;margin-top:-6px">상담 후, 리바운드로 진행하거나 필요한 경우 법률 상담으로 연결해드려요.</p>' +
+        '</div>' +
       '</div>' +
       '<div class="result-bottom">' +
-        '<a href="rebound-biz.html" class="btn-cta">리바운드 홈으로 돌아가기</a>' +
+        '<div style="display:flex;gap:10px;width:100%">' +
+          '<a href="https://pf.kakao.com/_nrjrn/chat" target="_blank" rel="noopener noreferrer" class="btn-cta" style="flex:1 1 50%;min-width:0">카톡으로 상담받기</a>' +
+          '<a href="tel:02-6251-1103" class="btn-cta" style="flex:1 1 50%;min-width:0">전화로 상담받기</a>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--text3)">평일 09:00–18:00 상담 가능</div>' +
         '<button class="btn-retry" onclick="resetQuiz()">셀프진단 다시하기</button>' +
       '</div>';
 
@@ -1318,8 +1342,8 @@ function showResult(type) {
           '<div class="result-section-title">이런 이유 때문에<br>변호사 상담을 권해요</div>' +
           '<p style="font-size:12px;color:var(--text3);margin:-8px 0 14px">아래 이유 중 하나 이상 해당돼요</p>' +
           '<div class="step-list">' +
-            '<div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">1</div><div class="step-text"><div class="sub">10년 넘게 갚기로 한 날이 지나서</div><div class="main">소멸시효 확인이 필요해요</div><div class="chip-badge" style="background:#E0E0E6;color:#333" onclick="toggleChip(this)">소멸시효란?</div></div></div></div>' +
-            '<div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">2</div><div class="step-text"><div class="sub">채권 금액이 커서</div><div class="main">채권 금액이 커요</div></div></div></div>' +
+            '<div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">1</div><div class="step-text"><div class="sub">갚기로 한 날이 정확하지 않아서</div><div class="main">소멸시효 확인이 필요해요</div><div class="chip-badge" style="background:#E0E0E6;color:#333" onclick="toggleChip(this)">소멸시효란?</div></div></div></div>' +
+            '<div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">2</div><div class="step-text"><div class="sub">비대면으로 처리하기에는</div><div class="main">채권 금액이 커요</div></div></div></div>' +
             '<div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">3</div><div class="step-text"><div class="sub">상대방이 채무를 부인하거나 연락이 안 돼서</div><div class="main">법적 절차를 알아봐야 해요</div></div></div></div>' +
           '</div>' +
         '</div>' +
@@ -1336,7 +1360,7 @@ function showResult(type) {
               '<li>법률구조공단</li>' +
               '<li>그 외 이용 가능한 법률 상담 기관</li>' +
             '</ul>' +
-            '<a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">수륜아시아 방문하기</a>' +
+            '<a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">법무법인 수륜아시아 홈페이지</a>' +
           '</div>' +
 
           '<div class="action-card">' +
@@ -1350,20 +1374,20 @@ function showResult(type) {
 
       '</div>' +
       '<div class="result-bottom">' +
-        '<a href="support.html" class="btn-cta" style="background:#009DFF">상담 문의하기</a>' +
+        '<a href="rebound-biz.html" class="btn-cta">리바운드 홈으로</a>' +
         '<button class="btn-retry" onclick="resetQuiz()">셀프진단 다시하기</button>' +
       '</div>';
 
     } else if (type === 'biz') {
       html =
-      '<div class="result-hero" style="background:linear-gradient(180deg,#F3FFD8 0%,#fff 100%)">' +
+      '<div class="result-hero" style="background:linear-gradient(180deg,#FFF0E8 0%,#fff 100%)">' +
         '<div class="result-hero-blobs">' +
-          '<div class="r-blob" style="width:180px;height:180px;background:rgba(181,242,61,0.3);top:-40px;right:-50px"></div>' +
-          '<div class="r-blob" style="width:140px;height:140px;background:rgba(100,180,0,0.15);bottom:-20px;left:-40px;animation-delay:-3s"></div>' +
-          '<div class="r-blob" style="width:100px;height:100px;background:rgba(181,242,61,0.2);top:30px;left:10px;animation-delay:-5s"></div>' +
+          '<div class="r-blob" style="width:180px;height:180px;background:rgba(255,109,36,0.18);top:-40px;right:-50px"></div>' +
+          '<div class="r-blob" style="width:140px;height:140px;background:rgba(255,150,80,0.16);bottom:-20px;left:-40px;animation-delay:-3s"></div>' +
+          '<div class="r-blob" style="width:100px;height:100px;background:rgba(255,109,36,0.12);top:30px;left:10px;animation-delay:-5s"></div>' +
         '</div>' +
-        '<div class="result-tag" style="color:#5A9200"><div class="result-tag-dot" style="background:#B5F23D"></div>진단 완료</div>' +
-        '<h1 class="result-hero-title"><em style="color:#5A9200">리바운드 Biz</em>를<br>시작해보세요!</h1>' +
+        '<div class="result-tag" style="color:var(--orange)"><div class="result-tag-dot" style="background:var(--orange)"></div>진단 완료</div>' +
+        '<h1 class="result-hero-title"><em>리바운드</em>를<br>시작해보세요!</h1>' +
         '<p class="result-hero-desc">법적 절차보다 리바운드를 먼저<br>시도해 보시는 게 좋아요!</p>' +
       '</div>' +
       '<div class="result-body">' +
@@ -1389,12 +1413,12 @@ function showResult(type) {
         '</div>' +
       '</div>' +
       '<div class="result-bottom">' +
-        '<a href="rebound-biz.html" target="_blank" rel="noopener noreferrer" class="btn-cta">리바운드 Biz 시작하기</a>' +
+        '<a href="rebound-biz.html" target="_blank" rel="noopener noreferrer" class="btn-cta">리바운드 시작하기</a>' +
         '<button class="btn-retry" onclick="resetQuiz()">셀프진단 다시하기</button>' +
       '</div>';
     }
 
-    resultEl.className = 'screen-result' + (type === 'biz' ? ' result-lime' : '');
+    resultEl.className = 'screen-result';
     resultEl.innerHTML = html;
     window.scrollTo({ top: 0 });
   });

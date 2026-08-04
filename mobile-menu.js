@@ -13,7 +13,7 @@
 
   // 비즈/개인 바로가기 링크
   var switchLink = isBiz
-    ? '<a href="#" class="mobile-menu-switch" data-ready-popup="true">\uAC1C\uC778 \uC11C\uBE44\uC2A4 \uBC14\uB85C\uAC00\uAE30 \u2192</a>'
+    ? ''
     : '<a href="rebound-biz.html" class="mobile-menu-switch">\uAE30\uC5C5 Biz \uC11C\uBE44\uC2A4 \u2192</a>';
 
   var homeLink = 'rebound-biz.html';
@@ -25,7 +25,7 @@
     + '<a href="team.html">\uD300 \uB9AC\uBC14\uC6B4\uB4DC</a>'
     + '<a href="support.html">\uACE0\uAC1D\uC13C\uD130</a>'
     + '<a href="https://blog.naver.com/reboundkr" target="_blank" rel="noopener noreferrer">\uBE14\uB85C\uADF8</a>'
-    + '<a href="self-check.html" target="_blank" rel="noopener noreferrer">\uC140\uD504 \uC9C4\uB2E8</a>'
+    + '<a href="self-check.html" target="_blank" rel="noopener noreferrer" class="gnb-nav-selfcheck">\uC140\uD504 \uC9C4\uB2E8</a>'
     + switchLink
     + '</nav>'
     + '</div>';

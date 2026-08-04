@@ -32,9 +32,11 @@
 }
 .toggle-pill a.on { background: var(--white); color: var(--text); font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .gnb-nav { display: flex; gap: 4px; align-items: center; }
-.gnb-nav a { font-size: 14px; color: #302622; font-weight: 600; text-decoration: none; padding: 7px 13px; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+.gnb-nav a { font-size: 14px; color: rgba(16,24,40,0.6); font-weight: 400; text-decoration: none; padding: 7px 13px; border-radius: 8px; transition: background 0.15s, color 0.15s; }
 .gnb-nav a:hover { background: #F1F5F7; color: #17191A; }
-.gnb-nav-active { background: none !important; color: var(--orange) !important; font-weight: 800; }
+.gnb-nav-active { background: none !important; color: var(--orange) !important; font-weight: 800 !important; }
+.gnb-nav a.gnb-nav-selfcheck { color: #009DFF; font-weight: 700; }
+.gnb-nav a.gnb-nav-selfcheck:hover { background: rgba(0,157,255,0.08); color: #008AE0; }
 .gnb-actions { display: flex; align-items: center; gap: 8px; }
 .gnb-login { font-size: 14px; color: #302622; text-decoration: none; padding: 7px 16px; border-radius: 10px; font-weight: 600; background: #F1F1EE; white-space: nowrap; transition: background 0.15s, color 0.15s; }
 .gnb-login:hover { background: #E5E5E2; color: #17191A; }
@@ -144,6 +146,7 @@ footer { background: #F5F5F5; }
   transition: color 0.15s;
 }
 .mobile-menu-nav a:hover { color: var(--orange); }
+.mobile-menu-nav a.gnb-nav-selfcheck { color: #009DFF; }
 .mobile-menu-nav .mobile-menu-switch {
   font-size: 14px; font-weight: 500;
   color: var(--text3);

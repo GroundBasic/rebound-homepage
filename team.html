@@ -8,14 +8,20 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="common.css?v=2" />
   <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    /* CDN 폰트만 강제 사용 — PC에 설치된(버전 충돌/깨진) 로컬 Pretendard를 무시한다. */
+    @font-face { font-family: 'PretendardW'; font-weight: 400; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 500; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 600; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 700; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 800; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-ExtraBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 900; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Black.woff2') format('woff2'); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --orange: #FF6D24;
       --navy: #111827;
       --white: #fff;
-      --off: #F7F7F5;
+      --off: #F8F8FA; /* 홈 카드 회색과 동일 */
       --border: #EBEBEB;
       --text: #1A1714;
       --text2: #6B6B6B;
@@ -23,7 +29,7 @@
     }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'PretendardW', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
       background: var(--white);
       color: var(--text);
       line-height: 1.6;
@@ -136,8 +142,8 @@
       gap: 16px; margin-top: 56px;
     }
     .value-card {
-      border: 1px solid var(--border); border-radius: 16px;
-      padding: 32px 28px; background: var(--white);
+      border: none; border-radius: 16px;
+      padding: 32px 28px; background: #fff;
     }
     .value-icon {
       width: 44px; height: 44px;
@@ -231,14 +237,16 @@
       transform: scale(0.85);
       transform-origin: center bottom;
     }
-    /* 하단 그라데이션 + 경력 텍스트 */
+    /* 하단 그라데이션 + 경력 텍스트 — 위에서부터 서서히 은은하게 */
     .team-card-overlay {
       position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 60px 22px 20px;
+      padding: 140px 22px 20px;
       background: linear-gradient(180deg,
         transparent 0%,
-        rgba(55,55,55,0.3) 36%,
-        rgba(0,0,0,1) 100%);
+        rgba(30,30,30,0.06) 22%,
+        rgba(20,20,20,0.22) 45%,
+        rgba(10,10,10,0.55) 70%,
+        rgba(0,0,0,0.88) 100%);
       z-index: 1;
     }
     .team-card-overlay .bio {
@@ -255,15 +263,13 @@
       padding: 40px 36px;
       position: relative;
       border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-      transition: box-shadow 0.2s, transform 0.2s;
+      border: none;
+      background: #F8F8FA;
+      transition: background 0.2s, transform 0.2s;
       overflow: hidden;
     }
     .partner-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 36px rgba(0,0,0,0.08);
     }
     .partner-logo {
       margin-bottom: 28px;
@@ -272,13 +278,14 @@
     .partner-card p { font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 28px; }
     .partner-card .btn-outline {
       display: inline-flex; align-items: center; gap: 6px;
-      border: 1.5px solid var(--border); color: var(--text);
+      border: none; color: var(--text);
+      background: #fff;
       font-size: 14px; font-weight: 600;
       padding: 12px 24px; border-radius: 10px;
       text-decoration: none; transition: all 0.25s ease;
     }
     @media (hover: hover) {
-      .partner-card .btn-outline:hover { border-color: var(--orange); color: var(--orange); background: rgba(255,109,36,0.04); }
+      .partner-card .btn-outline:hover { box-shadow: 0 6px 16px rgba(16,24,40,0.10); transform: translateY(-1px); }
     }
     .btn-outline {
       display: inline-flex; align-items: center; gap: 6px;
@@ -301,22 +308,31 @@
     .cta-section::before {
       content: '';
       position: absolute;
-      top: -180px; left: 50%;
-      width: 340px; height: 340px;
+      top: -360px; left: 50%;
+      width: 820px; height: 820px;
       transform: translateX(-50%);
-      background: radial-gradient(circle, rgba(255,109,36,0.5) 0%, rgba(255,109,36,0.22) 32%, rgba(255,109,36,0.06) 58%, transparent 80%);
-      filter: blur(60px);
+      background: radial-gradient(circle, rgba(255,109,36,0.5) 0%, rgba(255,109,36,0.22) 34%, rgba(255,109,36,0.06) 60%, transparent 80%);
+      filter: blur(80px);
       pointer-events: none;
       border-radius: 50%;
     }
     .cta-section > * { position: relative; z-index: 1; }
     .cta-section h2 { font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -1.2px; margin-bottom: 16px; }
+    .cta-section .eyebrow {
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
     .cta-section p { font-size: 16px; color: rgba(255,255,255,0.55); margin-bottom: 36px; }
     .btn-orange {
       display: inline-flex; align-items: center;
       background: var(--orange); color: #fff;
       font-size: 15px; font-weight: 700;
-      padding: 15px 32px; border-radius: 10px;
+      padding: 15px 32px; border-radius: 12px;
       text-decoration: none; transition: opacity 0.2s;
     }
     .btn-orange:hover { opacity: 0.88; }
@@ -367,7 +383,7 @@
       .team-card-info .bio.bio-mobile { display: block; }
       .team-hero {
         margin-top: 56px;
-        height: auto; min-height: 75svh;
+        height: auto; min-height: 52svh;
       }
       .hero-photo-bg {
         background: url('bg_mobile.jpg') center center / cover no-repeat;
@@ -674,7 +690,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M8.0665 0C7.92399 3.01919e-05 7.78288 0.0281787 7.65127 0.0828326C7.51965 0.137486 7.40011 0.217572 7.2995 0.3185L0.3185 7.2995C0.217572 7.40011 0.137486 7.51965 0.0828326 7.65127C0.0281787 7.78288 3.01919e-05 7.92399 0 8.0665V17.9335C3.01919e-05 18.076 0.0281787 18.2171 0.0828326 18.3487C0.137486 18.4803 0.217572 18.5999 0.3185 18.7005L7.2995 25.6837C7.40029 25.7842 7.51991 25.8639 7.65152 25.9182C7.78312 25.9724 7.92414 26.0003 8.0665 26H17.9335C18.0759 26.0003 18.2169 25.9724 18.3485 25.9182C18.4801 25.8639 18.5997 25.7842 18.7005 25.6837L25.6837 18.7005C25.7842 18.5997 25.8639 18.4801 25.9182 18.3485C25.9724 18.2169 26.0003 18.0759 26 17.9335V8.0665C26.0003 7.92414 25.9724 7.78312 25.9182 7.65152C25.8639 7.51991 25.7842 7.40029 25.6837 7.2995L18.6983 0.3185C18.4957 0.115189 18.2206 0.000635664 17.9335 0H8.0665ZM7.58333 10.8333H18.4167C18.704 10.8333 18.9795 10.9475 19.1827 11.1506C19.3859 11.3538 19.5 11.6293 19.5 11.9167V14.0833C19.5 14.3707 19.3859 14.6462 19.1827 14.8494C18.9795 15.0525 18.704 15.1667 18.4167 15.1667H7.58333C7.29601 15.1667 7.02046 15.0525 6.8173 14.8494C6.61414 14.6462 6.5 14.3707 6.5 14.0833V11.9167C6.5 11.6293 6.61414 11.3538 6.8173 11.1506C7.02046 10.9475 7.29601 10.8333 7.58333 10.8333Z" fill="#FF6D24"/></svg>
         </div>
         <h3>기존 문법을 따르지 않아요</h3>
-        <p>강압과 압박의 산업 관행을 거부하고,<br>새로운 방식을 선택해요</p>
+        <p>기존의 일방적인 회수 방식을 벗어나,<br>새로운 방식을 선택해요</p>
       </div>
       <div class="value-card reveal reveal-d1">
         <div class="value-icon">
@@ -708,7 +724,7 @@
   <div class="lawyer-banner-inner">
     <div class="lawyer-banner-content reveal">
       <h2>국내 66명뿐인 대한변호사협회 등록<br>채권추심 전문 변호사의 노하우로 만들었어요.</h2>
-      <p>법률 지식만으로는 회수가 완성되지 않아요.<br>리바운드는 법적 신뢰, 실무 감각, 그리고 사람을 설득하는 방법까지 모두 담았어요.</p>
+      <p>리바운드는 법적 신뢰, 실무 감각, 그리고 사람을 설득하는 방법까지 모두 담았어요.</p>
       <a href="http://srlaw.co.kr/" target="_blank" rel="noopener noreferrer" class="btn-outline-white">채권추심 전문 이준철 변호사가 궁금하다면? ↗</a>
     </div>
   </div>
@@ -729,12 +745,12 @@
         </div>
         <div class="team-card-info">
           <h3>이준철</h3>
-          <div class="role">대표이사</div>
-          <div class="bio bio-desktop">법무법인 수륜아시아 대표 변호사<br>10년간 1,000여 건의 미수금 사건 진행<br>대한변호사협회 등록 채권추심 전문 변호사</div>
-          <div class="bio bio-mobile">법무법인 수륜아시아 대표 변호사<br>미수금 사건 1,000건 이상 진행<br>채권추심 전문 변호사 (대한변협 등록)</div>
+          <div class="role">법무법인 수륜아시아 대표 변호사</div>
+          <div class="bio bio-desktop">10년간 1,000여 건의 미수금 사건 진행<br>대한변호사협회 등록 채권추심 전문 변호사</div>
+          <div class="bio bio-mobile">미수금 사건 1,000건 이상 진행<br>채권추심 전문 변호사 (대한변협 등록)</div>
         </div>
         <div class="team-card-overlay">
-          <div class="bio">법무법인 수륜아시아 대표 변호사<br>10년간 1,000여 건의 미수금 사건 진행<br>대한변호사협회 등록 채권추심 전문 변호사</div>
+          <div class="bio">10년간 1,000여 건의 미수금 사건 진행<br>대한변호사협회 등록 채권추심 전문 변호사</div>
         </div>
       </div>
       <div class="team-card reveal reveal-d1">
@@ -743,11 +759,11 @@
         </div>
         <div class="team-card-info">
           <h3>강영민</h3>
-          <div class="role">법무 총괄</div>
-          <div class="bio">한양대학교 법학전문대학원 졸업<br>법무법인 수륜아시아 파트너 변호사<br>가락시장 미수관리 전담팀</div>
+          <div class="role">법무법인 수륜아시아 파트너 변호사</div>
+          <div class="bio">대한변호사협회 채권추심전문변호사회 회원<br>가락시장 미수관리 전담팀</div>
         </div>
         <div class="team-card-overlay">
-          <div class="bio">한양대학교 법학전문대학원 졸업<br>법무법인 수륜아시아 파트너 변호사<br>가락시장 미수관리 전담팀</div>
+          <div class="bio">대한변호사협회 채권추심전문변호사회 회원<br>가락시장 미수관리 전담팀</div>
         </div>
       </div>
       <div class="team-card reveal reveal-d2">
@@ -756,11 +772,11 @@
         </div>
         <div class="team-card-info">
           <h3>김성결</h3>
-          <div class="role">사업운영 총괄</div>
-          <div class="bio">법무법인 수륜아시아 사무국장<br>가락시장 미수관리 전담팀<br>미수채권 관리/회수 경력 7년</div>
+          <div class="role">법무법인 수륜아시아 사무국장</div>
+          <div class="bio">가락시장 미수관리 전담팀<br>미수채권 관리/회수 경력 7년</div>
         </div>
         <div class="team-card-overlay">
-          <div class="bio">법무법인 수륜아시아 사무국장<br>가락시장 미수관리 전담팀<br>미수채권 관리/회수 경력 7년</div>
+          <div class="bio">가락시장 미수관리 전담팀<br>미수채권 관리/회수 경력 7년</div>
         </div>
       </div>
     </div>
@@ -789,7 +805,7 @@
             <path d="M41.502 11.0258L48.0939 15.7356L54.9283 20.4488L60.8016 20.7487L60.5626 23.0528L66.3155 26.6614L70.9921 28.5673L79.5045 24.9587L89.4527 21.0486L96.8854 17.6415L102.999 15.2358L94.7293 13.2316L85.0185 7.31718L78.1841 3.10714L75.0686 0L72.6702 1.6027L68.3546 3.80853L59.0031 6.81571L49.772 9.22145L41.502 11.0258Z" fill="#F39E6F"/>
           </svg>
         </div>
-        <p>리바운드를 만들고 기획한<br>수륜아시아 대표 변호사의 생각을 책으로 만나보세요.</p>
+        <p>리바운드를 만들고 기획한<br>법무법인 수륜아시아 대표 변호사의 생각을 책으로 만나보세요.</p>
         <a href="https://product.kyobobook.co.kr/detail/S000217223848" target="_blank" rel="noopener noreferrer" class="btn-outline">다정한 변론 도서 바로가기 ↗</a>
       </div>
     </div>
@@ -799,15 +815,17 @@
 <!-- CTA -->
 <section class="cta-section">
   <div class="reveal">
-    <p style="font-size:15px;font-weight:700;color:var(--orange);letter-spacing:-0.2px;margin-bottom:14px;">이제껏 없던 새로운 채권회수 서비스</p>
-    <h2>리바운드와 함께 회수를 시작해보세요</h2>
-    <p>몇 가지 질문에 답하면, 지금 상황에 맞는 회수 방향을 확인할 수 있어요.</p>
-    <a href="self-check.html" class="btn-orange">셀프진단 시작하기</a>
+    <p class="eyebrow">성공의 가치만 나눕니다</p>
+    <h2>일단 맡겨보세요, 회수되지 않으면 비용이 발생하지 않아요</h2>
+    <p>복잡한 준비 없이 채권 정보만으로 시작할 수 있어요.</p>
+    <a href="support.html" class="btn-orange">서비스 신청하기</a>
   </div>
 </section>
 
 <footer id="shared-footer"></footer>
 <script src="footer.js?v=2"></script>
+<!-- SELF-CHECK FLOATING BAR (공용) -->
+<script src="selfcheck-bar.js?v=10"></script>
 
 <script>
 // Mobile menu toggle은 mobile-menu.js에서 처리

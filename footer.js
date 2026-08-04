@@ -51,8 +51,6 @@
         </div>
         <div class="footer-col">
           <h5>컨텐츠</h5>
-          <a href="https://www.instagram.com/reboundkr.official/" target="_blank" rel="noopener noreferrer">인스타그램</a>
-          <a href="https://www.youtube.com/@rebound_kr" target="_blank" rel="noopener noreferrer">유튜브</a>
           <a href="https://blog.naver.com/reboundkr" target="_blank" rel="noopener noreferrer">블로그</a>
         </div>
         <div class="footer-col">

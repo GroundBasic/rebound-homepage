@@ -6,7 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>셀프 진단 플로우 빌더</title>
 <style>
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    /* CDN 폰트만 강제 사용 — PC에 설치된(버전 충돌/깨진) 로컬 Pretendard를 무시한다. */
+    @font-face { font-family: 'PretendardW'; font-weight: 400; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 500; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 600; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 700; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 800; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-ExtraBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 900; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Black.woff2') format('woff2'); }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
     --orange:#FF6D24;--lime:#B5F23D;--navy:#111827;--text:#1A1714;--text2:#6B6B6B;--text3:#999;
@@ -16,7 +22,7 @@
     --lawyer:#2563EB;--lawyer-bg:#EFF6FF;--lawyer-border:#BFDBFE;
     --biz:#3A7A00;--biz-bg:#F0FFE0;--biz-border:#C6F09A;
   }
-  body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  body{font-family:'PretendardW',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 
   .header{background:var(--navy);color:#fff;padding:20px 28px;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px}
   .header-info{flex:1}

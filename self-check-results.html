@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>리바운드 — 셀프진단 결과 모아보기</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    /* CDN 폰트만 강제 사용 — PC에 설치된(버전 충돌/깨진) 로컬 Pretendard를 무시한다. */
+    @font-face { font-family: 'PretendardW'; font-weight: 400; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 500; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 600; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 700; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'PretendardW'; font-weight: 800; font-style: normal; font-display: swap; src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/static/woff2/Pretendard-ExtraBold.woff2') format('woff2'); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6D24;
+      --orange-light: #FFD6C2;
+      --white: #ffffff;
+      --off: #F6F6F8;
+      --text: #302622;
+      --text2: #595959;
+      --text3: #888888;
+      --border: #EEEEEE;
+    }
+    body {
+      font-family: 'PretendardW', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #E0E0E0;
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      padding: 40px 32px 64px;
+    }
+
+    /* ── 페이지 헤더 ── */
+    .page-head { text-align: center; margin-bottom: 36px; }
+    .page-head h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; }
+    .page-head p { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+    /* ── 결과 카드 나열 ── */
+    .results-row {
+      display: flex; gap: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .result-col { width: 380px; flex-shrink: 0; }
+    .result-col-label {
+      text-align: center;
+      font-size: 13px; font-weight: 700;
+      margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .result-col-label .cond {
+      font-size: 11px; font-weight: 500; color: var(--text3);
+    }
+    .phone {
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+    }
+
+    /* ══════════════════════════════
+       이하 self-check.html 결과 화면 스타일 그대로
+    ══════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .screen-result {
+      display: flex;
+      width: 100%; min-height: 720px;
+      background: var(--white);
+      flex-direction: column;
+    }
+    .result-hero {
+      text-align: center;
+      padding: 44px 24px 28px;
+      position: relative; overflow: hidden;
+    }
+    .result-hero-blobs { position: absolute; inset: 0; pointer-events: none; }
+    .r-blob { display: none; }
+    .result-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 11px; font-weight: 700;
+      padding: 6px 14px; border-radius: 50px;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.4s ease both;
+      backdrop-filter: blur(8px);
+      letter-spacing: 0.3px;
+    }
+    .result-tag-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.6); }
+    }
+    .result-hero-title {
+      font-size: 26px; font-weight: 800;
+      color: var(--text); line-height: 1.3;
+      letter-spacing: -0.8px;
+      margin-bottom: 14px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s 0.08s ease both;
+    }
+    .result-hero-title em { font-style: normal; color: var(--orange); }
+    .result-hero-desc {
+      font-size: 14px; color: var(--text2);
+      line-height: 1.6; letter-spacing: -0.2px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s 0.16s ease both;
+    }
+    .result-body { padding: 20px 20px 0; }
+    .result-section {
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s 0.24s ease both;
+    }
+    .result-section-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--orange); letter-spacing: 0px;
+      margin-bottom: 8px;
+    }
+    .result-section-title {
+      font-size: 18px; font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.4px; line-height: 1.4;
+      margin-bottom: 14px;
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .glass-card-row { display: flex; align-items: center; gap: 12px; }
+    .glass-card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .glass-card-text { flex: 1; }
+    .glass-card-text .sub { font-size: 12px; color: var(--text3); line-height: 1.4; margin-bottom: 2px; }
+    .glass-card-text .main { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; line-height: 1.45; }
+    .step-list {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 8px 18px;
+      margin-bottom: 20px;
+    }
+    .step-item { padding: 12px 0; }
+    .step-item:last-child { padding-bottom: 12px; }
+    .step-inner { display: flex; align-items: flex-start; gap: 12px; }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--orange);
+      border-radius: 8px;
+      color: #fff; font-size: 12px; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .check-ic {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      background: none;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .step-text .sub { font-size: 12px; color: var(--text3); line-height: 1.4; margin-bottom: 2px; }
+    .step-text .main { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; line-height: 1.4; }
+    .action-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 16px;
+      padding: 22px 18px;
+      margin-bottom: 12px;
+    }
+    .action-card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .action-card-desc { font-size: 12px; color: var(--text3); line-height: 1.55; margin-bottom: 14px; }
+    .action-card-list { list-style: none; padding: 0; margin: 0 0 16px; }
+    .action-card-list li {
+      font-size: 13px; color: var(--text2); font-weight: 500;
+      padding: 4px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .action-card-list li::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--orange); flex-shrink: 0;
+    }
+    .action-card-btn {
+      display: block; width: 100%; text-align: center;
+      padding: 12px; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none; transition: opacity 0.15s;
+      font-family: inherit; cursor: pointer; border: none;
+    }
+    .action-card-btn:hover { opacity: 0.9; }
+    .action-card-btn-outline { background: #fff; color: var(--orange); border: 1.5px solid var(--orange); }
+    .action-card-blue .action-card-list li::before { background: #009DFF; }
+    .chip-badge {
+      display: inline-block;
+      font-size: 12px; font-weight: 600;
+      padding: 5px 12px; border-radius: 8px;
+      margin-top: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip-badge:hover { opacity: 0.8; }
+    .result-bottom {
+      margin-top: auto;
+      padding: 24px 20px 36px;
+      display: flex; flex-direction: column; gap: 12px;
+      align-items: center;
+    }
+    .btn-cta {
+      display: block; width: 100%;
+      padding: 16px 0;
+      background: var(--orange);
+      color: #fff; font-size: 15px; font-weight: 600;
+      line-height: 1.5;
+      border: none; border-radius: 12px;
+      cursor: pointer; font-family: inherit;
+      text-align: center; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-cta:hover { transform: translateY(-1px); }
+    .btn-retry {
+      background: none; border: none;
+      color: var(--text3); font-size: 13px; font-weight: 400;
+      cursor: pointer; font-family: inherit;
+      text-decoration: underline; text-underline-offset: 3px;
+      transition: color 0.2s;
+    }
+    .btn-retry:hover { color: var(--text2); }
+  </style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>셀프진단 결과 모아보기</h1>
+  <p>self-check.html의 4가지 진단 결과 화면을 한 번에 확인할 수 있어요</p>
+</div>
+
+<div class="results-row">
+
+  <!-- ══════════ 1. BIZ ══════════ -->
+  <div class="result-col">
+    <div class="result-col-label" style="color:#FF6D24">🟠 BIZ — 리바운드 Biz 추천 <span class="cond">사업자 채권 · 회수 조건 충족</span></div>
+    <div class="phone">
+      <div class="screen-result">
+        <div class="result-hero" style="background:linear-gradient(180deg,#FFF0E8 0%,#fff 100%)">
+          <div class="result-tag" style="color:var(--orange)"><div class="result-tag-dot" style="background:var(--orange)"></div>진단 완료</div>
+          <h1 class="result-hero-title"><em>리바운드</em>를<br>시작해보세요!</h1>
+          <p class="result-hero-desc">법적 절차보다 리바운드를 먼저<br>시도해 보시는 게 좋아요!</p>
+        </div>
+        <div class="result-body">
+          <div class="result-section">
+            <div class="result-section-label">BENEFIT</div>
+            <div class="result-section-title">리바운드를 사용하면<br>어떤 점이 좋나요?</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-inner"><div class="step-num">1</div><div class="step-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">2</div><div class="step-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">3</div><div class="step-text"><div class="sub">복잡한 법적 절차보다</div><div class="main">시간과 비용 부담 감소</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">4</div><div class="step-text"><div class="sub">현실적인 방식으로 조정해</div><div class="main">실제로 돈을 받을 가능성 증가</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">5</div><div class="step-text"><div class="sub">별도 인력이나 시간 투입 없이</div><div class="main">미수금 관리·회수 진행 가능</div></div></div></div>
+            </div>
+          </div>
+          <div class="result-section">
+            <div class="result-section-label">RECOMMEND</div>
+            <div class="result-section-title">이런 이유로 추천해요!</div>
+            <div class="glass-card">
+              <div class="glass-card-row"><div class="glass-card-icon"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2C7.34315 2 6 3.34315 6 5V7H25V5C25 3.34315 23.6569 2 22 2H9Z" fill="#7167A4"/><path d="M9 30C7.34315 30 6 28.6569 6 27V25H25V27C25 28.6569 23.6569 30 22 30H9Z" fill="#7167A4"/><path d="M6 6H25V26H6V6Z" fill="#321B41"/><path d="M13.5 10C13.5 9.44772 13.9477 9 14.5 9H16.5C17.0523 9 17.5 9.44772 17.5 10V12C17.5 12.5523 17.0523 13 16.5 13H14.5C13.9477 13 13.5 12.5523 13.5 12V10ZM8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15ZM14.5 19C13.9477 19 13.5 19.4477 13.5 20V22C13.5 22.5523 13.9477 23 14.5 23H16.5C17.0523 23 17.5 22.5523 17.5 22V20C17.5 19.4477 17.0523 19 16.5 19H14.5Z" fill="#00A6ED"/><path d="M8.5 10C8.5 9.44772 8.94772 9 9.5 9H11.5C12.0523 9 12.5 9.44772 12.5 10V12C12.5 12.5523 12.0523 13 11.5 13H9.5C8.94772 13 8.5 12.5523 8.5 12V10ZM8.5 20C8.5 19.4477 8.94772 19 9.5 19H11.5C12.0523 19 12.5 19.4477 12.5 20V22C12.5 22.5523 12.0523 23 11.5 23H9.5C8.94772 23 8.5 22.5523 8.5 22V20ZM19.5 14C18.9477 14 18.5 14.4477 18.5 15V17C18.5 17.5523 18.9477 18 19.5 18H21.5C22.0523 18 22.5 17.5523 22.5 17V15C22.5 14.4477 22.0523 14 21.5 14H19.5Z" fill="#FF822D"/><path d="M18.5 10C18.5 9.44772 18.9477 9 19.5 9H21.5C22.0523 9 22.5 9.44772 22.5 10V12C22.5 12.5523 22.0523 13 21.5 13H19.5C18.9477 13 18.5 12.5523 18.5 12V10ZM13.5 15C13.5 14.4477 13.9477 14 14.5 14H16.5C17.0523 14 17.5 14.4477 17.5 15V17C17.5 17.5523 17.0523 18 16.5 18H14.5C13.9477 18 13.5 17.5523 13.5 17V15ZM19.5 19C18.9477 19 18.5 19.4477 18.5 20V22C18.5 22.5523 18.9477 23 19.5 23H21.5C22.0523 23 22.5 22.5523 22.5 22V20C22.5 19.4477 22.0523 19 21.5 19H19.5Z" fill="#FCD53F"/></svg></div><div class="glass-card-text"><div class="sub">채무자(돈 갚을 분)와</div><div class="main">연락이 닿아요</div></div></div>
+              <div class="glass-card-row"><div class="glass-card-icon"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.3823 5.20245C22.1555 5.20245 21.1045 5.95516 20.6659 7.02396C20.2683 5.844 19.1705 5.125 17.8784 5.125C16.408 5.125 15.2833 6.10704 15.0798 7.27606C14.5429 6.58532 13.7031 6.14075 12.7593 6.14075C11.4635 6.14075 10.3638 6.71706 9.97473 7.98376C9.48464 7.61649 8.87588 7.39893 8.21631 7.39893C6.59532 7.39893 5.28125 8.713 5.28125 10.334V19.2318C5.28125 24.7297 9.7324 29.1867 15.2232 29.1867H16.3754C18.2366 29.1867 19.9784 28.6746 21.4679 27.7833L21.4714 27.7991C23.6491 26.5408 25.8713 24.2508 26.5755 21.43C27.0157 19.6669 26.9604 18.2101 26.7654 17.1778C26.7655 17.1621 26.7656 17.1463 26.7656 17.1305C26.7656 16.4647 26.6018 15.8241 26.3173 15.2321V12.9624L26.3174 12.9399V8.13819C26.3174 6.5172 25.0033 5.20245 23.3823 5.20245Z" fill="#FFD7C2"/><path d="M21.6035 8.01737C21.6035 6.446 22.0363 5.67683 22.3977 5.36768C21.4366 5.55207 20.6145 6.25701 20.6145 8.84645C20.6145 10.0154 20.638 11.2091 20.6572 11.9906C17.374 12.1033 16.2454 13.1054 15.8646 14.1119V8.64609C15.8646 6.72703 16.2819 5.76999 16.6391 5.37201C15.7155 5.76193 14.7074 6.77311 14.7074 9.23498L14.7074 12.9363C14.7074 13.4722 14.7478 13.9363 14.8207 14.338C14.7332 15.257 14.3032 16.4909 12.29 16.4909C11.7467 16.4909 11.0827 16.2076 10.5598 15.641V8.90402C10.5598 8.01758 10.6511 7.33903 10.7849 6.82763C10.1814 7.33182 9.67484 8.24822 9.67484 9.88334C9.67484 11.6495 9.68399 13.4157 9.68399 15.1819C9.68399 16.0245 9.32481 16.2436 8.70616 16.4234C8.4578 16.4711 8.29163 16.4909 7.97939 16.4909C7.151 16.4909 5.57265 15.7077 5.28125 14.1413C5.32022 15.0978 5.83966 18.6127 8.15152 18.6127C9.37926 18.6127 10.1145 18.1631 10.4982 17.6572C10.7437 18.1631 11.6553 18.6127 12.7849 18.6127C14.0433 18.6127 14.9641 17.6572 14.9641 17.6572C14.9641 17.6572 15.6158 18.272 16.4994 18.5153C14.5607 19.1582 12.4261 20.3124 10.6356 22.3692C10.4756 22.553 10.4886 22.8374 10.6646 23.0044C10.8405 23.1715 11.1128 23.1579 11.2728 22.9742C13.4321 20.4937 16.1411 19.4106 18.3287 18.9497C19.4212 18.7195 20.3775 18.6459 21.0593 18.6298C21.2561 18.6252 21.4298 18.6254 21.577 18.628C21.7992 19.1087 21.9623 19.6653 22.1182 20.1974C22.4407 21.2984 22.7325 22.2945 23.4538 22.2945C23.5493 22.2945 23.6435 22.2898 23.7363 22.2808C24.412 22.0317 24.9877 21.4756 24.9877 20.7064C24.9877 18.8556 23.8459 17.32 21.0683 17.32C17.4555 17.32 17.3716 15.8361 17.3716 14.65C17.3716 12.1347 23.1039 12.4719 23.1039 12.4719C22.7805 12.287 22.4173 12.1309 22.0269 12.0073C21.8897 11.9968 21.7486 11.9893 21.6035 11.9849V8.01737Z" fill="#F1B99B"/></svg></div><div class="glass-card-text"><div class="sub">채무자(돈 갚을 분)가</div><div class="main">갚으려는 의지가 있어요</div></div></div>
+              <div class="glass-card-row"><div class="glass-card-icon"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 10C2 8.89543 2.89543 8 4 8H15L17 9L19 8H28C29.1046 8 30 8.89543 30 10V24C30 25.1046 29.1046 26 28 26H4C2.89543 26 2 25.1046 2 24V10Z" fill="#00F397"/><path d="M3 11C3 9.89543 3.89543 9 5 9H27C28.1046 9 29 9.89543 29 11V23C29 24.1046 28.1046 25 27 25H5C3.89543 25 3 24.1046 3 23V11ZM5 10C4.44772 10 4 10.4477 4 11V23C4 23.5523 4.44772 24 5 24H27C27.5523 24 28 23.5523 28 23V11C28 10.4477 27.5523 10 27 10H5ZM2 28C2 29.1046 2.89543 30 4 30H15L17 29L19 30H28C29.1046 30 30 29.1046 30 28V24C30 25.1046 29.1046 26 28 26H4C2.89543 26 2 25.1046 2 24V28ZM26 17C26 19.4853 23.9853 21.5 21.5 21.5C19.0147 21.5 17 19.4853 17 17C17 14.5147 19.0147 12.5 21.5 12.5C23.9853 12.5 26 14.5147 26 17Z" fill="#008463"/><path d="M19 8H15V27H19V8Z" fill="#FFF478"/><path d="M19 26H15V30H19V26Z" fill="#F3AD61"/><path d="M6.85259 14.343C6.77603 14.0805 6.52857 13.9399 6.29889 14.0258C6.06921 14.1117 5.94617 14.3976 6.02273 14.6585L6.77739 17.2503H6.43697C6.25514 17.2503 6.10886 17.4175 6.10886 17.6252C6.10886 17.833 6.25514 18.0002 6.43697 18.0002H6.99614L7.77131 20.6576C7.83283 20.8685 8.00919 21.0075 8.20333 20.9997C8.39746 20.9919 8.56425 20.8372 8.61074 20.6216L9.18494 18.0002H9.81383L10.388 20.6216C10.4345 20.8372 10.6013 20.9919 10.7954 20.9997C10.9896 21.0075 11.1659 20.8685 11.2275 20.6576L12.0026 18.0002H12.5618C12.7436 18.0002 12.8899 17.833 12.8899 17.6252C12.8899 17.4175 12.7436 17.2503 12.5618 17.2503H12.2214L12.9774 14.6585C13.054 14.3961 12.9296 14.1133 12.7012 14.0258C12.4729 13.9383 12.2241 14.0805 12.1475 14.3414L11.2999 17.2487H10.5535L9.92593 14.3773C9.87535 14.157 9.70035 14.0008 9.49938 14.0008C9.29841 14.0008 9.12342 14.157 9.07557 14.3789L8.44668 17.2503H7.70022L6.85259 14.343ZM7.91896 18.0002H8.28262L8.12677 18.7126L7.91896 18.0002ZM9.349 17.2503L9.49938 16.5613L9.64977 17.2503H9.349ZM10.7161 18.0002H11.0798L10.872 18.7126L10.7161 18.0002Z" fill="white"/></svg></div><div class="glass-card-text"><div class="sub">현실적으로</div><div class="main">나눠 갚을 수 있는 금액이에요</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="result-bottom">
+          <a href="rebound-biz.html" target="_blank" rel="noopener noreferrer" class="btn-cta">리바운드 시작하기</a>
+          <button class="btn-retry">셀프진단 다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 2. LAWYER ══════════ -->
+  <div class="result-col">
+    <div class="result-col-label" style="color:#009DFF">🔵 LAWYER — 변호사 상담 권유 <span class="cond">고액 · 시효 임박 · 채무 부인</span></div>
+    <div class="phone">
+      <div class="screen-result">
+        <div class="result-hero" style="background:linear-gradient(180deg,#F0F7FF 0%,#fff 100%)">
+          <div class="result-tag" style="color:#009DFF"><div class="result-tag-dot" style="background:#009DFF"></div>진단 결과</div>
+          <h1 class="result-hero-title">먼저 <em style="color:#009DFF">변호사 상담</em>을<br>받아보시는 건 어때요?</h1>
+          <p class="result-hero-desc">지금도 리바운드가 가능하지만,<br>회수 난이도가 다소 높은 상황이에요.</p>
+        </div>
+        <div class="result-body">
+          <div class="result-section">
+            <div class="result-section-label" style="color:#009DFF">WHY</div>
+            <div class="result-section-title">이런 이유 때문에<br>변호사 상담을 권해요</div>
+            <p style="font-size:12px;color:var(--text3);margin:-8px 0 14px">아래 이유 중 하나 이상 해당돼요</p>
+            <div class="step-list">
+              <div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">1</div><div class="step-text"><div class="sub">갚기로 한 날이 정확하지 않아서</div><div class="main">소멸시효 확인이 필요해요</div><div class="chip-badge" style="background:#E0E0E6;color:#333">소멸시효란?</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">2</div><div class="step-text"><div class="sub">비대면으로 처리하기에는</div><div class="main">채권 금액이 커요</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num" style="background:#009DFF">3</div><div class="step-text"><div class="sub">상대방이 채무를 부인하거나 연락이 안 돼서</div><div class="main">법적 절차를 알아봐야 해요</div></div></div></div>
+            </div>
+          </div>
+          <div class="result-section">
+            <div class="result-section-label" style="color:#009DFF">RECOMMEND</div>
+            <div class="result-section-title">이렇게 해보시는 건 어때요?</div>
+            <div class="action-card action-card-blue">
+              <div class="action-card-title">법률 상담받기</div>
+              <div class="action-card-desc">전문가 법률 상담을 통해 상황을 정확하게 파악하고<br>법적인 대응 방법을 알아보세요.</div>
+              <ul class="action-card-list">
+                <li>법무법인 수륜아시아</li>
+                <li>법률구조공단</li>
+                <li>그 외 이용 가능한 법률 상담 기관</li>
+              </ul>
+              <a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">법무법인 수륜아시아 홈페이지</a>
+            </div>
+            <div class="action-card">
+              <svg width="44" height="45" viewBox="0 0 189 192" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px"><path opacity="0.35" d="M112.127 170.245V171.393C111.82 160.774 102.983 152.236 92.1771 152.236C81.371 152.236 72.2816 161.043 72.1912 171.895V172.039H72.137V170.999C71.5768 143.159 48.3925 120.54 20.3833 120.468H20.1846C31.0991 120.343 39.9355 111.5 39.9355 100.648C39.9355 89.7953 31.1533 80.988 20.2569 80.8265C44.3628 80.8265 66.4629 90.2796 82.9612 105.652C100.49 121.903 111.621 144.828 112.109 170.209L112.127 170.245Z" fill="#FF5900"/><path opacity="0.45" d="M180.036 36.3056C172.988 41.6151 166.356 47.4807 160.158 53.9023C157.285 56.8441 154.556 59.8934 151.918 63.0146C126.529 93.2214 112.579 130.657 112.163 170.245V172.003C112.109 161.097 103.164 152.272 92.1773 152.272C81.1905 152.272 72.2275 161.115 72.1914 172.003V171.07C72.3179 148.254 76.0585 126.316 82.9795 105.742C91.6713 79.8041 105.351 56.1086 122.843 35.7136C131.733 25.4534 141.51 16.0541 152.153 7.67728C153.382 6.69072 154.647 5.74003 155.876 4.78934C154.719 5.7759 153.671 6.90597 152.749 8.12572C150.256 11.4262 148.828 15.498 148.828 19.9107C148.828 30.8526 157.791 39.7317 168.814 39.7317C172.97 39.7317 176.801 38.4581 180 36.3594H180.054L180.036 36.3056Z" fill="#FF5900"/><path opacity="0.5" d="M39.9718 100.701C39.9718 111.571 31.1353 120.415 20.2208 120.522H19.9859C8.94486 120.522 0 111.625 0 100.701C0 89.7774 8.96293 80.8803 19.9859 80.8803H20.2931C31.1715 81.0418 39.9718 89.867 39.9718 100.701Z" fill="#FF5900"/><path opacity="0.8" d="M112.181 171.967V172.039C112.181 182.981 103.218 191.86 92.1949 191.86C81.1719 191.86 72.2451 183.017 72.209 172.075V171.949C72.2632 161.043 81.208 152.218 92.1949 152.218C103.182 152.218 112.145 161.061 112.181 171.949V171.967Z" fill="#FF5900"/><path d="M188.836 19.8388C188.836 25.9017 186.071 31.3727 181.77 34.9781C181.571 35.1216 181.409 35.2651 181.264 35.4086H181.21C180.848 35.7136 180.433 36.0006 180.053 36.2696C176.855 38.3863 173.006 39.6419 168.868 39.6419C157.827 39.6419 148.882 30.7449 148.882 19.8209C148.882 15.4262 150.309 11.3365 152.803 8.03595C153.725 6.8162 154.773 5.70407 155.929 4.69957C156.562 4.19731 157.212 3.713 157.881 3.22869C161.025 1.16587 164.856 -0.0180054 168.868 -0.0180054C179.927 -0.0180054 188.854 8.87901 188.854 19.803L188.836 19.8388Z" fill="#FF5900"/></svg>
+              <div class="action-card-title">리바운드 신청</div>
+              <div class="action-card-desc">법적 절차가 부담스럽다면<br>리바운드를 먼저 신청해봐도 좋아요!</div>
+              <a href="rebound-biz.html" target="_blank" rel="noopener noreferrer" class="action-card-btn" style="background:#FFF0E8;color:#FF6D24">리바운드 시작하기</a>
+            </div>
+          </div>
+        </div>
+        <div class="result-bottom">
+          <a href="rebound-biz.html" class="btn-cta">리바운드 홈으로</a>
+          <button class="btn-retry">셀프진단 다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 3. PERSONAL ══════════ -->
+  <div class="result-col">
+    <div class="result-col-label" style="color:var(--orange)">🟠 PERSONAL — 개인 간 상담 연결 <span class="cond">개인 채권 선택 시</span></div>
+    <div class="phone">
+      <div class="screen-result">
+        <div class="result-hero" style="background:linear-gradient(180deg,#FFF8F4 0%,#fff 100%)">
+          <div class="result-tag" style="color:var(--orange)"><div class="result-tag-dot" style="background:var(--orange)"></div>진단 결과</div>
+          <h1 class="result-hero-title"><em>개인 간 채권</em>도,<br>리바운드로 진행해보세요!</h1>
+          <p class="result-hero-desc">사건에 따라 진행 방식이 달라서,<br>상담을 통해 확인해드려요!</p>
+        </div>
+        <div class="result-body">
+          <div class="result-section">
+            <div class="result-section-label">BENEFIT</div>
+            <div class="result-section-title">리바운드로 진행되면 이런 점이 좋아요</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-inner"><div class="step-num">1</div><div class="step-text"><div class="sub">신경쓰지 않아도</div><div class="main">약속된 일정에 맞춰 회수 진행</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">2</div><div class="step-text"><div class="sub">지급명령·소송으로 가기 전에</div><div class="main">비(非)법적 수단 시도 가능</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">3</div><div class="step-text"><div class="sub">복잡한 법적 절차보다</div><div class="main">시간과 비용 부담 감소</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">4</div><div class="step-text"><div class="sub">현실적인 방식으로 조정해</div><div class="main">실제로 돈을 받을 가능성 증가</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">5</div><div class="step-text"><div class="sub">별도 인력이나 시간 투입 없이</div><div class="main">미수금 관리·회수 진행 가능</div></div></div></div>
+            </div>
+          </div>
+          <div class="result-section">
+            <div class="result-section-label">CHECK POINT</div>
+            <div class="result-section-title">상담에서는 이런 걸 확인해요</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2C7.34315 2 6 3.34315 6 5V7H25V5C25 3.34315 23.6569 2 22 2H9Z" fill="#7167A4"/><path d="M9 30C7.34315 30 6 28.6569 6 27V25H25V27C25 28.6569 23.6569 30 22 30H9Z" fill="#7167A4"/><path d="M6 6H25V26H6V6Z" fill="#321B41"/><path d="M13.5 10C13.5 9.44772 13.9477 9 14.5 9H16.5C17.0523 9 17.5 9.44772 17.5 10V12C17.5 12.5523 17.0523 13 16.5 13H14.5C13.9477 13 13.5 12.5523 13.5 12V10ZM8.5 15C8.5 14.4477 8.94772 14 9.5 14H11.5C12.0523 14 12.5 14.4477 12.5 15V17C12.5 17.5523 12.0523 18 11.5 18H9.5C8.94772 18 8.5 17.5523 8.5 17V15ZM14.5 19C13.9477 19 13.5 19.4477 13.5 20V22C13.5 22.5523 13.9477 23 14.5 23H16.5C17.0523 23 17.5 22.5523 17.5 22V20C17.5 19.4477 17.0523 19 16.5 19H14.5Z" fill="#00A6ED"/><path d="M8.5 10C8.5 9.44772 8.94772 9 9.5 9H11.5C12.0523 9 12.5 9.44772 12.5 10V12C12.5 12.5523 12.0523 13 11.5 13H9.5C8.94772 13 8.5 12.5523 8.5 12V10ZM8.5 20C8.5 19.4477 8.94772 19 9.5 19H11.5C12.0523 19 12.5 19.4477 12.5 20V22C12.5 22.5523 12.0523 23 11.5 23H9.5C8.94772 23 8.5 22.5523 8.5 22V20ZM19.5 14C18.9477 14 18.5 14.4477 18.5 15V17C18.5 17.5523 18.9477 18 19.5 18H21.5C22.0523 18 22.5 17.5523 22.5 17V15C22.5 14.4477 22.0523 14 21.5 14H19.5Z" fill="#FF822D"/><path d="M18.5 10C18.5 9.44772 18.9477 9 19.5 9H21.5C22.0523 9 22.5 9.44772 22.5 10V12C22.5 12.5523 22.0523 13 21.5 13H19.5C18.9477 13 18.5 12.5523 18.5 12V10ZM13.5 15C13.5 14.4477 13.9477 14 14.5 14H16.5C17.0523 14 17.5 14.4477 17.5 15V17C17.5 17.5523 17.0523 18 16.5 18H14.5C13.9477 18 13.5 17.5523 13.5 17V15ZM19.5 19C18.9477 19 18.5 19.4477 18.5 20V22C18.5 22.5523 18.9477 23 19.5 23H21.5C22.0523 23 22.5 22.5523 22.5 22V20C22.5 19.4477 22.0523 19 21.5 19H19.5Z" fill="#FCD53F"/></svg></div><div class="step-text"><div class="main">채무자(돈 갚을 분)와 연락이 닿는지</div></div></div></div>
+              <div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.6821 1.16021e-05L1 0C0.447716 -5.05255e-07 0 0.447715 0 1V25C0 25.5523 0.447715 26 1 26L19 26C19.5523 26 20 25.5523 20 25V6.45333L13.6821 1.16021e-05Z" fill="#F3EEF8"/><path d="M3.5 9H16.5C16.7761 9 17 9.22386 17 9.5C17 9.77614 16.7761 10 16.5 10H3.5C3.22386 10 3 9.77614 3 9.5C3 9.22386 3.22386 9 3.5 9ZM3.5 12C3.22386 12 3 12.2239 3 12.5C3 12.7761 3.22386 13 3.5 13H16.5C16.7761 13 17 12.7761 17 12.5C17 12.2239 16.7761 12 16.5 12H3.5ZM3 15.5C3 15.2239 3.22386 15 3.5 15H16.5C16.7761 15 17 15.2239 17 15.5C17 15.7761 16.7761 16 16.5 16H3.5C3.22386 16 3 15.7761 3 15.5ZM3.5 18C3.22386 18 3 18.2239 3 18.5C3 18.7761 3.22386 19 3.5 19H11.5C11.7761 19 12 18.7761 12 18.5C12 18.2239 11.7761 18 11.5 18H3.5Z" fill="#998EA4"/><path d="M20 6.45325H15.3892C14.4464 6.45325 13.6821 5.68896 13.6821 4.74614V0L20 6.45325Z" fill="#CDC4D6"/></svg></div><div class="step-text"><div class="main">채권 금액과 상황이 구체적인지</div></div></div></div>
+              <div class="step-item"><div class="step-inner" style="align-items:center"><div class="check-ic"><svg width="27" height="27" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip_pcheck_hand)"><path d="M11.4063 6.15625C6.13126 5.50625 4.25001 8.15625 3.34376 9.37501C0.875013 13.0156 2.35939 17.0156 4.15626 18.9375C4.15626 18.9375 14.25 28.7656 14.5313 29.0312C14.8125 29.2969 15.4766 30.2031 17.0781 29.9453C18.4757 29.7203 18.875 28.0312 18.875 28.0312C18.875 28.0312 19.9073 28.8731 21.3906 28.0312C22.5469 27.375 22.5 26.0625 22.5 26.0625C22.5 26.0625 23.7383 26.6829 25.0625 25.5625C26.2553 24.5532 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.5856 22.9571 27.3438 22.125C28.3688 21 28.0156 19.5781 27.3438 18.9375L19.625 10.5L19.0313 7.375L11.4063 6.15625Z" fill="#FFD7C2"/><path d="M26.7074 22.5933L24.4809 20.3364C24.287 20.1398 23.9704 20.1376 23.7739 20.3315C23.5773 20.5255 23.5751 20.8421 23.769 21.0386L25.5334 22.8272C25.5223 22.7973 25.5156 22.7812 25.5156 22.7812C25.5156 22.7812 26.0977 22.8769 26.7074 22.5933Z" fill="#F1B99B"/><path d="M23.9779 26.1509L21.6684 23.5872C21.4835 23.382 21.1674 23.3656 20.9622 23.5504C20.757 23.7352 20.7406 24.0514 20.9254 24.2565L22.5845 26.0983C22.7836 26.1741 23.3157 26.3302 23.9779 26.1509Z" fill="#F1B99B"/><path d="M20.5759 28.351L18.7698 26.438C18.5802 26.2372 18.2638 26.2281 18.063 26.4177C17.8622 26.6073 17.8531 26.9237 18.0427 27.1245L18.9471 28.0824C19.1457 28.2124 19.7417 28.5326 20.5759 28.351Z" fill="#F1B99B"/><path d="M18.4033 29.0535C17.6442 29.2557 16.2359 29.3193 15.2656 28.2812L14.4899 28.9916C14.51 29.011 14.524 29.0244 14.5313 29.0312C14.5602 29.0586 14.5932 29.0927 14.6309 29.1317C14.9591 29.4711 15.6414 30.1766 17.0781 29.9453C17.6998 29.8452 18.124 29.4554 18.4033 29.0535Z" fill="#F1B99B"/><path d="M6.375 6.8125C4.6875 8.97916 2.0875 14.5875 6.6875 18.4375L5.24045 19.9931C4.5734 19.3437 4.15626 18.9375 4.15626 18.9375C2.35939 17.0156 0.875013 13.0156 3.34376 9.375C3.35716 9.35698 3.37078 9.33864 3.38461 9.32C3.90872 8.61416 4.74999 7.48117 6.33357 6.75266L6.375 6.8125Z" fill="#F1B99B"/><path d="M17.25 23.6875C18.4531 25.0781 16.9492 26.8496 16.25 27.5938L5.66868 16.5845C7.64313 14.5816 8.94702 14.3814 9.82813 15.25C10.7092 16.1186 10.2969 16.7344 10.2969 16.7344C10.2969 16.7344 11.4909 16.0557 12.75 17.2969C14.0091 18.5381 13.1406 19.4844 13.1406 19.4844C13.1406 19.4844 14.44 19.2504 15.3594 20.2812C16.3906 21.4375 15.7344 22.7812 15.7344 22.7812C15.7344 22.7812 16.5248 22.8493 17.25 23.6875Z" fill="#F1B99B"/><path d="M12.4375 8C15.6719 6.70313 20.5781 6.04688 22.8281 6.01562C24.3594 6.01562 26.3091 6.38659 28.375 8.8125C31.6748 12.6873 29.2031 17.1094 27.25 18.9062V17.5C27.25 17.5 19.7436 10.9644 19.5 10.7344C19.05 10.3094 17.1979 10.4375 17 10.5C16.3958 10.6875 15.35 11 14 11.5C12.9023 11.9066 12.0312 11.5781 11.6718 10.7344C11.3124 9.89062 10.8297 8.64466 12.4375 8Z" fill="#FFD7C2"/><path d="M28.3106 17.7099C27.9645 18.1804 27.599 18.5852 27.25 18.9063C24.4896 16.5 18.8719 11.5813 18.4219 11.1563C17.9719 10.7313 17.4479 10.75 17.25 10.8125C16.6458 11 15.1 11.5 13.75 12C12.6523 12.4066 11.5469 11.5781 11.1875 10.7344C10.8589 9.96292 10.8321 8.85521 12.0589 8.17831L12.69 7.90133C12.7068 7.89496 12.7235 7.8886 12.7403 7.88226C10.7869 9.34968 12.5116 11.1435 14.125 10.9375C14.6919 10.8651 15.625 10.6719 16.5313 10.4375C16.8909 10.3445 17.2439 10.1794 17.5771 10.0236C18.2021 9.73124 18.7575 9.47151 19.1563 9.78126C20.6561 10.9462 25.1333 14.7492 28.3106 17.7099Z" fill="#F1B99B"/><path d="M8.81945 16.8786C8.07602 15.9154 6.69251 15.7372 5.72929 16.4806L3.81252 18.1016C2.92972 18.836 2.70107 20.2103 3.34614 21.103C3.93006 21.9111 4.82674 22.2447 5.64863 22.0112C5.28362 22.846 5.31493 23.914 6.01567 24.5001C6.67051 25.0477 7.47952 25.423 8.29069 25.1697C8.21346 25.7052 8.3713 26.2914 8.92192 26.875C9.44191 27.4262 10.1973 27.7006 11.0083 27.5183C10.9011 28.0902 11.0818 28.7257 11.7507 29.3711C12.57 30.1616 13.8311 30.2288 15.0157 29.1407L15.7879 28.241C16.4082 27.461 17.2658 26.1055 15.9844 24.9532C15.5412 24.5547 15.0316 24.3341 14.5026 24.3327C14.7901 23.6321 14.7847 22.7748 13.9532 21.9532C13.4334 21.4396 12.7958 21.2165 12.0932 21.3852C12.473 20.5766 12.4644 19.7523 11.7032 19.0001C11.0118 18.3169 10.1604 17.9929 9.06004 18.6091C9.25414 18.0144 9.20803 17.3821 8.81945 16.8786Z" fill="#FFD7C2"/><path d="M9.03352 17.2422L4.31006 21.9066C4.72783 22.0935 5.1834 22.1356 5.61931 22.0191L9.08879 18.593C9.0792 18.5983 9.0696 18.6036 9.05998 18.609C9.20968 18.1502 9.2165 17.6692 9.03352 17.2422Z" fill="#F1B99B"/><path d="M12.2463 19.8263L6.95856 25.0846C7.38419 25.2563 7.83707 25.3112 8.29063 25.1696C8.29059 25.1698 8.29067 25.1693 8.29063 25.1696L12.0982 21.3838C12.0965 21.3842 12.0948 21.3846 12.0932 21.385C12.3378 20.8641 12.4213 20.3367 12.2463 19.8263Z" fill="#F1B99B"/><path d="M14.5732 22.8968L9.65496 27.3953C10.0587 27.5722 10.5196 27.6262 11.0004 27.5199L14.5129 24.3071C14.683 23.8795 14.7429 23.3951 14.5732 22.8968Z" fill="#F1B99B"/></g><defs><clipPath id="clip_pcheck_hand"><rect width="32" height="32" fill="white"/></clipPath></defs></svg></div><div class="step-text"><div class="main">현실적으로 협의·상환 여지가 있는지</div></div></div></div>
+            </div>
+            <p style="font-size:13px;color:var(--text3);line-height:1.6;margin-top:-6px">상담 후, 리바운드로 진행하거나 필요한 경우 법률 상담으로 연결해드려요.</p>
+          </div>
+        </div>
+        <div class="result-bottom">
+          <div style="display:flex;gap:10px;width:100%">
+            <a href="https://pf.kakao.com/_nrjrn/chat" target="_blank" rel="noopener noreferrer" class="btn-cta" style="flex:1 1 50%;min-width:0">카톡으로 상담받기</a>
+            <a href="tel:02-6251-1103" class="btn-cta" style="flex:1 1 50%;min-width:0">전화로 상담받기</a>
+          </div>
+          <div style="font-size:12px;color:var(--text3)">평일 09:00–18:00 상담 가능</div>
+          <button class="btn-retry">셀프진단 다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 4. BLOCK ══════════ -->
+  <div class="result-col">
+    <div class="result-col-label" style="color:#666">⚪ BLOCK — 서비스 대상 아님 <span class="cond">불법 채권 · 시효 만료 · 연락처 모름 등</span></div>
+    <div class="phone">
+      <div class="screen-result">
+        <div class="result-hero" style="background:linear-gradient(180deg,#F0F0F2 0%,#fff 100%)">
+          <div class="result-tag" style="color:#666"><div class="result-tag-dot" style="background:#999"></div>진단 결과</div>
+          <h1 class="result-hero-title">지금 상황엔 리바운드보다<br>다른 방법이 더 적합해요.</h1>
+          <p class="result-hero-desc">해당 유형의 채권은<br>전문 법률 상담이 더 잘 맞아요.</p>
+        </div>
+        <div class="result-body">
+          <div class="result-section">
+            <div class="result-section-label">WHY</div>
+            <div class="result-section-title">이런 이유 때문이에요</div>
+            <p style="font-size:13px;color:#888;margin:-8px 0 16px;letter-spacing:-0.2px">아래 이유 중 하나 이상 해당돼요</p>
+            <div class="step-list">
+              <div class="step-item"><div class="step-inner"><div class="step-num">1</div><div class="step-text"><div class="main">채권 추심 범위로 보기 어려워요</div><div class="sub">양육비·합의금 등 사안이 복잡해요</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">2</div><div class="step-text"><div class="main">법적 보호가 어려운 채권이에요</div><div class="sub">도박·불법 사채 등에 해당되요</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">3</div><div class="step-text"><div class="main">소멸시효가 지났거나 임박했어요</div><div class="sub">시효가 지났거나 소멸된 채권은 해결이 어려워요</div></div></div></div>
+              <div class="step-item"><div class="step-inner"><div class="step-num">4</div><div class="step-text"><div class="main">상대의 연락처를 몰라요</div><div class="sub">상대의 연락처를 모르면 리바운드 서비스 이용이 어려워요</div></div></div></div>
+            </div>
+          </div>
+          <div class="result-section">
+            <div class="result-section-label" style="color:#009DFF">RECOMMEND</div>
+            <div class="result-section-title">이렇게 해보는 건 어때요?</div>
+            <div class="action-card action-card-blue">
+              <div class="action-card-title">법률 상담받기</div>
+              <div class="action-card-desc">먼저 법률 상담을 통해 상황을 정확하게 파악하고<br>법적인 해결 방법을 알아봐요</div>
+              <ul class="action-card-list">
+                <li>법무법인 수륜아시아</li>
+                <li>법률구조공단</li>
+                <li>그 외 이용 가능한 법률 상담 기관</li>
+              </ul>
+              <a href="http://srlaw.co.kr" target="_blank" rel="noopener noreferrer" class="action-card-btn action-card-btn-outline" style="color:#009DFF;border-color:#009DFF">법무법인 수륜아시아 홈페이지</a>
+            </div>
+          </div>
+        </div>
+        <div class="result-bottom">
+          <a href="rebound-biz.html" class="btn-cta">리바운드 홈으로</a>
+          <button class="btn-retry">셀프진단 다시하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -9,6 +9,9 @@
   // 현재 페이지 판단 (active 메뉴 표시용)
   var path = (location.pathname || '').split('/').pop();
   var activeMap = {
+    'rebound-biz.html': 'home',
+    'index.html': 'home',
+    '': 'home',
     'team.html': 'team',
     'support.html': 'support'
   };
@@ -41,19 +44,13 @@
     + '<div class="gnb-inner">'
     +   '<div class="gnb-left">'
     +     '<a href="rebound-biz.html" class="gnb-logo">' + logoSvg + '</a>'
-    +     '<div class="biz-hint-wrap">'
-    +       '<div class="toggle-pill">'
-    +         '<a href="rebound-biz.html" class="on">기업 Biz</a>'
-    +         '<a href="#" onclick="event.preventDefault();document.getElementById(\'readyPopupOverlay\').classList.add(\'open\');">개인</a>'
-    +       '</div>'
-    +     '</div>'
     +   '</div>'
     +   '<nav class="gnb-nav">'
-    +     '<a href="rebound-biz.html">홈</a>'
+    +     '<a href="rebound-biz.html"' + navCls('home') + '>홈</a>'
     +     '<a href="team.html"' + navCls('team') + '>팀 리바운드</a>'
     +     '<a href="support.html"' + navCls('support') + '>고객센터</a>'
     +     '<a href="https://blog.naver.com/reboundkr">블로그</a>'
-    +     '<a href="self-check.html" target="_blank" rel="noopener noreferrer">셀프 진단</a>'
+    +     '<a href="self-check.html" target="_blank" rel="noopener noreferrer" class="gnb-nav-selfcheck">셀프 진단</a>'
     +   '</nav>'
     +   '<button class="gnb-mobile-btn" id="mobileMenuBtn" aria-label="메뉴"><span></span></button>'
     +   '<div class="gnb-actions">'
